@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 19
+    }
+}
+
+dependencies {
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
+    compile files('libs/sicImageLoaderv3.jar')
+    compile files('libs/sacklist-1.0.0.jar')
+    compile files('libs/twitter4j-async-3.0.5.jar')
+    compile files('libs/twitter4j-core-3.0.5.jar')
+    compile files('libs/universal-image-loader-1.8.6.jar')
+    compile files('libs/asyncBackgroundViewPager.jar')
+    compile project(':non-gradle-libs:library')
+
+
+}

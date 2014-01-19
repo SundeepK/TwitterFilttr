@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
+
+    <!--<com.sun.parallaxviewpage.core.AsyncBackgroundViewPager-->
+        <!--android:id="@+id/user_view_pager"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="#cc000000"-->
+        <!--android:scrollbarSize="1dp" >-->
+
+        <!--<android.support.v4.view.PagerTitleStrip-->
+            <!--android:id="@+id/pager_title_strip"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:background="#00000000"-->
+            <!--android:textColor="#fff" />-->
+    <!--</com.sun.parallaxviewpage.core.AsyncBackgroundViewPager>-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/user_view_pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#cc000000"
+        android:scrollbarSize="1dp" >
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="top"
+            android:background="#00000000"
+            android:textColor="#fff" />
+    </android.support.v4.view.ViewPager>
+
+
+    <ListView
+        android:id="@+id/nav_listview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+
+        >
+
+    </ListView>
+
+    <ImageView
+        android:id="@+id/sliding_menu_background"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        />
+
+</LinearLayout>

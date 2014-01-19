@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Layout for individual news entries in a list -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+    <!-- Title of the news entry -->
+
+    <TextView
+            android:id="@+id/tweets_heading"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:background="#99000000"
+            android:gravity="left|center_vertical"
+            android:text="New Tweets"
+            android:textColor="#ffffff"
+            android:textSize="20sp"/>
+
+    <TextView
+            android:id="@+id/tweet_numbers_numbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tweets_heading"
+            android:layout_alignRight="@+id/tweets_heading"
+            android:layout_alignTop="@+id/tweets_heading"
+            android:background="#99000000"
+            android:padding="5dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="100"
+            android:textColor="#868686"
+            android:textSize="30sp"/>
+
+</RelativeLayout>

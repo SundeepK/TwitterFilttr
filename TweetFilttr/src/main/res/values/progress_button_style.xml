@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <style name="ProgressButton" />
+
+    <!-- Base theme for the Progress button. -->
+    <style name="ProgressButton.attrs">
+        <item name="defaultBackgroundColor">@color/white_color</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="defaultFontSize">30</item>
+        <item name="defaultFontColor">@color/black_color</item>
+        <item name="defaultText">Load more</item>
+    </style>
+    
+</resources>

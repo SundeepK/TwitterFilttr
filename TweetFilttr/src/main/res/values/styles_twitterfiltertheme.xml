@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<style name="Theme.Twitterfiltertheme" parent="@style/Theme.Sherlock.Light.DarkActionBar">-->
+                <!--<item name="android:actionBarStyle">@style/ActionBarTabStyle.Twitterfiltertheme</item>-->
+    <!--</style>-->
+
+    <!--<style name="Theme.Twitterfiltertheme" parent="Sherlock.__Theme.DarkActionBar">-->
+        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:background">#00000000</item>-->
+    <!--</style>-->
+
+    <!--<style name="ActionBarTabStyle.Twitterfiltertheme" parent="@android:style/Widget.ActionBar">-->
+        <!--<item name="android:background">#00000000</item>-->
+        <!--<item name="android:actionBarStyle">@style/MyActionBar</item>-->
+        <!--<item name="android:windowActionBar">false</item>-->
+		<!--<item name="android:windowTitleSize">0dp</item>-->
+        <!--<item name="background">@android:color/transparent</item>-->
+        <!--<item name="android:background">@android:color/transparent</item>-->
+    <!--</style>-->
+
+    <!--<style name="ActionBar.Transparent.Twitterfiltertheme" parent="@android:style/Widget.Holo.ActionBar">-->
+        <!--<item name="android:background">#00000000</item>-->
+        <!--<item name="background">@android:color/transparent</item>-->
+        <!--<item name="android:background">@android:color/transparent</item>-->
+    <!--</style>-->
+
+    <!--<style name="MyActionBar" parent="android:Widget.Holo.ActionBar">-->
+        <!--<item name="android:background">@null</item>-->
+        <!--<item name="android:background">#00000000</item>-->
+        <!--<item name="background">@android:color/transparent</item>-->
+        <!--<item name="android:background">@android:color/transparent</item>-->
+    <!--</style>-->
+
+    
+
+
+</resources>

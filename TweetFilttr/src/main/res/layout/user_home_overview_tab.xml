@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_height="wrap_content">
+
+    <!--android:animateLayoutChanges="true"-->
+
+
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:id="@+id/main_container"
+        android:layout_width="wrap_content">
+
+        <ImageView
+            android:id="@+id/user_profile_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="500dp"
+            android:scaleType="centerCrop" />
+
+
+    <ImageView
+        android:id="@+id/user_profile_imageview"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
+        android:scaleType="centerCrop" />
+
+
+    <TextView
+        android:id="@+id/user_name_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/user_profile_imageview"
+        android:layout_alignTop="@+id/user_profile_imageview"        android:background="#99000000"
+        android:textColor="#9E9E9E"
+        android:textSize="16dp"/>
+
+    <TextView
+        android:id="@+id/user_desc_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_name_textview"
+        android:layout_toRightOf="@+id/user_profile_imageview"
+        android:background="#99000000"
+        android:textColor="#9E9E9E"
+        android:textSize="16dp" />
+
+    <!--<ListView-->
+    <!--android:id="@+id/list"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/user_twittername_textview"-->
+
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:background="@null"-->
+    <!--android:dividerHeight="0dp" />-->
+
+
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/container"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_below="@+id/user_name_textview"-->
+        <!--android:layout_toRightOf="@+id/user_name_textview"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content">-->
+
+
+
+        <!--<ListView-->
+        <!--android:id="@android:id/list"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:background="@null"-->
+        <!--android:dividerHeight="0dp" />-->
+
+
+        <Button
+            android:id="@+id/new_tweets_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+             android:layout_below="@+id/user_desc_textview"
+          android:background="#99000000"
+            android:gravity="left|center_vertical"
+            android:text="New Tweets"
+            android:minHeight="0dp"
+            android:padding="5dp"
+            android:textColor="#9E9E9E"
+            android:textSize="16dp" />
+
+
+        <!--<TextView-->
+        <!--android:id="@+id/new_tweet_numbers"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/new_tweets_button"-->
+        <!--android:layout_alignRight="@+id/new_tweets_button"-->
+        <!--android:layout_alignTop="@+id/new_tweets_button"-->
+        <!--android:background="#99000000"-->
+        <!--android:padding="5dp"-->
+        <!--android:text="100"-->
+        <!--android:textColor="#868686"-->
+        <!--android:textSize="30sp" />-->
+
+
+        <Button
+            android:id="@+id/tweets_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/new_tweets_button"
+            android:layout_marginTop="10dp"
+            android:background="#99000000"
+            android:gravity="left|center_vertical"
+            android:text="Tweets"
+            android:minHeight="0dp"
+            android:padding="5dp"
+            android:textColor="#9E9E9E"
+            android:textSize="16dp" />
+
+
+        <!--<TextView-->
+        <!--android:id="@+id/tweet_numbers"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/tweets_button"-->
+        <!--android:layout_alignRight="@+id/tweets_button"-->
+        <!--android:layout_alignTop="@+id/tweets_button"-->
+        <!--android:background="#99000000"-->
+        <!--android:padding="5dp"-->
+        <!--android:text="100"-->
+        <!--android:textColor="#868686"-->
+        <!--android:textSize="30sp" />-->
+
+
+        <Button
+            android:id="@+id/friends_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tweets_button"
+            android:layout_marginTop="10dp"
+            android:background="#99000000"
+            android:gravity="left|center_vertical"
+            android:text="Friends"
+            android:textColor="#9E9E9E"
+            android:textSize="16dp"
+            android:minHeight="0dp"
+            android:padding="5dp"
+             />
+
+
+        <!--<TextView-->
+        <!--android:id="@+id/friends_numbers"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/friends_button"-->
+        <!--android:layout_alignRight="@+id/friends_button"-->
+        <!--android:layout_alignTop="@+id/friends_button"-->
+        <!--android:background="#99000000"-->
+        <!--android:padding="5dp"-->
+        <!--android:text="100"-->
+        <!--android:textColor="#868686"-->
+        <!--android:textSize="30sp" />-->
+
+
+        <Button
+            android:id="@+id/followers_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/friends_button"
+            android:minHeight="0dp"
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            android:background="#99000000"
+            android:gravity="left|center_vertical"
+            android:text="Followers"
+            android:textColor="#9E9E9E"
+            android:textSize="16dp" />
+
+        <View
+            android:id="@+id/blank"
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            android:layout_below="@+id/followers_button"
+            android:minHeight="0dp"
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            android:gravity="left|center_vertical"
+            android:text="Followers"
+            android:textSize="18dp" />
+
+        <!--<View-->
+            <!--android:layout_below="@+id/followers_button"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:layout_width="wrap_content" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/followers_numbers"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/followers_button"-->
+        <!--android:layout_alignRight="@+id/followers_button"-->
+        <!--android:layout_alignTop="@+id/followers_button"-->
+        <!--android:background="#99000000"-->
+        <!--android:padding="5dp"-->
+        <!--android:text="100000000"-->
+        <!--android:textColor="#868686"-->
+        <!--android:textSize="30sp" />-->
+
+
+    <!--</RelativeLayout>-->
+
+    <ImageButton
+        android:id="@+id/expandable_user_profile_but"
+        android:background="@drawable/morebutton"
+        android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:src="@drawable/downarrow"
+        android:layout_width="fill_parent" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

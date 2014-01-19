@@ -1,0 +1,8 @@
+include ':TweetFiltrr'
+include ':ComActionbarsherlockActionbarsherlock440.aar'
+include ':ComAndroidSupportAppcompatV71900.aar'
+include ':ComGithubCastorflexSmoothprogressbarLibrary020.aar'
+include ':ComGithubChrisbanesActionbarpulltorefreshExtraAbs093.aar'
+include ':ComGithubChrisbanesActionbarpulltorefreshLibrary093.aar'
+include ':non-gradle-libs:library'
+

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
+
+    <com.sun.tweetfiltrr.progressbutton.ProgressButton
+        android:id="@+id/load_more_but"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@drawable/standardbutton"
+        android:clickable="true"
+        android:padding="10dp"
+        android:src="@drawable/progress_view" />
+
+<!--     <Button -->
+<!--     android:id="@+id/load_more_but" -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="wrap_content" -->
+<!--     android:layout_margin="1dp" -->
+<!--     android:background="@drawable/standardbutton" -->
+<!--     android:padding="1dp" -->
+<!--     android:text="Load more" -->
+<!--     android:textSize="12dp" /> -->
+
+</LinearLayout> <!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!-- xmlns:tools="http://schemas.android.com/tools" -->
+<!-- android:layout_width="match_parent" -->
+<!-- android:layout_height="match_parent" -->
+<!-- tools:context=".TwitterFilttrUserHome" > -->
+
+
+<!-- <android.support.v4.view.ViewPager -->
+<!-- xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!-- android:id="@+id/pager" -->
+<!-- android:layout_width="match_parent" -->
+<!-- android:layout_height="match_parent" > -->
+<!-- </android.support.v4.view.ViewPager> -->
+
+
+<!-- </RelativeLayout> -->

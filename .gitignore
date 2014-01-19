@@ -1,0 +1,6 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+
+/TweetFiltrrProject/TweetFiltrr/src/main/java/com/sun/tweetfiltrr/utils/TwitterConstants.java

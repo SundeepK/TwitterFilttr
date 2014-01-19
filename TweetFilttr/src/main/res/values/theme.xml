@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<style name="Theme.TranslucentActionBar" parent="Sherlock.__Theme.DarkActionBar">-->
+        <!--<item name="android:actionBarStyle">@style/Widget.ActionBar</item>-->
+    <!--</style>-->
+
+    <!--<style name="Theme.TranslucentActionBar.ActionBar" />-->
+
+    <!--<style name="Theme.TranslucentActionBar.ActionBar.Overlay" >-->
+        <!--<item name="android:actionBarStyle">@style/Widget.ActionBar.Transparent</item>-->
+        <!--&lt;!&ndash;<item name="android:windowActionBarOverlay">true</item>&ndash;&gt;-->
+    <!--</style>-->
+
+    <style name="Overlay" >
+        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$USER_HOME$/Downloads/SlidingMenu-master/SlidingMenu-master/library-sliding" />
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="LOCAL" />
+        <option name="externalProjectPath" value="C:\Users\Sundeep\workspace\TweetFiltrrProject" />
+        <option name="gradleHome" value="C:/Program Files/gradle-1.8" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
+

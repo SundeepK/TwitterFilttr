@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Layout for individual news entries in a list -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="10dip"
+        android:background="#00ffffff"
+        >
+    <!--android:background="#000000"-->
+
+    <!--android:background="#00ffffff"-->
+
+    <TextView
+            android:id="@+id/timeline_friend_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="#757575"
+            android:textSize="12sp"
+            android:layout_marginLeft="3dip"
+            android:layout_marginRight="3dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:textStyle="bold" />
+
+    <TextView
+            android:id="@+id/timeline_date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:textColor="#757575"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="3dip"
+            android:layout_marginRight="3dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            />
+
+
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_below="@id/timeline_friend_name"-->
+
+
+
+    <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:adjustViewBounds="true"
+            android:layout_below="@id/timeline_friend_name"
+            android:layout_alignParentLeft="true"
+            android:clickable="false"
+            android:layout_marginLeft="3dip"
+            android:focusable="false"
+            android:scaleType="centerCrop" />
+
+    <ImageView
+            android:id="@+id/media_photo"
+            android:layout_width="300dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="3dp"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:layout_alignTop="@id/profile_image"
+            android:layout_toRightOf="@id/profile_image"
+            android:clickable="false"
+            android:visibility="gone"
+            android:focusable="false"
+            android:scaleType="centerCrop" />
+
+
+    <TextView
+            android:id="@+id/timeline_entry"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="30dip"
+            android:background="#00000000"
+            android:layout_marginRight="3dip"
+            android:layout_below="@id/media_photo"
+            android:layout_toRightOf="@id/profile_image"
+            android:textColor="#9E9E9E"
+            android:textSize="16sp" />
+
+
+    <!--android:background="#cc000000"-->
+
+
+</RelativeLayout>

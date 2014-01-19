@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Layout for individual news entries in a list -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="10dip"
+    android:background="#00ffffff"
+        >
+
+
+    <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginTop="20dip"
+            android:layout_marginLeft="3dip"
+            android:adjustViewBounds="true"
+            android:clickable="false"
+            android:background="#cc000000"
+            android:focusable="false"
+            android:padding="2dip"
+            android:scaleType="centerCrop" />
+
+    <TextView
+            android:id="@+id/friend_name"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="5dip"
+            android:layout_toRightOf="@+id/profile_image"
+            android:layout_alignTop="@+id/profile_image"
+            android:focusable="false"
+            android:textColor="#F0F0F0"
+            android:background="#00000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    <TextView
+            android:id="@+id/friend_desc"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignLeft="@id/friend_name"
+            android:layout_below="@id/friend_name"
+            android:layout_toRightOf="@+id/profile_image"
+            android:textColor="#F0F0F0"
+            android:background="#00000000"
+            android:textSize="12sp" />
+
+
+
+</RelativeLayout>

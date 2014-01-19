@@ -1,0 +1,91 @@
+package com.sun.tweetfiltrr.scrolllisteners;
+
+import android.util.Log;
+import android.widget.AbsListView;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+/**
+ * Created by Sundeep on 09/01/14.
+ */
+public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener {
+
+    private final ExecutorService _executorService;
+    private final Collection<Callable<T>> _callableToSubmit;
+    private final LoadMoreListener _loadMoreLitener;
+    private final Collection<Future<T>>  _executingTasks;
+    private final int _itemThresHoldBeforeLoadingMore;
+    private final static String TAG = LoadMoreOnScrollListener.class.getName();
+
+    public interface LoadMoreListener<T> {
+
+        public boolean shouldLoad(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+        public void onLoad(Collection<Future<T>> futureTask_);
+    }
+
+
+    public LoadMoreOnScrollListener(ExecutorService executorService_, Collection<Callable<T>> callableToSubmit_,
+                                    LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_ ){
+        _executorService = executorService_;
+        _callableToSubmit = callableToSubmit_;
+        _loadMoreLitener = loadMoreLitener_;
+        _executingTasks = new ArrayList<Future<T>>();
+        _itemThresHoldBeforeLoadingMore = itemThresHoldBeforeLoadingMore_;
+    }
+
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//        Log.v(TAG, "Scrollin details, firstVisibleItem: " + firstVisibleItem +
+//                " visibleItemCount "  + visibleItemCount + " totalItemCount " + totalItemCount);
+
+        if (_executingTasks.size() > 0) {
+            Iterator<Future<T>> itr = _executingTasks.iterator();
+            while(itr.hasNext()){
+                Future<T> future = itr.next();
+                if(!future.isDone()){
+                    //early out, we only want to proceed with new refreshes if all futures are done
+                    Log.v(TAG, "future not done:" );
+                    return;
+                }else{
+                    Log.v(TAG, "future done so removing:" );
+                    itr.remove();
+                }
+            }
+        }
+
+        boolean isPassedItemThreshold =  totalItemCount - visibleItemCount   < _itemThresHoldBeforeLoadingMore  + firstVisibleItem;
+//        Log.v(TAG, "is passedthreshold is:" + isPassedItemThreshold);
+
+        if (isPassedItemThreshold) {
+            if (_loadMoreLitener.shouldLoad(view, firstVisibleItem, visibleItemCount, totalItemCount)) {
+                Log.v(TAG, "executiong task size is:" + _executingTasks.size());
+                if (_executingTasks.size() < 1) {
+//                    Log.v(TAG, "Attemting to load more items for listview");
+                    Collection<Future<T>> future = new ArrayList<Future<T>>();
+
+                        for(Callable<T> callable : _callableToSubmit){
+                            future.add(_executorService.submit(callable));
+                        }
+
+                    _executingTasks.addAll(future);
+                    _loadMoreLitener.onLoad(future);
+                }
+            }
+        }
+    }
+
+
+
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#e5e5e5"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        style="@style/nowCardStyleNoCenter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <ToggleButton
+            android:id="@+id/look_for_all_tweets_if_no_group_results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/look_for_all_tweets_textview"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/look_for_all_tweets_textview"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="Look for all tweets if no group found for friend"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/nowCardStyleNoCenter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ToggleButton
+            android:id="@+id/look_for_all_tweets_if_no_result_from_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/look_for_all_tweets_if_no_result_from_filter_textview"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/look_for_all_tweets_if_no_result_from_filter_textview"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="Look for all tweets if no results found from filter"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/nowCardStyleNoCenter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Spinner
+            android:id="@+id/database_remove_offset"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/look_for_all_tweets_if_no_result_from_filter_textview"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="Remove tweets that are: "
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+</LinearLayout>
