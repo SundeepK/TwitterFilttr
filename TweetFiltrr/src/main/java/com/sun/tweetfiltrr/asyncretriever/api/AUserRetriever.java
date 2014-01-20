@@ -109,11 +109,22 @@ public abstract class AUserRetriever implements ITwitterRetriever<Collection<Par
         }else{
             friendCount = 100;
         }
+
+        Log.v(TAG, "user count: " + friendCount );
+
         int lastArrayIndex = user_.getLastArrayIndex();
-        int friendDiff = friendCount - user_.getCurrentUserCount();
+        int friendDiff = friendCount - user_.getCurrentUserCount(); //TODO this is incorrect since we are reuting one more than we should maybe it includes current user plus followers, so check DB to confirm
+
+        Log.v(TAG, "user difference: " + friendDiff );
+        Log.v(TAG, "current user count: " + user_.getCurrentUserCount() );
+
+
         int lenght = friendDiff  < 100 ? friendDiff : 100;
         //minus 1 from the lastOffsetPos becuase were dealing with arrays here
         int lastOffsetPos = lastArrayIndex < 1 ? 0 : lastArrayIndex -1;
+
+        lenght = lenght <= 0 ? friendCount : lenght; //TODO CHECK THIS also
+
         long[] ids = new long[lenght];
 
         System.arraycopy(friendIds, lastOffsetPos , ids, 0, lenght);

@@ -41,10 +41,10 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 				Log.v(TAG, "Verifier is not null so doing OAuth with request token" + requestToken.getToken() + " secrect  " + requestToken.getTokenSecret());
                 Log.v(TAG, "params is " +params[0] );
 
-                AccessToken accessToken = TwitterUtil.getInstance().getTwitter().getOAuthAccessToken(
-						requestToken, params[0]);
+//                AccessToken accessToken = TwitterUtil.getInstance().getTwitter().getOAuthAccessToken(
+//						requestToken, params[0]);
 
-//                AccessToken accessToken = new AccessToken(requestToken.getToken(), requestToken.getTokenSecret());
+                AccessToken accessToken = new AccessToken(TwitterConstants.TWITTER_OAUTH_KEY, TwitterConstants.TWITTER_OAUTH_SECRET);
 				setUserPreferences(editor, accessToken);
 				TwitterUtil.getInstance().setTwitterFactories(accessToken);
 				

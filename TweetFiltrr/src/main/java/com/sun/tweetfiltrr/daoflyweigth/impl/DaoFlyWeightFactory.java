@@ -27,7 +27,7 @@ public class DaoFlyWeightFactory {
 		FRIEND_KEYWORD_DAO,
 		KEYWORD_GROUP_DAO,
 		TIMELINE_DAO,
-        USDER_FOLLOWER_DAO,
+        USER_FOLLOWER_DAO,
 		USERS_FRIEND_DAO;
 	};
 	
@@ -104,7 +104,7 @@ public class DaoFlyWeightFactory {
 
 			return dao;
 
-        case USDER_FOLLOWER_DAO:
+        case USER_FOLLOWER_DAO:
                 dao = _daoCache.get(daoVal_);
 
                 if(user_ == null)

@@ -20,7 +20,7 @@ public class CachedFriendDetails implements ICachedUser {
 
     @Override
     public void setTotalCount(int totalCount_) {
-        _user.setTotalFollowerCount(totalCount_);
+        _user.setFriendCount(totalCount_);
     }
 
     @Override

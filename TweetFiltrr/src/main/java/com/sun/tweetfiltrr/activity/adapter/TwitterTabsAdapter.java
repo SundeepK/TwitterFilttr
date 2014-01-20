@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sun.tweetfiltrr.fragment.fragments.FriendsPullTab;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -41,7 +41,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 //			    frag.setArguments(bundle);
 //	        	return frag;
 
-                frag =  new FriendsPullTab();
+                frag =  new FriendsTab();
                 frag.setArguments(bundle);
                 return frag;
 

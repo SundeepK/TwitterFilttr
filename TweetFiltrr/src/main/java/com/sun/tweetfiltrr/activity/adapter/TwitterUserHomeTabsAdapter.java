@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
+import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
@@ -40,7 +40,11 @@ public class TwitterUserHomeTabsAdapter extends FragmentPagerAdapter {
 
             case 1:
 
-                frag = new MentionsTab();
+//                frag = new MentionsTab();
+//                frag.setArguments(bundle);
+//                return frag;
+
+                frag = new FollowersTab();
                 frag.setArguments(bundle);
                 return frag;
         }
