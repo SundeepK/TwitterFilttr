@@ -2,12 +2,14 @@ package com.sun.tweetfiltrr.fragment.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -22,6 +24,7 @@ import com.sun.tweetfiltrr.animation.ExpandingAnimation;
 import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
+import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;
@@ -54,7 +57,11 @@ public class UserProfileFragment extends ATwitterFragment {
         final ImageView backgroundImage = (ImageView) rootView.findViewById(R.id.user_profile_background);
 
         final RelativeLayout containeranium = (RelativeLayout) rootView.findViewById(R.id.main_container);
+        final Button friendsButton = (Button) rootView.findViewById(R.id.friends_button);
+        final Button followersButton = (Button) rootView.findViewById(R.id.followers_button);
 
+        friendsButton.setOnClickListener(getButtonClickLis(3));
+        followersButton.setOnClickListener(getButtonClickLis(4));
 
         rootView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int _targetHeight = rootView.getMeasuredHeight();
@@ -93,6 +100,21 @@ public class UserProfileFragment extends ATwitterFragment {
 
 
         return rootView;
+    }
+
+    private View.OnClickListener getButtonClickLis(final int number){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessageToTwitterActivity(number);
+            }
+        };
+    }
+
+    private void sendMessageToTwitterActivity(int tabNumber_){
+        Intent intent = new Intent(TwitterConstants.ON_NEW_TAB_BROADCAST);
+        intent.putExtra(TwitterConstants.TWITTER_CURRENT_TAB, tabNumber_);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
 
     private AdapterView.OnItemClickListener getOnClickForTwitterHome(){

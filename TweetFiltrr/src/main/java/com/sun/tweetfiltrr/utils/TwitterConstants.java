@@ -9,7 +9,8 @@ public class TwitterConstants {
     public static String TWITTER_OAUTH_SECRET = "QCn7Zjzj7TQxizRUQN08BDogBp6jZZQixG7HFJKzKQ";
     public static String TWITTER_CONSUMER_KEY = "Jz9Qj5j4LOijaOHNFveLA";
     public static String TWITTER_CONSUMER_SECRET = "G15fKrltFAamt33XqccBtX5tAFWdw6RbN0p33GqjIo";
-
+    public static String TWITTER_CURRENT_TAB = "CURRENT_TAB";
+    public static final String ON_NEW_TAB_BROADCAST = "ON_NEW_TAB_BROADCAST";
     public static String TWITTER_CALLBACK_URL = "oauth://twitterfiltrr.Twitter_oAuth";
     public static String URL_PARAMETER_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     public static String PREFERENCE_TWITTER_OAUTH_TOKEN = "TWITTER_OAUTH_TOKEN";

@@ -29,6 +29,8 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
 
     private static final String TAG = UserDetailsTimelineTab.class.getName();
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);

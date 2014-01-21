@@ -2,9 +2,13 @@ package com.sun.tweetfiltrr.activity.activities;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +19,16 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.alarm.TwitterUpdateReceiver;
+import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
+import com.sun.tweetfiltrr.utils.TwitterConstants;
 
-public class TwitterFilttrUserHome extends ATwitterActivity implements TabListener {
+public class TwitterFilttrUserHome extends ATwitterActivity implements TabListener, TwitterTabsAdapter.OnFragmentChange {
     private static final String TAG = TwitterFilttrUserHome.class.getName();
     private ViewPager _viewPager;
     private TwitterTabsAdapter _mAdapter;
-
+    private BroadcastReceiver _broadCastReceiver;
+    private int _currentTabType;
 //    public void addUser(View view) {
 //
 //        //scheduleAlarmReceiver();
@@ -49,8 +57,21 @@ public class TwitterFilttrUserHome extends ATwitterActivity implements TabListen
         setContentView(R.layout.twitter_filttr_home);
 
         _viewPager = (ViewPager) findViewById(R.id.pager);
-        _mAdapter = new TwitterTabsAdapter(getSupportFragmentManager(), getCurrentUser());
+        _mAdapter = new TwitterTabsAdapter(getSupportFragmentManager(), getCurrentUser(), this);
         _viewPager.setAdapter(_mAdapter);
+        _broadCastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                _currentTabType = intent.getExtras().getInt(TwitterConstants.TWITTER_CURRENT_TAB);
+                Log.d(TAG, "Current tab type is " + _currentTabType);
+                _mAdapter.onSwitchToNextFragment(_currentTabType);
+                                TwitterFilttrUserHome.this._viewPager.setCurrentItem(1);
+
+            }
+        };
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(_broadCastReceiver,
+                new IntentFilter(TwitterConstants.ON_NEW_TAB_BROADCAST));
 
     }
 
@@ -69,6 +90,7 @@ public class TwitterFilttrUserHome extends ATwitterActivity implements TabListen
 //		      setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, TwitterConstants.ALARM_TRIGGER_AT_TIME,
 //		    		  TwitterConstants.ALARM_INTERVAL, pendingIntent);
     }
+
 
     @Override
     public void onTabSelected(Tab tab,
@@ -92,4 +114,23 @@ public class TwitterFilttrUserHome extends ATwitterActivity implements TabListen
     }
 
 
+    @Override
+    public Fragment getFragment(int index) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, getCurrentUser());
+        Fragment frag = null;
+                if(_currentTabType == 3){
+            Log.v(TAG, "Current tab number" + _currentTabType);
+            frag =  new FollowersTab();
+            frag.setArguments(bundle);
+
+
+        }else{
+
+            frag = new FriendsTab();
+            frag.setArguments(bundle);
+        }
+
+        return frag;
+    }
 }
