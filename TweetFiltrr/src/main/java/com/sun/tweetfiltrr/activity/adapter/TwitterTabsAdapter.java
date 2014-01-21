@@ -12,13 +12,22 @@ import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 
 public class TwitterTabsAdapter  extends FragmentPagerAdapter {
-	ParcelableUser _currentUser;
-	public TwitterTabsAdapter(FragmentManager fm, ParcelableUser currentUser_) {
+	private ParcelableUser _currentUser;
+    private OnFragmentChange _onFragmentChangeLis;
+    FragmentManager _fragManager;
+    private List<Fragment> _fragments;
+	public TwitterTabsAdapter(FragmentManager fm, ParcelableUser currentUser_, OnFragmentChange onFragmentChangeLis_) {
 		super(fm);
+        _fragManager = fm;
 		_currentUser = currentUser_;
+        _onFragmentChangeLis = onFragmentChangeLis_;
 		// TODO Auto-generated constructor stub
 	}
 
+
+    public interface OnFragmentChange{
+        public Fragment getFragment(int index);
+    }
 
 	@Override
 	    public Fragment getItem(int index) {
@@ -26,7 +35,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 	    Bundle bundle = new Bundle();
 	    bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
 	    Fragment frag = null;
-		
+
 	        switch (index) {
 	        case 0:
 //			    frag =  new TimelineTab();
@@ -37,13 +46,16 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
                 return frag;
 	        case 1:
 
+               frag = _onFragmentChangeLis.getFragment(index);
+                _fragManager.beginTransaction().replace(index, frag).commit();
+                notifyDataSetChanged();
 //			    frag =  new FriendsTab();
 //			    frag.setArguments(bundle);
 //	        	return frag;
 
-                frag =  new FriendsTab();
-                frag.setArguments(bundle);
-                return frag;
+//                frag =  new FriendsTab();
+//                frag.setArguments(bundle);
+//                return frag;
 
 	        case 2:
 
@@ -57,6 +69,14 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 	        // get item count - equal to number of tabs
 	        return 2;
 	    }
+
+    @Override
+    public int getItemPosition(Object object)
+    {
+        if (object instanceof FirstPageFragment && mFragmentAtPos0 instanceof NextFragment)
+            return POSITION_NONE;
+        return POSITION_UNCHANGED;
+    }
 
     @Override
     public float getPageWidth(int position) {
