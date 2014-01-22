@@ -165,6 +165,7 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
         }
     }
 
+    //need to get rid of this again TODO
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return onCreateLoader(i, bundle, _currentUser);
