@@ -8,9 +8,11 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import twitter4j.Status;
 import twitter4j.User;
 
 public class ParcelableUser implements IParcelableTwitter {
@@ -265,7 +267,11 @@ public class ParcelableUser implements IParcelableTwitter {
 	public void setPofileBackgroundImageUrl(String _profileBackgroundImageUrl) {
 		this._profileBackgroundImageUrl = _profileBackgroundImageUrl;
 	}
-	
+
+    public void addAll(Collection<ParcelableTimeLineEntry> tweets_){
+        _timeline.addAll(tweets_);
+    }
+
 	public void addTimeLineEntry(ParcelableTimeLineEntry tweet_){
 		_timeline.add(tweet_);
 	}

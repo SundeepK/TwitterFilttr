@@ -9,10 +9,16 @@ import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import twitter4j.Status;
+import twitter4j.User;
 
 /**
  * Created by Sundeep on 16/12/13.
@@ -39,80 +45,88 @@ public abstract class ATweetProcessor implements ITweetProcessor {
     }
 
 
-    /**
-     * Processes a {@link twitter4j.Status}, convert them into {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry}
-     * timeline and adds to the user's timeline {@link java.util.Collection}.
-     *
-     * The friend's last updatedate time will also be set to the date passed in, so we know when the last update occured
-     *
-     * @param iterator_ {@link java.util.Iterator} which contains the {@link twitter4j.Status} to process and extract tweets from
-     * @param friend_ {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} to associate the tweet to.
-     * @param today_ the date to check tweets against
-     * @return boolean if {@link #processTimeLine(java.util.Iterator, com.sun.tweetfiltrr.parcelable.ParcelableUser, java.util.Date)}
-     *         continue to process more {@link twitter4j.Status}
-     *
-     */
-    public boolean processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_){
-            SimpleDateFormat dateFormat = _simpleDateFormatThreadLocal.get();
+    @Override
+    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_){
+           final  SimpleDateFormat dateFormat = _simpleDateFormatThreadLocal.get();
+           final Map<User, Collection<ParcelableTimeLineEntry>> userToTimeline = new HashMap<User, Collection<ParcelableTimeLineEntry>>();
+
             while (iterator_.hasNext()) {
                 Status tweet = iterator_.next();
-                if(!processTweet(tweet,today_, friend_, dateFormat)){
+                if(!processTweet(tweet,today_, dateFormat, userToTimeline)){
                     friend_.setLastUpadateDate(dateFormat.format(DateUtils.getCurrentDate()));
-                    return false;
+                    break;
                 }
             }
         Log.v(TAG, "I'm done with processTimeline with shouldRunOnce:" + shouldRunOnce_);
         //might as well the lastUpdateTime while were at it
         friend_.setLastUpadateDate(dateFormat.format(DateUtils.getCurrentDate()));
-
-        if(shouldRunOnce_){
-            Log.v(TAG, "breaking from processtimeline");
-            return false;
-        }
-
         Log.v(TAG, "not breaking returing true");
-       return true;
+        return flattenMap(userToTimeline);
     }
 
+    private Collection<ParcelableUser> flattenMap(final Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_){
+        Set<Map.Entry<User,Collection<ParcelableTimeLineEntry>>> usersAndTimeLineSet = usersKeyToTimline_.entrySet();
+        return getUsersWithTimeLine(usersAndTimeLineSet);
+    }
 
+    private Collection<ParcelableUser> getUsersWithTimeLine(final Set<Map.Entry<User,Collection<ParcelableTimeLineEntry>>> usersWithTimeLineSet_){
+         final Iterator<Map.Entry<User,Collection<ParcelableTimeLineEntry>>> entryIterator =  usersWithTimeLineSet_ .iterator();
+         final Collection<ParcelableUser> usersWithTweets = new ArrayList<ParcelableUser>();
+
+         while(entryIterator.hasNext()){
+            final Map.Entry<User, Collection<ParcelableTimeLineEntry>> entry = entryIterator.next();
+            final Collection<ParcelableTimeLineEntry> timeline = entry.getValue();
+            final ParcelableUser user = new ParcelableUser(entry.getKey());
+            user.addAll(timeline);
+            usersWithTweets.add(user);
+         }
+        return usersWithTweets;
+    }
+
+    private void addToMap(final Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_, final User user_, final ParcelableTimeLineEntry tweet_){
+        final Collection<ParcelableTimeLineEntry> tweets = usersKeyToTimline_.get(user_);
+        if(tweets == null){
+            final Collection<ParcelableTimeLineEntry> nonNullTweets = new ArrayList<ParcelableTimeLineEntry>();
+            nonNullTweets.add(tweet_);
+            usersKeyToTimline_.put(user_, nonNullTweets);
+        }
+
+        tweets.add(tweet_);
+        usersKeyToTimline_.put(user_, tweets);
+    }
 
     /**
      *
      * Process the actual tweet to convert it to a {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} and add it
      * to the user's internal {@link java.util.Collection} of {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} tweets
-     * @param tweet {@link twitter4j.Status} which contains the tweet info
+     * @param tweet_ {@link twitter4j.Status} which contains the tweet info
      * @param today_ {@link java.util.Date} is used to break early if the tweet {@link java.util.Date} does not match the
      *                                     specified date and so we can filter out tweets older than
      *                                     the specified {@link java.util.Date}. Can be null.
-     * @param friend_ {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} to associate the tweet to
      * @param dateFormat_ {@link java.text.SimpleDateFormat} used to format the date to a readable format
      * @return true if the tweet {@link java.util.Date} is newer than the one specified in the parameter
      */
-    private boolean processTweet(Status tweet, Date today_,
-                                 ParcelableUser friend_, SimpleDateFormat dateFormat_){
-        Date tweetCreateAt = tweet.getCreatedAt();
-
+    private boolean processTweet(Status tweet_, Date today_,SimpleDateFormat dateFormat_,  Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_){
+        final Date tweetCreateAt = tweet_.getCreatedAt();
+        final User user = tweet_.getUser();
         if(today_ != null){
             if (tweetCreateAt.before(today_)) // have this configurable, so that user can check however old he wants
                 return false;
         }
 
         Log.v(TAG, "------------------------------------------------");
-        Log.v(TAG, tweet.getText());
-        Log.v(TAG, "" + tweet.getInReplyToScreenName());
+        Log.v(TAG, tweet_.getText());
+        Log.v(TAG, "" + tweet_.getInReplyToScreenName());
         Log.v(TAG, "Tweet date: " + tweetCreateAt.toString());
 
-        ParcelableTimeLineEntry timeLineEntry = getTimeLineEntry(tweet, friend_, dateFormat_, tweetCreateAt);
-
-        processTweet(timeLineEntry);
-
-        friend_.addTimeLineEntry(timeLineEntry);
-        Log.v(TAG, "timeline ToString + " + timeLineEntry.toString());
+        final ParcelableTimeLineEntry parcelableTimeLineEntry = getTimeLineEntry(tweet_, user, dateFormat_, today_ );
+        processTweet(parcelableTimeLineEntry);
+        addToMap(usersKeyToTimline_, user, parcelableTimeLineEntry);
         return true;
     }
 
-    private ParcelableTimeLineEntry getTimeLineEntry(Status tweet_,ParcelableUser friend_,
-                                                     SimpleDateFormat dateFormat_, Date tweetCreateAt_ ){
+    private ParcelableTimeLineEntry getTimeLineEntry(final Status tweet_,final User user_,
+                                                    final SimpleDateFormat dateFormat_, final Date tweetCreateAt_ ){
        return  new ParcelableTimeLineEntry(tweet_, dateFormat_.format(tweetCreateAt_), tweet_.getUser().getId());
     }
 

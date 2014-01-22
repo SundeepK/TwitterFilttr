@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.asyncretriever.callables;
 
 import com.sun.tweetfiltrr.asyncretriever.api.ITwitterRetriever;
+import com.sun.tweetfiltrr.parcelable.CachedFollowerDetails;
 import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
@@ -31,7 +32,7 @@ public class FollowersRetriever implements Callable<Collection<ParcelableUser>> 
 
     @Override
     public Collection<ParcelableUser> call() throws Exception {
-        ICachedUser cachedDataUser = new CachedFriendDetails(_currentUser);
+        ICachedUser cachedDataUser = new CachedFollowerDetails(_currentUser);
          return _userRetriever.retrieveTwitterData(cachedDataUser);
     }
 
