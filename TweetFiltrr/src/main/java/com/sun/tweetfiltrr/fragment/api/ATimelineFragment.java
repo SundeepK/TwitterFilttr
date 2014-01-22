@@ -54,8 +54,8 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 public abstract class ATimelineFragment extends ATwitterFragment implements LoaderCallbacks<Cursor>, TabListener,
-        IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.PullToRefreshListener<ParcelableUser>,
-        LoadMoreOnScrollListener.LoadMoreListener<ParcelableUser> {
+        IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
+        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
 
     private static final String TAG = ATimelineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
@@ -69,6 +69,7 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     private UrlImageLoader _sicImageLoader;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
+    private ParcelableUser _currentUser ;
 
 
     @Override
@@ -92,13 +93,14 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     protected void initControl() {
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
                 .getInstance(getActivity().getContentResolver());
+        _currentUser = getCurrentUser();
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
 
         //init the Dao object using the flyweight so that we can share the Dao's between different fragments
         _timelineDao = new TimelineDao(getActivity().getContentResolver(), new TimelineToParcelable());
         _friendDao = (IDBDao<ParcelableUser>) flyWeight.getDao(
-                DaoFactory.FRIEND_DAO, getCurrentUser());
+                DaoFactory.FRIEND_DAO, _currentUser);
 
         ThreadLocal<SimpleDateFormat> simpleDateFormatLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
 
@@ -135,7 +137,7 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
             _dataAdapter = new UserTimelineCursorAdapter(getActivity(), R.layout.user_timeline_list_view_row,
                     null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader);
 
-            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser());
+            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser);
 
     }
 
@@ -145,11 +147,11 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
 
     @Override
     public boolean shouldLoad(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        int rowCount = getCurrentUser().getTotalTweetCount() - _currentLimitCount;
-        Log.v(TAG, "current rowcount " + rowCount + " current user tweets " + getCurrentUser().getTotalTweetCount() + "with current rowlimit" + _currentLimitCount );
+        int rowCount = _currentUser.getTotalTweetCount() - _currentLimitCount;
+        Log.v(TAG, "current rowcount " + rowCount + " current user tweets " + _currentUser.getTotalTweetCount() + "with current rowlimit" + _currentLimitCount );
 
         if(rowCount > 0){
-            Log.v(TAG, "increasing limit because we have enough tweets with total: " + getCurrentUser().getTotalTweetCount() + " and current limit: " +_currentLimitCount );
+            Log.v(TAG, "increasing limit because we have enough tweets with total: " + _currentUser.getTotalTweetCount() + " and current limit: " +_currentLimitCount );
             _currentLimitCount += 50;
             restartCursor();
             return false;
@@ -163,9 +165,13 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
         }
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return onCreateLoader(i, bundle, _currentUser);
+    }
 
     @Override
-    public void onLoad(Collection<Future<ParcelableUser>> futureTask_) {
+    public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
 
         Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
         daos.add(_timelineDao);
@@ -183,6 +189,7 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     }
 
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> arg, Cursor cursor) {
         Log.v(TAG, "loadfinished" + cursor.getCount());
@@ -197,6 +204,10 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
 
     }
 
+
+
+    protected abstract Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_);
+
     @Override
     public Bitmap processScreenShot(Bitmap input_) {
 
@@ -206,13 +217,15 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     }
 
     @Override
-    public Collection<Callable<ParcelableUser>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
-        Collection<Callable<ParcelableUser>> callables = new ArrayList<Callable<ParcelableUser>>();
-        callables.add(getTweetRetriver().getTimeLineRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
-        return callables;
+    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+        Log.v(TAG, "getTweetRetriever atimelinetabfrag: " + _currentUser.toString());
+
+        return getTweetRetriever(_currentUser, shouldRunOnce_, shouldLookForOldTweets);
     }
 
-    @Override
+    protected abstract Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser user, boolean shouldRunOnce_, boolean shouldLookForOldTweets);
+
+        @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cursor cursor = (Cursor) parent.getItemAtPosition(position);
         Log.v(TAG, "col names from cursor: " + Arrays.toString(cursor.getColumnNames())) ;
@@ -236,8 +249,20 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     }
 
     @Override
-    public void OnRefreshComplete(ParcelableUser twitterParcelable) {
-        int totalNewTweets = twitterParcelable.getUserTimeLine().size();
+    public void OnRefreshComplete(Collection<ParcelableUser> twitterParcelable) {
+        int totalNewTweets =0 ;
+
+        for(ParcelableUser user : twitterParcelable){
+            if(_currentUser.getUserId() == user.getUserId()){
+                _currentUser.copyCachedData(user);
+                Log.v(TAG, "user passed for switch  " + user.toString());
+
+                Log.v(TAG, "current user switch to  " + _currentUser.toString());
+
+            }
+            totalNewTweets = user.getUserTimeLine().size();
+        }
+
         Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);
 
         _isFinishedLoading = totalNewTweets <= 1;

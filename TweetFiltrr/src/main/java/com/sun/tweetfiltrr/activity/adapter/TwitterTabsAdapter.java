@@ -32,7 +32,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 
     public void onSwitchToNextFragment(int index) {
         _fragManager.beginTransaction().remove(_currentFragment)
-                .commit();
+                .commitAllowingStateLoss();
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);

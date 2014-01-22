@@ -43,24 +43,24 @@ public class TweetRetrieverWrapper {
      * @return  {@link java.util.Collection} of the {@link java.util.concurrent.Future}
      *         containing the processed {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} with their updated timeLines
 	 */
-	public  Collection<Future<ParcelableUser>> retrieveKeywordTweets(Collection<ParcelableUserToKeywords> friendsWithKeywords_,
-                                                boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
-		ParcelableUser lastUser_ = null;
-        ITweetProcessor tweetProcessor = getKeywordTweetProcessor();
-        Collection<Future<ParcelableUser>> futures = new ArrayList<Future<ParcelableUser>>(friendsWithKeywords_.size());
-        for (ParcelableUserToKeywords friend : friendsWithKeywords_) {
-			lastUser_ = friend.getFriend();
-			Log.v(TAG, " maxID fresh from query is: " + lastUser_.getMaxId());
-			Log.v(TAG, " sinceID fresh from query is: " + lastUser_.getSinceId());
-
-			Callable<ParcelableUser> callable =
-					new FriendsKeywordTweetRetriever(friend,
-                            tweetProcessor,  shouldLookForOldTweets_);
-            futures.add(fireAsyncTask(callable));
-
-		} // Skyrim+from:Logan_RTW+since:2013-10-12 OR	// console+from:Logan_RTW+since:2013-10-12
-		return futures;
-	}
+//	public  Collection<Future<ParcelableUser>> retrieveKeywordTweets(Collection<ParcelableUserToKeywords> friendsWithKeywords_,
+//                                                boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
+//		ParcelableUser lastUser_ = null;
+//        ITweetProcessor tweetProcessor = getKeywordTweetProcessor();
+//        Collection<Future<ParcelableUser>> futures = new ArrayList<Future<ParcelableUser>>(friendsWithKeywords_.size());
+//        for (ParcelableUserToKeywords friend : friendsWithKeywords_) {
+//			lastUser_ = friend.getFriend();
+//			Log.v(TAG, " maxID fresh from query is: " + lastUser_.getMaxId());
+//			Log.v(TAG, " sinceID fresh from query is: " + lastUser_.getSinceId());
+//
+//			Callable<ParcelableUser> callable =
+//					new FriendsKeywordTweetRetriever(friend,
+//                            tweetProcessor,  shouldLookForOldTweets_);
+//            futures.add(fireAsyncTask(callable));
+//
+//		} // Skyrim+from:Logan_RTW+since:2013-10-12 OR	// console+from:Logan_RTW+since:2013-10-12
+//		return futures;
+//	}
 
     public Collection<Callable<ParcelableUser>> getCallableRetrieverList(Collection<ParcelableUserToKeywords> friendsWithKeywords_,
                                                                          boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
@@ -83,7 +83,7 @@ public class TweetRetrieverWrapper {
 
 
 
-    public Callable<ParcelableUser> getTimeLineRetriever(ParcelableUser user_, boolean shouldRunOnce_,
+    public Callable<Collection<ParcelableUser>> getTimeLineRetriever(ParcelableUser user_, boolean shouldRunOnce_,
                                                          boolean shouldLookForOldTweets){
 
             ITweetProcessor dateBasedProcessor = new DateBasedTweetProcessor(_daterFormat);
@@ -104,18 +104,18 @@ public class TweetRetrieverWrapper {
      * @return  {@link java.util.Collection} of the {@link java.util.concurrent.Future}
      *         containing the processed {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} with their updated timeLines
      */
-    public Collection<Future<ParcelableUser>> retrieveTweets(Collection<ParcelableUser> friends_,
-                                                             boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
+//    public Collection<Future<ParcelableUser>> retrieveTweets(Collection<ParcelableUser> friends_,
+//                                                             boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
+//
+//        Collection<Future<ParcelableUser>> futures = new ArrayList<Future<ParcelableUser>>(friends_.size());
+//        for (ParcelableUser friend : friends_) {
+//            Callable<ParcelableUser> r = getTimeLineRetriever(friend,shouldRunOnce_, shouldLookForOldTweets_ );
+//            futures.add(fireAsyncTask(r));
+//        }
+//        return futures;
+//    }
 
-        Collection<Future<ParcelableUser>> futures = new ArrayList<Future<ParcelableUser>>(friends_.size());
-        for (ParcelableUser friend : friends_) {
-            Callable<ParcelableUser> r = getTimeLineRetriever(friend,shouldRunOnce_, shouldLookForOldTweets_ );
-            futures.add(fireAsyncTask(r));
-        }
-        return futures;
-    }
-
-    public Callable<ParcelableUser> getMentionsRetriever(ParcelableUser user_, boolean shouldRunOnce_,
+    public Callable<Collection<ParcelableUser>> getMentionsRetriever(ParcelableUser user_, boolean shouldRunOnce_,
                                                          boolean shouldLookForOldTweets_){
 
         ITweetProcessor mentionsTweetProcessor = new MentionsTweetProcessor(_daterFormat);
@@ -136,18 +136,18 @@ public class TweetRetrieverWrapper {
      * @return  {@link java.util.Collection} of the {@link java.util.concurrent.Future}
      *         containing the processed {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} with their updated timeLines
      */
-    public Collection<Future<ParcelableUser>> retrieveMentionTweets(Collection<ParcelableUser> friends_,
-                                                             boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
-
-        ITweetProcessor tweetProcessor = getMentionsProcessor();
-        ITwitterRetriever retriever = new TimeLineRetriever(tweetProcessor, shouldLookForOldTweets_);
-        Collection<Future<ParcelableUser>> futures = new ArrayList<Future<ParcelableUser>>(friends_.size());
-        for (ParcelableUser friend : friends_) {
-            Callable<ParcelableUser> r = getMentionsRetriever(friend,  shouldRunOnce_, shouldLookForOldTweets_);
-            futures.add(fireAsyncTask(r));
-        }
-        return futures;
-    }
+//    public Collection<Future<Collection<ParcelableUser>>> retrieveMentionTweets(Collection<ParcelableUser> friends_,
+//                                                             boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
+//
+//        ITweetProcessor tweetProcessor = getMentionsProcessor();
+//        ITwitterRetriever retriever = new TimeLineRetriever(tweetProcessor, shouldLookForOldTweets_);
+//        Collection<Future<ParcelableUser>> futures = new ArrayList<Future<ParcelableUser>>(friends_.size());
+//        for (ParcelableUser friend : friends_) {
+//            Callable<Collection<ParcelableUser>> r = getMentionsRetriever(friend,  shouldRunOnce_, shouldLookForOldTweets_);
+//            futures.add(fireAsyncTask(r));
+//        }
+//        return futures;
+//    }
 
     private ITweetProcessor getMentionsProcessor(){
         return new DateBasedTweetProcessor(_daterFormat);
@@ -161,7 +161,7 @@ public class TweetRetrieverWrapper {
         return new KeywordTweetProcessor(_daterFormat);
     }
 
-	private Future<ParcelableUser> fireAsyncTask(Callable<ParcelableUser> callableToExecute_){
+	private Future<Collection<ParcelableUser>> fireAsyncTask(Callable<Collection<ParcelableUser>> callableToExecute_){
         return _executor.submit(callableToExecute_);
 	}
 

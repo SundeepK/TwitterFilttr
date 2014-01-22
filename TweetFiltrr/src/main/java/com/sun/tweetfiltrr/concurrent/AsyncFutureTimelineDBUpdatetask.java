@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
     /**
      * Created by Sundeep on 06/01/14.
      */
- public  class AsyncFutureTimelineDBUpdatetask<V> extends AsyncFutureTaskWrapper<ParcelableUser, V> {
+ public  class AsyncFutureTimelineDBUpdatetask<V> extends AsyncFutureTaskWrapper<Collection<ParcelableUser>, V> {
 
         private final static String TAG = AsyncFutureTimelineDBUpdatetask.class.getName();
         private IDBUpdater<ParcelableTimeLineEntry> _databaseUpdater;
@@ -48,11 +48,15 @@ import java.util.concurrent.TimeUnit;
         }
 
         @Override
-        protected ParcelableUser doInBackground(Future[] params) {
-          ParcelableUser futureResults = super.doInBackground(params);
+        protected Collection<ParcelableUser> doInBackground(Future[] params) {
+            Collection<ParcelableUser> futureResults = super.doInBackground(params);
 
            Collection<ParcelableTimeLineEntry> timeline = new ArrayList<ParcelableTimeLineEntry>();
-            timeline.addAll(futureResults.getUserTimeLine());
+
+            for(ParcelableUser user : futureResults){
+                timeline.addAll(user.getUserTimeLine());
+            }
+
 
             Log.v(TAG, "trying to update tiomeline size" + timeline.size() + " for user + " + futureResults.toString());
 
@@ -68,7 +72,7 @@ import java.util.concurrent.TimeUnit;
         }
 
         @Override
-        protected void onPostExecute(ParcelableUser parcelableUser) {
+        protected void onPostExecute(Collection<ParcelableUser> parcelableUser) {
             _postExecuteLis.onPostExecute(parcelableUser);
         }
 }

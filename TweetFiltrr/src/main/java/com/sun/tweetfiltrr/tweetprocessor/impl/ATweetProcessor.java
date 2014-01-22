@@ -46,7 +46,7 @@ public abstract class ATweetProcessor implements ITweetProcessor {
 
 
     @Override
-    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_){
+    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
            final  SimpleDateFormat dateFormat = _simpleDateFormatThreadLocal.get();
            final Map<User, Collection<ParcelableTimeLineEntry>> userToTimeline = new HashMap<User, Collection<ParcelableTimeLineEntry>>();
 
@@ -57,10 +57,9 @@ public abstract class ATweetProcessor implements ITweetProcessor {
                     break;
                 }
             }
-        Log.v(TAG, "I'm done with processTimeline with shouldRunOnce:" + shouldRunOnce_);
+        Log.v(TAG, "I'm done with processTimeline with ");
         //might as well the lastUpdateTime while were at it
         friend_.setLastUpadateDate(dateFormat.format(DateUtils.getCurrentDate()));
-        Log.v(TAG, "not breaking returing true");
         return flattenMap(userToTimeline);
     }
 
@@ -77,11 +76,18 @@ public abstract class ATweetProcessor implements ITweetProcessor {
             final Map.Entry<User, Collection<ParcelableTimeLineEntry>> entry = entryIterator.next();
             final Collection<ParcelableTimeLineEntry> timeline = entry.getValue();
             final ParcelableUser user = new ParcelableUser(entry.getKey());
+
+             if(timeline != null){
+                Log.v(TAG, "Users timeline is empty for: " + user.toString());
+             }
             user.addAll(timeline);
+            cacheLastIDs(user);
             usersWithTweets.add(user);
          }
         return usersWithTweets;
     }
+
+    public abstract void cacheLastIDs(final ParcelableUser user_);
 
     private void addToMap(final Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_, final User user_, final ParcelableTimeLineEntry tweet_){
         final Collection<ParcelableTimeLineEntry> tweets = usersKeyToTimline_.get(user_);
@@ -89,10 +95,10 @@ public abstract class ATweetProcessor implements ITweetProcessor {
             final Collection<ParcelableTimeLineEntry> nonNullTweets = new ArrayList<ParcelableTimeLineEntry>();
             nonNullTweets.add(tweet_);
             usersKeyToTimline_.put(user_, nonNullTweets);
+        }else{
+            tweets.add(tweet_);
+            usersKeyToTimline_.put(user_, tweets);
         }
-
-        tweets.add(tweet_);
-        usersKeyToTimline_.put(user_, tweets);
     }
 
     /**
@@ -109,6 +115,7 @@ public abstract class ATweetProcessor implements ITweetProcessor {
     private boolean processTweet(Status tweet_, Date today_,SimpleDateFormat dateFormat_,  Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_){
         final Date tweetCreateAt = tweet_.getCreatedAt();
         final User user = tweet_.getUser();
+
         if(today_ != null){
             if (tweetCreateAt.before(today_)) // have this configurable, so that user can check however old he wants
                 return false;
@@ -118,8 +125,8 @@ public abstract class ATweetProcessor implements ITweetProcessor {
         Log.v(TAG, tweet_.getText());
         Log.v(TAG, "" + tweet_.getInReplyToScreenName());
         Log.v(TAG, "Tweet date: " + tweetCreateAt.toString());
-
-        final ParcelableTimeLineEntry parcelableTimeLineEntry = getTimeLineEntry(tweet_, user, dateFormat_, today_ );
+        final Date now = DateUtils.getCurrentDate();
+        final ParcelableTimeLineEntry parcelableTimeLineEntry = getTimeLineEntry(tweet_, user, dateFormat_, now );
         processTweet(parcelableTimeLineEntry);
         addToMap(usersKeyToTimline_, user, parcelableTimeLineEntry);
         return true;

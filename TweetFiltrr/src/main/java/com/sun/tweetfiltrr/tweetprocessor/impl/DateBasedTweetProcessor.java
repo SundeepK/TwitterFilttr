@@ -1,12 +1,16 @@
 package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 
+import android.util.Log;
+
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import twitter4j.Status;
 
@@ -14,6 +18,8 @@ import twitter4j.Status;
  * Created by Sundeep on 17/12/13.
  */
 public class DateBasedTweetProcessor extends ATweetProcessor {
+    private static final String  TAG  = DateBasedTweetProcessor.class.getName();
+
     /**
      * Threadsafe class
      * <p/>
@@ -30,6 +36,20 @@ public class DateBasedTweetProcessor extends ATweetProcessor {
         super(dateFormat_);
     }
 
+    @Override
+    public void cacheLastIDs(ParcelableUser user_) {
+        final List<ParcelableTimeLineEntry> timeLine = user_.getUserTimeLine();
+        if (!timeLine.isEmpty()) {
+            ParcelableTimeLineEntry timelineFirst = timeLine.get(timeLine.size() - 1);
+            ParcelableTimeLineEntry timelineLast = timeLine.get(0);
+            Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
+            user_.setSinceId(timelineLast.getTweetID());
+            user_.setMaxId( timelineFirst.getTweetID());
+        }
+        //update the total tweets recieved
+        user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
+    }
+
     /**
      * Takes into account dates
      *
@@ -39,8 +59,8 @@ public class DateBasedTweetProcessor extends ATweetProcessor {
      * @return
      */
     @Override
-    public boolean processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_){
-        return super.processTimeLine(iterator_,friend_,today_, shouldRunOnce_);
+    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
+        return super.processTimeLine(iterator_,friend_,today_);
     }
 
     /**

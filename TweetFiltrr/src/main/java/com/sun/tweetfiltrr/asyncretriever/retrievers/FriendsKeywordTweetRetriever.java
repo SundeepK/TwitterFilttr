@@ -123,9 +123,9 @@ public class FriendsKeywordTweetRetriever extends ATweetRetiever<ParcelableUser>
 
             Iterator<twitter4j.Status> it = timeLine.getTweets().iterator();
             //TODO check if we need to do this, i.e. always break after one loop
-            if(!processTimeLine(it, friend, previousDate, true)){
-                break;
-            }
+//            if(!processTimeLine(it, friend, previousDate)){
+//                break;
+//            }
 
               pageCount++;
         } while (timeLine.hasNext());

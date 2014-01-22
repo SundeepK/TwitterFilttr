@@ -9,8 +9,8 @@ import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import twitter4j.Paging;
@@ -18,7 +18,7 @@ import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public abstract class ATimeLineRetriever implements ITwitterRetriever<ParcelableUser> {
+public abstract class ATimeLineRetriever implements ITwitterRetriever<Collection<ParcelableUser>> {
 
 	private static final String TAG = ATimeLineRetriever.class
 			.getName();
@@ -35,7 +35,7 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Parcelable
 
 
     @Override
-    public ParcelableUser retrieveTwitterData(ICachedUser user_) {
+    public Collection<ParcelableUser> retrieveTwitterData(ICachedUser user_) {
         return getUpdatedUserWithTimeline(user_);
     }
 
@@ -73,13 +73,14 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Parcelable
      * @param user_
      * @return
      */
-    private ParcelableUser getUpdatedUserWithTimeline(ICachedUser user_){
+    private Collection<ParcelableUser> getUpdatedUserWithTimeline(ICachedUser user_){
         final ParcelableUser currentUser = user_.getUser();
         final Paging page = getPagingForTimeline(user_);
         final Twitter twitter = TwitterUtil.getInstance().getTwitter();
         ResponseList<twitter4j.Status> timeLine = null;
         final Date previousDate = DateUtils.getPreviousDate();
         final long friendId = currentUser.getUserId();
+        Collection<ParcelableUser> usersWithTweets;
         Log.v(TAG, "Current date minus 1 day :" + previousDate.toString());
 
         do {
@@ -93,15 +94,19 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Parcelable
                 return null;
             }
 
-            Iterator<twitter4j.Status> it = timeLine.iterator();
-            if(!_tweetProcessor.processTimeLine(it, currentUser, null, _shouldRunOnce)){
+            usersWithTweets = _tweetProcessor.processTimeLine( timeLine.iterator(), currentUser, null);
+
+            if(_shouldRunOnce){
                 break;
             }
 
         } while (timeLine.size() > 0);
         Log.v(TAG, "reached end of timeline task, with maxID: " + currentUser.getMaxId());
-        setUpdateUserDetails(user_, currentUser.getUserTimeLine());
-        return currentUser;
+
+        //below is now handled by tweet processior because it's much easier there
+       // setUpdateUserDetails(user_, currentUser.getUserTimeLine());
+
+        return usersWithTweets;
     }
 
     protected abstract ResponseList<twitter4j.Status> getTweets(Twitter twitter_, long friendID_, Paging page_) throws  TwitterException;

@@ -46,7 +46,7 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
 public abstract class UsersTab extends ATwitterFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         TabListener,  AdapterView.OnItemClickListener,
-        PullToRefreshView.PullToRefreshListener<Collection<ParcelableUser>>,
+        PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
 
     private int _currentLimitCount = 50;

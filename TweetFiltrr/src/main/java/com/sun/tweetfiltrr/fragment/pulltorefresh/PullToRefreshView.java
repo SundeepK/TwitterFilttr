@@ -57,10 +57,10 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     protected ThreadPoolExecutor _threadExecutor;
     protected IDBUpdater<ParcelableTimeLineEntry> _timelineBufferedDBUpdater;
     protected int _timelineCount = 50;
-    protected PullToRefreshListener _pullToRefreshLis;
+    protected OnNewTweetRefreshListener _pullToRefreshLis;
     private int _headerLayout;
 
-    public interface PullToRefreshListener<T> {
+    public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
         public Collection<Callable<T>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
 
@@ -69,7 +69,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     public PullToRefreshView(Activity activity_, ParcelableUser currentUser_,
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
-                             PullToRefreshListener pullToRefreshLis_,
+                             OnNewTweetRefreshListener pullToRefreshLis_,
                              LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, int headerLayout_){
        this(activity_, currentUser_,onItemClick_, cursorAdapter_,  pullToRefreshLis_,
                loadMoreLis_);
@@ -79,7 +79,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     public PullToRefreshView(Activity activity_, ParcelableUser currentUser_,
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
-                             PullToRefreshListener pullToRefreshLis_,
+                             OnNewTweetRefreshListener pullToRefreshLis_,
                              LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_){
         _activity = activity_;
         _currentUser = currentUser_;
@@ -96,7 +96,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
-        _pullToRefreshLis.getTweetRetriever(true, true), loadMoreLis_, 5);
+        _pullToRefreshLis, loadMoreLis_, 5);
 
         Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
     }

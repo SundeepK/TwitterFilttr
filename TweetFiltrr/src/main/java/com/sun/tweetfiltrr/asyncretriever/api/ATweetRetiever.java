@@ -6,6 +6,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -30,8 +31,8 @@ public abstract class ATweetRetiever<V> implements Callable<V> {
 
 
 
-	protected boolean processTimeLine(Iterator<twitter4j.Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_){
-        return _tweetProcessor.processTimeLine(iterator_,friend_, today_, shouldRunOnce_);
+	protected Collection<ParcelableUser> processTimeLine(Iterator<twitter4j.Status> iterator_, ParcelableUser friend_, Date today_){
+        return _tweetProcessor.processTimeLine(iterator_,friend_, today_);
 	}
 	
 

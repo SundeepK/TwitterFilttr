@@ -5,12 +5,13 @@ import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
-public class TimelineRetrieverCallable implements Callable<ParcelableUser> {
+public class TimelineRetrieverCallable implements Callable<Collection<ParcelableUser>> {
 
     private static final String TAG = TimelineRetrieverCallable.class.getName();
-    private ITwitterRetriever<ParcelableUser> _userRetriever;
+    private ITwitterRetriever<Collection<ParcelableUser>> _userRetriever;
     private ParcelableUser _currentUser;
 
 
@@ -22,13 +23,13 @@ public class TimelineRetrieverCallable implements Callable<ParcelableUser> {
      *
      * @param currentUser_
      */
-    public TimelineRetrieverCallable(ParcelableUser currentUser_, ITwitterRetriever<ParcelableUser> userRetriever_) {
+    public TimelineRetrieverCallable(ParcelableUser currentUser_, ITwitterRetriever<Collection<ParcelableUser>> userRetriever_) {
         _currentUser = currentUser_;
         _userRetriever = userRetriever_;
     }
 
     @Override
-    public ParcelableUser call() throws Exception {
+    public Collection<ParcelableUser> call() throws Exception {
         ICachedUser cachedDataUser = new CachedFriendDetails(_currentUser);
          return _userRetriever.retrieveTwitterData(cachedDataUser);
     }

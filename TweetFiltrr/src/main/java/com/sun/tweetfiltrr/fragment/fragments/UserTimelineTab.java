@@ -12,7 +12,6 @@ import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
@@ -30,6 +29,16 @@ public class UserTimelineTab extends ATimelineFragment {
                 new String[]{getCurrentUser().getUserId() + ""}, TimelineColumn.TWEET_ID.a() + " DESC " + "LIMIT " + getTimeLineCount());
 
         return cursorLoader;
+    }
+
+    @Override
+    protected Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_) {
+        return null;
+    }
+
+    @Override
+    protected Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser user, boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+        return null;
     }
 
 

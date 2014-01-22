@@ -5,12 +5,13 @@ import com.sun.tweetfiltrr.parcelable.CachedMentionedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
-public class MentionsRetrieverCallable implements Callable<ParcelableUser> {
+public class MentionsRetrieverCallable implements Callable<Collection<ParcelableUser>> {
 
     private static final String TAG = MentionsRetrieverCallable.class.getName();
-    private ITwitterRetriever<ParcelableUser> _userRetriever;
+    private ITwitterRetriever<Collection<ParcelableUser>> _userRetriever;
     private ParcelableUser _currentUser;
     // private final int MAX_TIME_BETWEEN_FREIEND_UPDATES_MINS = 60;
     // private final int _maxTimeBetweenUpdates;
@@ -23,13 +24,13 @@ public class MentionsRetrieverCallable implements Callable<ParcelableUser> {
      *
      * @param currentUser_
      */
-    public MentionsRetrieverCallable(ParcelableUser currentUser_, ITwitterRetriever<ParcelableUser> userRetriever_) {
+    public MentionsRetrieverCallable(ParcelableUser currentUser_, ITwitterRetriever<Collection<ParcelableUser>> userRetriever_) {
         _currentUser = currentUser_;
         _userRetriever = userRetriever_;
     }
 
     @Override
-    public ParcelableUser call() throws Exception {
+    public Collection<ParcelableUser> call() throws Exception {
         ICachedUser cachedDataUser = new CachedMentionedFriendDetails(_currentUser);
          return _userRetriever.retrieveTwitterData(cachedDataUser);
     }

@@ -5,6 +5,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -30,6 +31,11 @@ public class PlainTweetProcessor extends ATweetProcessor {
         super(dateFormat_);
     }
 
+    @Override
+    public void cacheLastIDs(ParcelableUser user_) {
+
+    }
+
     /**
      *
      * This doesn't take tweet date into consideration so it will process all tweets
@@ -40,8 +46,8 @@ public class PlainTweetProcessor extends ATweetProcessor {
      * @return
      */
     @Override
-    public boolean processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_){
-        return super.processTimeLine(iterator_,friend_,null, shouldRunOnce_);
+    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
+        return super.processTimeLine(iterator_,friend_,null);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.sun.tweetfiltrr.scrolllisteners;
 import android.util.Log;
 import android.widget.AbsListView;
 
+import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,10 +18,10 @@ import java.util.concurrent.Future;
 public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener {
 
     private final ExecutorService _executorService;
-    private final Collection<Callable<T>> _callableToSubmit;
     private final LoadMoreListener _loadMoreLitener;
     private final Collection<Future<T>>  _executingTasks;
     private final int _itemThresHoldBeforeLoadingMore;
+    private PullToRefreshView.OnNewTweetRefreshListener _refreshLis;
     private final static String TAG = LoadMoreOnScrollListener.class.getName();
 
     public interface LoadMoreListener<T> {
@@ -29,12 +31,12 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
     }
 
 
-    public LoadMoreOnScrollListener(ExecutorService executorService_, Collection<Callable<T>> callableToSubmit_,
+    public LoadMoreOnScrollListener(ExecutorService executorService_,PullToRefreshView.OnNewTweetRefreshListener refreshLis_ ,
                                     LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_ ){
         _executorService = executorService_;
-        _callableToSubmit = callableToSubmit_;
         _loadMoreLitener = loadMoreLitener_;
         _executingTasks = new ArrayList<Future<T>>();
+        _refreshLis = refreshLis_;
         _itemThresHoldBeforeLoadingMore = itemThresHoldBeforeLoadingMore_;
     }
 
@@ -74,8 +76,8 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
                 if (_executingTasks.size() < 1) {
 //                    Log.v(TAG, "Attemting to load more items for listview");
                     Collection<Future<T>> future = new ArrayList<Future<T>>();
-
-                        for(Callable<T> callable : _callableToSubmit){
+                    Collection<Callable<T>> callableToSubmit = _refreshLis.getTweetRetriever(true, true);
+                        for(Callable<T> callable : callableToSubmit){
                             future.add(_executorService.submit(callable));
                         }
 

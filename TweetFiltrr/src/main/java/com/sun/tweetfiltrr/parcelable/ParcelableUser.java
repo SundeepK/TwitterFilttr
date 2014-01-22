@@ -1,7 +1,6 @@
 package com.sun.tweetfiltrr.parcelable;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
@@ -12,7 +11,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import twitter4j.Status;
 import twitter4j.User;
 
 public class ParcelableUser implements IParcelableTwitter {
@@ -103,6 +101,10 @@ public class ParcelableUser implements IParcelableTwitter {
      * @param user_
      */
     public ParcelableUser(ParcelableUser user_) {
+        copyCachedData(user_);
+    }
+
+    public void copyCachedData(ParcelableUser user_){
         _userId = user_.getUserId();
         _createdAt = user_.getCreatedAt();
         _isProtected = user_.isProtected();

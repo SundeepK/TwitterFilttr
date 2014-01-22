@@ -1,14 +1,20 @@
 package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 
+import android.util.Log;
+
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by Sundeep on 17/12/13.
  */
 public class MentionsTweetProcessor extends DateBasedTweetProcessor {
+    private static final String TAG = MentionsTweetProcessor.class.getName();
+
     /**
      * Threadsafe class
      * <p/>
@@ -27,7 +33,7 @@ public class MentionsTweetProcessor extends DateBasedTweetProcessor {
 
 
     /**
-     * We just want to process the tweet and indicate that its a keyword tweet
+     * We just want to process the tweet java.lang.Stringand indicate that its a keyword tweet
      * @param tweetToProcess_
      */
     @Override
@@ -35,6 +41,17 @@ public class MentionsTweetProcessor extends DateBasedTweetProcessor {
         tweetToProcess_.setIsMention(true);
     }
 
+    @Override
+    public void cacheLastIDs(ParcelableUser user_) {
+        final List<ParcelableTimeLineEntry> timeLine = user_.getUserTimeLine();
+        if (!timeLine.isEmpty()) {
+            ParcelableTimeLineEntry timelineFirst = timeLine.get(timeLine.size() - 1);
+            ParcelableTimeLineEntry timelineLast = timeLine.get(0);
+            Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
+            user_.setSinceIdForMentions(timelineLast.getTweetID());
+            user_.setMaxIdForMentions( timelineFirst.getTweetID());
+        }
+        user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
 
-
+    }
 }

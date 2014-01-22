@@ -24,9 +24,9 @@ public class MentionsTab extends ATimelineFragment {
     private static String TAG = MentionsTab.class.getName();
 
     @Override
-    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+    protected Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_) {
         String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
-        Log.v(TAG, "current user mentions :" + getCurrentUser());
+        Log.v(TAG, "current user mentions :" + currentUser_);
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection, TimelineColumn.IS_MENTION.a() + " = ? " ,
                 new String[]{"1"}, TimelineColumn.TWEET_ID.a() + " DESC " + " LIMIT " + getTimeLineCount() + "");
@@ -35,9 +35,9 @@ public class MentionsTab extends ATimelineFragment {
     }
 
     @Override
-    public Collection<Callable<ParcelableUser>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
-        Collection<Callable<ParcelableUser>> callables = new ArrayList<Callable<ParcelableUser>>();
-        callables.add(getTweetRetriver().getMentionsRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
+    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser currentUser_, boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+        Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
+        callables.add(getTweetRetriver().getMentionsRetriever(currentUser_, shouldRunOnce_, shouldLookForOldTweets));
         return callables;
     }
 }

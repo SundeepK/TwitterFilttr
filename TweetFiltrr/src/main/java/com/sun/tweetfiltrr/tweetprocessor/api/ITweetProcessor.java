@@ -26,7 +26,7 @@ public interface ITweetProcessor {
      * @return {@link java.util.Collection<com.sun.tweetfiltrr.parcelable.ParcelableUser>}} of users with updated timelines.
      *
      */
-     public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_, boolean shouldRunOnce_);
+     public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_);
 
 
     }

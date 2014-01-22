@@ -21,6 +21,10 @@ import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
@@ -51,14 +55,22 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+    protected Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_) {
         Log.v(TAG, "current rowcount is " + getTimeLineCount());
         String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection, FriendColumn.FRIEND_ID.a() + " = ? ",
-                new String[]{getCurrentUser().getUserId() + ""}, TimelineColumn.TWEET_ID.a() + " DESC " + " LIMIT " + getTimeLineCount());
+                new String[]{currentUser_.getUserId() + ""}, TimelineColumn.TWEET_ID.a() + " DESC " + " LIMIT " + getTimeLineCount());
 
         return cursorLoader;
+    }
+
+    @Override
+    protected Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser user, boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+        Log.v(TAG, "User passed for callable is: " + user.toString());
+        Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
+        callables.add(getTweetRetriver().getTimeLineRetriever(user, shouldRunOnce_, shouldLookForOldTweets));
+        return callables;
     }
 
 
