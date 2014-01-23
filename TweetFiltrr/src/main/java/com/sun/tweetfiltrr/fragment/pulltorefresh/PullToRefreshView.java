@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.concurrent.AsyncFutureTimelineDBUpdatetask;
+import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
@@ -158,8 +158,8 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
         Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
         daos.add(_timelineDao);
-        AsyncFutureTimelineDBUpdatetask< Integer> asyncTask =
-                new AsyncFutureTimelineDBUpdatetask<Integer>(3 , TimeUnit.MINUTES ,daos,
+        AsyncUserDBUpdateTask< Integer> asyncTask =
+                new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,daos,
                         _timelineBufferedDBUpdater, this);
 
 

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.sun.tweetfiltrr.asyncretriever.api.ITwitterRetriever;
 import com.sun.tweetfiltrr.asyncretriever.api.UsersFollowerRetriever;
 import com.sun.tweetfiltrr.asyncretriever.callables.FollowersRetriever;
-import com.sun.tweetfiltrr.concurrent.AsyncFutureDBUpdatetask;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;

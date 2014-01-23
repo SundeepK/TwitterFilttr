@@ -42,8 +42,8 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
 
 //        Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
 //        daos.add(_timelineDao);
-//        AsyncFutureTimelineDBUpdatetask< Integer> asyncTask =
-//                new AsyncFutureTimelineDBUpdatetask<Integer>(3 , TimeUnit.MINUTES ,
+//        AsyncUserDBUpdateTask< Integer> asyncTask =
+//                new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
 //                        daos, _timelineBufferedDBUpdater, _pullToRefreshHandler);
 //
 //        asyncTask.execute(futureTask_.toArray(new Future[futureTask_.size()]));

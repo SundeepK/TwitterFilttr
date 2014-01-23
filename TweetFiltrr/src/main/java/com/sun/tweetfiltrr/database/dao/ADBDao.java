@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 
 import java.util.ArrayList;

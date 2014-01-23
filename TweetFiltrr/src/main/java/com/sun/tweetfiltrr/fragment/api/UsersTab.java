@@ -23,7 +23,6 @@ import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.asyncretriever.api.ITwitterRetriever;
 import com.sun.tweetfiltrr.asyncretriever.api.UsersFriendRetriever;
 import com.sun.tweetfiltrr.asyncretriever.callables.FriendsRetriever;
-import com.sun.tweetfiltrr.concurrent.AsyncFutureDBUpdatetask;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;

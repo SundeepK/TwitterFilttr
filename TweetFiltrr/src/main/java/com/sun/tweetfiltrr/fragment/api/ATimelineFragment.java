@@ -23,7 +23,7 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
 import com.sun.tweetfiltrr.asyncretriever.api.TweetRetrieverWrapper;
-import com.sun.tweetfiltrr.concurrent.AsyncFutureTimelineDBUpdatetask;
+import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
@@ -31,7 +31,10 @@ import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.UserUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
@@ -45,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -71,7 +73,8 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
-
+    private Collection<IUserUpdater> _userDaoUpdaters;
+    private  AsyncUserDBUpdateTask< Integer> _userDBUpdater;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +113,12 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
         //initialise TweetRetrieverWrapper to easy tweet retrieval
         _tweetRetriver = new TweetRetrieverWrapper(_threadExecutor, simpleDateFormatLocal);
+        _userDaoUpdaters = new ArrayList<IUserUpdater>();
+        _userDaoUpdaters.add(new TimelineUserUpdater(_timelineDao));
+        _userDaoUpdaters.add(new UserUpdater(_friendDao));
+        _userDBUpdater =  new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
+                        _userDaoUpdaters,  _pullToRefreshHandler);
+
     }
 
 
@@ -167,15 +176,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     @Override
     public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
-
-        Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
-        daos.add(_timelineDao);
-        AsyncFutureTimelineDBUpdatetask< Integer> asyncTask =
-                new AsyncFutureTimelineDBUpdatetask<Integer>(3 , TimeUnit.MINUTES ,
-                        daos, _timelineBufferedDBUpdater, _pullToRefreshHandler);
-
-        asyncTask.execute(futureTask_.toArray(new Future[futureTask_.size()]));
-
+        _userDBUpdater.execute(futureTask_.toArray(new Future[futureTask_.size()]));
     }
 
     private void restartCursor() {
