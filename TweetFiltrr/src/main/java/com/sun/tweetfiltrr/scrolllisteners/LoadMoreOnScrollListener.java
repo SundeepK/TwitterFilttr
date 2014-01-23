@@ -20,6 +20,7 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
     private final ExecutorService _executorService;
     private final LoadMoreListener _loadMoreLitener;
     private final Collection<Future<T>>  _executingTasks;
+    private Collection<Callable<T>> _callablesToExecute;
     private final int _itemThresHoldBeforeLoadingMore;
     private PullToRefreshView.OnNewTweetRefreshListener _refreshLis;
     private final static String TAG = LoadMoreOnScrollListener.class.getName();
@@ -30,6 +31,14 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
         public void onLoad(Collection<Future<T>> futureTask_);
     }
 
+    public LoadMoreOnScrollListener(ExecutorService executorService_,Collection<Callable<T>> callablesToExectue_ ,
+                                    LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_ ){
+        _executorService = executorService_;
+        _loadMoreLitener = loadMoreLitener_;
+        _executingTasks = new ArrayList<Future<T>>();
+        _callablesToExecute = callablesToExectue_;
+        _itemThresHoldBeforeLoadingMore = itemThresHoldBeforeLoadingMore_;
+    }
 
     public LoadMoreOnScrollListener(ExecutorService executorService_,PullToRefreshView.OnNewTweetRefreshListener refreshLis_ ,
                                     LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_ ){
@@ -75,12 +84,7 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
                 Log.v(TAG, "executiong task size is:" + _executingTasks.size());
                 if (_executingTasks.size() < 1) {
 //                    Log.v(TAG, "Attemting to load more items for listview");
-                    Collection<Future<T>> future = new ArrayList<Future<T>>();
-                    Collection<Callable<T>> callableToSubmit = _refreshLis.getTweetRetriever(true, true);
-                        for(Callable<T> callable : callableToSubmit){
-                            future.add(_executorService.submit(callable));
-                        }
-
+                    Collection<Future<T>> future = executeCallables();
                     _executingTasks.addAll(future);
                     _loadMoreLitener.onLoad(future);
                 }
@@ -88,6 +92,22 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
         }
     }
 
+    private Collection<Future<T>> executeCallables(){
+        Collection<Future<T>> futures;
+        if(_callablesToExecute != null){
+            futures = executeCallables(_callablesToExecute);
+        }else{
+            futures =   executeCallables(_refreshLis.getTweetRetriever(true, true));
+        }
+        return futures;
+    }
 
+    private Collection<Future<T>> executeCallables(Collection<Callable<T> > callables_){
+        final Collection<Future<T>> future = new ArrayList<Future<T>>();
+        for(Callable<T> callable : callables_){
+            future.add(_executorService.submit(callable));
+        }
+        return  future;
+    }
 
 }

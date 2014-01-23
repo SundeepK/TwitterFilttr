@@ -39,6 +39,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFacto
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public abstract class ATimelineFragment extends ATwitterFragment implements LoaderCallbacks<Cursor>, TabListener,
+public abstract class ATimelineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>, TabListener,
         IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
 
@@ -70,7 +71,6 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +93,8 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     protected void initControl() {
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
                 .getInstance(getActivity().getContentResolver());
-        _currentUser = getCurrentUser();
+        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(getActivity());
+
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
 
@@ -107,10 +108,8 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
         _timelineBufferedDBUpdater =
                 new SimpleDBUpdater<ParcelableTimeLineEntry>();
 
-
         //initialise TweetRetrieverWrapper to easy tweet retrieval
         _tweetRetriver = new TweetRetrieverWrapper(_threadExecutor, simpleDateFormatLocal);
-
     }
 
 
@@ -165,11 +164,6 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
         }
     }
 
-    //need to get rid of this again TODO
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return onCreateLoader(i, bundle, _currentUser);
-    }
 
     @Override
     public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
@@ -205,10 +199,6 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
 
     }
 
-
-
-    protected abstract Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_);
-
     @Override
     public Bitmap processScreenShot(Bitmap input_) {
 
@@ -217,16 +207,7 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
 
     }
 
-    @Override
-    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
-        Log.v(TAG, "getTweetRetriever atimelinetabfrag: " + _currentUser.toString());
-
-        return getTweetRetriever(_currentUser, shouldRunOnce_, shouldLookForOldTweets);
-    }
-
-    protected abstract Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser user, boolean shouldRunOnce_, boolean shouldLookForOldTweets);
-
-        @Override
+   @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cursor cursor = (Cursor) parent.getItemAtPosition(position);
         Log.v(TAG, "col names from cursor: " + Arrays.toString(cursor.getColumnNames())) ;
@@ -255,7 +236,7 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
 
         for(ParcelableUser user : twitterParcelable){
             if(_currentUser.getUserId() == user.getUserId()){
-                _currentUser.copyCachedData(user);
+                _currentUser = user;
                 Log.v(TAG, "user passed for switch  " + user.toString());
 
                 Log.v(TAG, "current user switch to  " + _currentUser.toString());
@@ -291,5 +272,9 @@ public abstract class ATimelineFragment extends ATwitterFragment implements Load
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
         // TODO Auto-generated method stub
 
+    }
+
+    protected ParcelableUser getCurrentUser(){
+        return _currentUser;
     }
 }

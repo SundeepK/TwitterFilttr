@@ -23,7 +23,7 @@ public class TimelineTab extends ATimelineFragment {
 
 
     @Override
-    protected Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_) {
+    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection, FriendColumn.FRIEND_ID.a() + " = ? ",
@@ -34,9 +34,9 @@ public class TimelineTab extends ATimelineFragment {
 
 
     @Override
-    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser currentUser_, boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        callables.add(getTweetRetriver().getTimeLineRetriever(currentUser_, shouldRunOnce_, shouldLookForOldTweets));
+        callables.add(getTweetRetriver().getTimeLineRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
         return callables;
     }
 
