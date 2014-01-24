@@ -2,7 +2,6 @@ package com.sun.tweetfiltrr.tweetoperations;
 
 import android.os.AsyncTask;
 
-import com.sun.tweetfiltrr.asyncretriever.retrievers.FavouriteTweet;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 
 

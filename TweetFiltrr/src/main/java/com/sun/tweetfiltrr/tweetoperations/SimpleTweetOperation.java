@@ -15,7 +15,7 @@ import twitter4j.Twitter;
 /**
  * Created by Sundeep on 01/01/14.
  */
-public abstract class SimpleTweetOperation extends AsyncSmoothProgressBarTask<ParcelableTimeLineEntry, Void, Collection<ParcelableTimeLineEntry>> {
+public abstract class SimpleTweetOperation extends AsyncSmoothProgressBarTask<TwitterOperation, Void, Collection<ParcelableTimeLineEntry>> {
 
     private static final String TAG = SimpleTweetOperation.class.getName() ;
     private final IDBDao<ParcelableTimeLineEntry> _timelineDao;
@@ -33,17 +33,13 @@ public abstract class SimpleTweetOperation extends AsyncSmoothProgressBarTask<Pa
     }
 
     @Override
-    protected Collection<ParcelableTimeLineEntry> doInBackground(ParcelableTimeLineEntry... params) {
+    protected Collection<ParcelableTimeLineEntry> doInBackground(TwitterOperation... params) {
         Collection<ParcelableTimeLineEntry> timeLineEntries = new ArrayList<ParcelableTimeLineEntry>();
         Twitter twitter = TwitterUtil.getInstance().getTwitter();
-        for (ParcelableTimeLineEntry tweetToRetweet : params) {
-                performSimpleOperation(tweetToRetweet, twitter);
-                timeLineEntries.add(tweetToRetweet);
+        for (TwitterOperation tweetToRetweet : params) {
+            timeLineEntries.addAll(tweetToRetweet.processTwitterOperations());
         }
         return timeLineEntries;
     }
-
-
-    protected abstract void performSimpleOperation(ParcelableTimeLineEntry tweets_, Twitter twitter_);
 
 }
