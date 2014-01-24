@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.TabListener;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Window;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
@@ -74,7 +75,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
     private Collection<IUserUpdater> _userDaoUpdaters;
-    private  AsyncUserDBUpdateTask< Integer> _userDBUpdater;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +85,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = _pullToRefreshHandler.onCreateViewCallback(inflater, container, savedInstanceState);
+
         getActivity().getSupportLoaderManager().initLoader(TUTORIAL_LIST_LOADER, null, this);
         return rootView;
     }
@@ -116,8 +117,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         _userDaoUpdaters = new ArrayList<IUserUpdater>();
         _userDaoUpdaters.add(new TimelineUserUpdater(_timelineDao));
         _userDaoUpdaters.add(new UserUpdater(_friendDao));
-        _userDBUpdater =  new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
-                        _userDaoUpdaters,  _pullToRefreshHandler);
+
 
     }
 
@@ -147,6 +147,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser);
 
+
     }
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_){
@@ -156,7 +157,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     @Override
     public boolean shouldLoad(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         int rowCount = _currentUser.getTotalTweetCount() - _currentLimitCount;
-        Log.v(TAG, "current rowcount " + rowCount + " current user tweets " + _currentUser.getTotalTweetCount() + "with current rowlimit" + _currentLimitCount );
+        Log.v(TAG, "current rowcount " + rowCount + " current user tweets " + _currentUser.getTotalTweetCount() + "with current rowlimit" + _currentLimitCount);
 
         if(rowCount > 0){
             Log.v(TAG, "increasing limit because we have enough tweets with total: " + _currentUser.getTotalTweetCount() + " and current limit: " +_currentLimitCount );
@@ -176,6 +177,8 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     @Override
     public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
+        AsyncUserDBUpdateTask<Integer> _userDBUpdater =  new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
+                _userDaoUpdaters,  _pullToRefreshHandler);
         _userDBUpdater.execute(futureTask_.toArray(new Future[futureTask_.size()]));
     }
 

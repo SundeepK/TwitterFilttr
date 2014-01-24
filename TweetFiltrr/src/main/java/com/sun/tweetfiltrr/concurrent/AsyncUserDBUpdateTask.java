@@ -45,12 +45,15 @@ import java.util.concurrent.TimeUnit;
         @Override
         protected Collection<ParcelableUser> doInBackground(Future<Collection<ParcelableUser>>... params) {
             Collection<ParcelableUser> futureResults = super.doInBackground(params);
+
+
             Log.v(TAG, "trying to update tiomeline size" + futureResults.size() + " for user + " + futureResults.toString());
 
             for(IUserUpdater updater : _userUpdaters){
                 updater.updateUsersToDB(futureResults);
             }
             return futureResults;
+
         }
 
         @Override

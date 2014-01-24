@@ -44,4 +44,9 @@
 
     </style>
 
+    <style name="background_profile">
+        <item name="android:layout_marginLeft">90dp</item>
+        <item name="background">#cc000000</item>
+    </style>
+
 </resources>

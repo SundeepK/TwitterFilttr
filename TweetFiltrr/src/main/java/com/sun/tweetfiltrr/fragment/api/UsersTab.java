@@ -23,9 +23,12 @@ import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.asyncretriever.api.ITwitterRetriever;
 import com.sun.tweetfiltrr.asyncretriever.api.UsersFriendRetriever;
 import com.sun.tweetfiltrr.asyncretriever.callables.FriendsRetriever;
+import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.UserUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
@@ -63,6 +66,8 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
     private ITwitterRetriever<Collection<ParcelableUser>>  _userRetriever;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading;
+    private Collection<IUserUpdater> _updaters = new ArrayList<IUserUpdater>();
+
 
 
     @Override
@@ -98,13 +103,13 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
 //            callable = new AUserRetriever(getCurrentUser(), false);
 //        }
 //
-//        Collection<IDBDao<ParcelableUser>> daos = new ArrayList<IDBDao<ParcelableUser>>();
-//        daos.add(_usersToFriendDao);
-//        daos.add(_friendDao);
+//        Collection<IDBDao<ParcelableUser>> _updaters = new ArrayList<IDBDao<ParcelableUser>>();
+//        _updaters.add(_usersToFriendDao);
+//        _updaters.add(_friendDao);
 //
 //
 //        AsyncFutureDBUpdatetask<ParcelableUser, Integer> updatetask =
-//                new AsyncFutureDBUpdatetask<ParcelableUser, Integer>(1, TimeUnit.MINUTES, daos, _userUpdater);
+//                new AsyncFutureDBUpdatetask<ParcelableUser, Integer>(1, TimeUnit.MINUTES, _updaters, _userUpdater);
 //        Future<Collection<ParcelableUser>> future = _threadExecutor.submit(callable);
 //        updatetask.execute(new Future[]{future});
 //
@@ -132,6 +137,10 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
 
         _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();
+
+        _updaters.add(new UserUpdater(_friendDao));
+        _updaters.add(new UserUpdater(_usersToFriendDao));
+
 
     }
 
@@ -164,6 +173,15 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
                 (getActivity(), currentUser_, this, adapter_ ,this, this);
     }
 
+
+    @Override
+    public void onLoad(Collection<Future<Collection<ParcelableUser>>>  futureTask_) {
+        Log.v(TAG, "On load startyed with future size:" + futureTask_.size());
+        AsyncUserDBUpdateTask<Integer> updatetask =
+                new AsyncUserDBUpdateTask<Integer>(1, TimeUnit.MINUTES, _updaters, _pullToRefreshHandler);
+
+        updatetask.execute(futureTask_.toArray(new Future[futureTask_.size()]));
+    }
 
 
     @Override
@@ -213,20 +231,6 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
         }
     }
 
-
-    @Override
-    public void onLoad(Collection<Future<Collection<ParcelableUser>>>  futureTask_) {
-        Log.v(TAG, "On load startyed with future size:" + futureTask_.size());
-
-        Collection<IDBDao<ParcelableUser>> daos = new ArrayList<IDBDao<ParcelableUser>>();
-        daos.add(_usersToFriendDao);
-        daos.add(_friendDao);
-
-
-        AsyncFutureDBUpdatetask<ParcelableUser, Integer> updatetask =
-                new AsyncFutureDBUpdatetask<ParcelableUser, Integer>(1, TimeUnit.MINUTES, daos, _userUpdater);
-        updatetask.execute(futureTask_.toArray(new Future[futureTask_.size()]) );
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

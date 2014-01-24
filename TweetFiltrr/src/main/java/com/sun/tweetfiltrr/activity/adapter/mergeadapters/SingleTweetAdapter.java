@@ -72,7 +72,6 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
 //        viewHolder._quoteBut.setOnClickListener();
 //        viewHolder._replyBut.setOnClickListener();
 
-        // Setting image view is also simple
         return view;
     }
 
@@ -88,8 +87,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
     }
 
     private View getWorkingView(final View convertView) {
-        // The workingView is basically just the convertView re-used if possible
-        // or inflated new if not possible
+
         View workingView = null;
 
         if(null == convertView) {
@@ -106,8 +104,6 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
     }
 
     private ViewHolder getViewHolder(final View workingView) {
-        // The viewHolder allows us to avoid re-looking up view references
-        // Since views are recycled, these references will never change
 
         final Object tag = workingView.getTag();
         ViewHolder viewHolder = null;
@@ -137,10 +133,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         return viewHolder;
     }
 
-    /**
-     * ViewHolder allows us to avoid re-looking up view references
-     * Since views are recycled, these references will never change
-     */
+
     private static class ViewHolder {
 
         public TextView _friendName;

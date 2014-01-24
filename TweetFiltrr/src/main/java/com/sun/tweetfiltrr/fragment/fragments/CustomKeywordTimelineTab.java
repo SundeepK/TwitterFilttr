@@ -28,7 +28,7 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
 
 
     @Override
-    protected Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_) {
+    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
        return new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection, FriendColumn.IS_FRIEND.a() + " = ?  " + " AND "
@@ -63,7 +63,7 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
 
 
     @Override
-    protected Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser user ,boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
         if (!shouldLookForOldTweets) {
           //  callables.addAll(getTweetRetriver().getCallableRetrieverList(getUsersWithKeywordGroup(180), shouldRunOnce_, shouldLookForOldTweets));

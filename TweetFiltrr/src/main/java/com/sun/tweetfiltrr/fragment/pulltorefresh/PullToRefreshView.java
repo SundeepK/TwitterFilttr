@@ -19,7 +19,9 @@ import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineUserUpdater;
 import com.sun.tweetfiltrr.fragment.api.IFragmentCallback;
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
@@ -57,8 +59,9 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     protected ThreadPoolExecutor _threadExecutor;
     protected IDBUpdater<ParcelableTimeLineEntry> _timelineBufferedDBUpdater;
     protected int _timelineCount = 50;
-    protected OnNewTweetRefreshListener _pullToRefreshLis;
+    protected OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
+    private Collection<IUserUpdater> _updaters;
 
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
@@ -97,6 +100,8 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
         _pullToRefreshLis, loadMoreLis_, 5);
+        _updaters  = new ArrayList<IUserUpdater>();
+        _updaters.add(new TimelineUserUpdater(_timelineDao));
 
         Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
     }
@@ -145,25 +150,16 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     @Override
     public void onRefreshStarted(View view) {
         Log.v(TAG, "We are looking for friends tweets because pull to refresh was done");
-        Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
-        users.add(_currentUser);
         Log.v(TAG, "is friend : " + _currentUser.isFriend());
-        Collection<Future<T>> futures = new ArrayList<Future<T>>();
-
-        Collection<Callable<T>> callables = _pullToRefreshLis.getTweetRetriever(true, false);
-
+        final   Collection<Future<T>> futures = new ArrayList<Future<T>>();
+        final Collection<Callable<T>> callables = _pullToRefreshLis.getTweetRetriever(true, false);
         for(Callable<T> callabe : callables){
             futures.add(_threadExecutor.submit(callabe));
         }
+         AsyncUserDBUpdateTask< Integer> _updaterTask;
+        _updaterTask = new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,_updaters, this);
 
-        Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
-        daos.add(_timelineDao);
-        AsyncUserDBUpdateTask< Integer> asyncTask =
-                new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,daos,
-                        _timelineBufferedDBUpdater, this);
-
-
-        asyncTask.execute(futures.toArray(new Future[futures.size()]));
+        _updaterTask.execute(futures.toArray(new Future[futures.size()]));
     }
 
 

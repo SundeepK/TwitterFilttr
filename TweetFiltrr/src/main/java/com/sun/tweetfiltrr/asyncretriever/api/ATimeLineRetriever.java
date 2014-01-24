@@ -9,6 +9,7 @@ import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -91,7 +92,7 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Collection
                 Log.e(TAG, "Error occured while attempting to retrieve user timeline, maybe becuase query limit has been execeeded.");
                 Log.w(TAG, "Setting page count to: " + currentUser.getMaxId() + " and inserting into DB");
                 setUpdateUserDetails(user_, currentUser.getUserTimeLine());
-                return null;
+                return new ArrayList<ParcelableUser>();
             }
 
             usersWithTweets = _tweetProcessor.processTimeLine( timeLine.iterator(), currentUser, null);

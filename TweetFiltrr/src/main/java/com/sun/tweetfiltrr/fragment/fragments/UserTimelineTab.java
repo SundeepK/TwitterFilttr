@@ -31,13 +31,10 @@ public class UserTimelineTab extends ATimelineFragment {
         return cursorLoader;
     }
 
-    @Override
-    protected Loader<Cursor> onCreateLoader(int arg0, Bundle arg1, ParcelableUser currentUser_) {
-        return null;
-    }
+
 
     @Override
-    protected Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(ParcelableUser user, boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         return null;
     }
 
