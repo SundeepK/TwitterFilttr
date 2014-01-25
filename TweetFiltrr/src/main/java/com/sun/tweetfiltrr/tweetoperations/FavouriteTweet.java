@@ -1,11 +1,12 @@
-package com.sun.tweetfiltrr.asyncretriever.retrievers;
+package com.sun.tweetfiltrr.tweetoperations;
 
 import android.util.Log;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
-import com.sun.tweetfiltrr.tweetoperations.SimpleTweetOperation;
+import com.sun.tweetfiltrr.tweetoperations.api.ITwitterOperation;
+import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -13,19 +14,18 @@ import twitter4j.TwitterException;
 /**
  * Created by Sundeep on 01/01/14.
  */
-public  class FavouriteTweet extends SimpleTweetOperation {
+public  class FavouriteTweet implements ITwitterOperation {
 
     private static final String TAG = FavouriteTweet.class.getName() ;
 
-
-    public FavouriteTweet(SmoothProgressBarWrapper progressBar_, IDBDao<ParcelableTimeLineEntry> timelineDao_){
-        super(progressBar_, timelineDao_);
+    public FavouriteTweet(){
     }
 
     @Override
-    protected void performSimpleOperation(ParcelableTimeLineEntry tweets_, Twitter twitter_) {
+    public void performTwitterOperation(ParcelableTimeLineEntry tweets_) {
+        Twitter twitter = TwitterUtil.getInstance().getTwitter();
         try {
-            twitter4j.Status status = twitter_.createFavorite(tweets_.getTweetID());
+            twitter4j.Status status = twitter.createFavorite(tweets_.getTweetID());
             tweets_.setIsFavourite(status.isFavorited());
         } catch (TwitterException e) {
             e.printStackTrace();
