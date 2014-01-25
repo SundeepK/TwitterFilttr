@@ -13,12 +13,10 @@ import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.tweetoperations.FavouriteTweet;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -79,9 +77,9 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
        return new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
-                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
-                               new ParcelableTimeLineEntry[]{tweetToFav_});
+//               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
+//                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
+//                               new ParcelableTimeLineEntry[]{tweetToFav_});
            }
        };
     }
