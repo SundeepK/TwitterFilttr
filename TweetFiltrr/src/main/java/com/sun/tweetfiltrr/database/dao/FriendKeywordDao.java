@@ -8,13 +8,13 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
-import com.sun.tweetfiltrr.database.tables.FriendKeywordColumn;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.parcelable.ParcelableUserToKeywords;
+import com.sun.tweetfiltrr.database.tables.FriendKeywordColumn;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
 
-public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
+public class FriendKeywordDao extends ADBDao<ParcelableUser> {
 
 	private static final String TAG = FriendKeywordDao.class.getName();
 	String[] _projection = {
@@ -42,12 +42,12 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 	 * This DAO object is only used for query purposes and (atm) cannot be used to update users and groups (update methods are no-ops)
 	 * 
 	 */
-	public FriendKeywordDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableUserToKeywords> cursorToKeywordUser_) {
+	public FriendKeywordDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableUser> cursorToKeywordUser_) {
 		super(contentResolver_, cursorToKeywordUser_);
 	}
 
 	@Override
-	public Collection<ParcelableUserToKeywords> getEntry(long rowID_,
+	public Collection<ParcelableUser> getEntry(long rowID_,
 			String selection_, String[] selectionArgs_, String sortOrder_) {
 		Uri uri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_FRIEND_GROUP + "/"
 				+ rowID_);
@@ -55,20 +55,20 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 				selectionArgs_, sortOrder_);
 		Log.v(TAG, "before getting timeline" + cursorFriend.getCount());
 
-		Collection<ParcelableUserToKeywords> friendKeyword = processCursor(cursorFriend);
+		Collection<ParcelableUser> friendKeyword = processCursor(cursorFriend);
 
 		return friendKeyword;
 	}
 
 	@Override
-	public Collection<ParcelableUserToKeywords> getEntries(String selection_,
+	public Collection<ParcelableUser> getEntries(String selection_,
 			String[] selectionArgs_, String sortOrder_) {
 
 		Cursor cursorFriend = _contentResolver.query(
 				TweetFiltrrProvider.CONTENT_URI_FRIEND_GROUP, _projections,
 				selection_, selectionArgs_, sortOrder_);
 
-		Collection<ParcelableUserToKeywords> friendKeyword = processCursor(cursorFriend);
+		Collection<ParcelableUser> friendKeyword = processCursor(cursorFriend);
 
 		return friendKeyword;
 	}
@@ -90,7 +90,7 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 	 * @see com.tweetfiltrr.dao.ADBDao#updateToNull(java.util.Collection, V[])
 	 */
 	@Override
-	public void updateToNull(Collection<ParcelableUserToKeywords> entries_,
+	public void updateToNull(Collection<ParcelableUser> entries_,
 			String[] columns_) {
 	}
 
@@ -98,7 +98,7 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 	 * No-op 
 	 */
 	@Override
-	public void insertOrUpdate(Collection<ParcelableUserToKeywords> entries_) {
+	public void insertOrUpdate(Collection<ParcelableUser> entries_) {
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 	 */
 	@Override
 	protected ContentValues[] getContentValuesForInsertOrUpdate(
-			Collection<ParcelableUserToKeywords> entries_,
+			Collection<ParcelableUser> entries_,
             String[] columns_, boolean shouldSetNull_) {
 		return null;
 	}
@@ -115,7 +115,7 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 	 * No-op 
 	 */
 	@Override
-	protected ContentValues getContentValues(ParcelableUserToKeywords friendKeyword_,
+	protected ContentValues getContentValues(ParcelableUser friendKeyword_,
                                              String[] columns_, boolean shouldSetNull_) {
 		return null;
 	}
@@ -134,7 +134,7 @@ public class FriendKeywordDao extends ADBDao<ParcelableUserToKeywords> {
 	 * No-op 
 	 */
 	@Override
-	public int deleteEntries(Collection<ParcelableUserToKeywords> entries_) {
+	public int deleteEntries(Collection<ParcelableUser> entries_) {
 		return 0;
 	}
 

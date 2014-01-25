@@ -14,58 +14,30 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import twitter4j.Paging;
-import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public abstract class ATimeLineRetriever implements ITwitterRetriever<Collection<ParcelableUser>> {
+public abstract class ATimeLineRetriever<T> implements ITwitterRetriever<Collection<ParcelableUser>> {
 
 	private static final String TAG = ATimeLineRetriever.class
 			.getName();
     private boolean _shouldLookForOldTweetsOnly;
     private boolean _shouldRunOnce = true;
     private ITweetProcessor _tweetProcessor;
+    private ITwitterParameter<T> _twitterParameter;
 
-
-    public ATimeLineRetriever(ITweetProcessor tweetProcessor_,
-                              boolean shouldLookForOldTweetsOnly_) {
+    public ATimeLineRetriever(ITweetProcessor tweetProcessor_, ITwitterParameter<T> twitterParameter_,
+                              boolean shouldRunOnce_, boolean shouldLookForOldTweetsOnly_) {
+        _shouldRunOnce = shouldRunOnce_;
         _shouldLookForOldTweetsOnly = shouldLookForOldTweetsOnly_;
         _tweetProcessor = tweetProcessor_;
+        _twitterParameter = twitterParameter_;
     }
 
 
     @Override
     public Collection<ParcelableUser> retrieveTwitterData(ICachedUser user_) {
         return getUpdatedUserWithTimeline(user_);
-    }
-
-    /**
-     * Get the {@link Paging} required to search for new tweets
-     * @param user_
-     * @return
-     */
-    private Paging getPagingForTimeline(ICachedUser user_){
-        final ParcelableUser currentUser =  user_.getUser();
-        long friendId = currentUser.getUserId();
-        long maxID =  user_.getMaxId() ;
-        long sinceID = user_.getSinceId();
-        currentUser.getUserTimeLine().clear();
-
-        Paging page = new Paging();
-        page.setCount(50);
-
-        if(_shouldLookForOldTweetsOnly){
-            if(maxID > 1){
-                Log.v(TAG, "Setting max ID to: " + maxID);
-                page.setMaxId(maxID);
-            }
-        }else if(sinceID > 1){
-            Log.v(TAG, "Setting since ID to: " + sinceID);
-            page.setSinceId(sinceID);
-        }
-
-        return page;
     }
 
     /**
@@ -76,17 +48,24 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Collection
      */
     private Collection<ParcelableUser> getUpdatedUserWithTimeline(ICachedUser user_){
         final ParcelableUser currentUser = user_.getUser();
-        final Paging page = getPagingForTimeline(user_);
+        final T page = _twitterParameter.getTwitterParameter(user_,_shouldLookForOldTweetsOnly );
         final Twitter twitter = TwitterUtil.getInstance().getTwitter();
-        ResponseList<twitter4j.Status> timeLine = null;
+        ITwitterResponse<T> timeLine = null;
         final Date previousDate = DateUtils.getPreviousDate();
         final long friendId = currentUser.getUserId();
-        Collection<ParcelableUser> usersWithTweets;
+        Collection<ParcelableUser> usersWithTweets = new ArrayList<ParcelableUser>();
         Log.v(TAG, "Current date minus 1 day :" + previousDate.toString());
 
         do {
             try {
-                timeLine =  getTweets(twitter, friendId, page);
+
+                if(timeLine == null){
+                    timeLine =  getTweets(twitter, friendId, page);
+                }else{
+                    timeLine =  getTweets(twitter, friendId, timeLine.getNextTwitterParameter());
+                }
+
+
             } catch (TwitterException e) {
                 e.printStackTrace();
                 Log.e(TAG, "Error occured while attempting to retrieve user timeline, maybe becuase query limit has been execeeded.");
@@ -95,13 +74,13 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Collection
                 return new ArrayList<ParcelableUser>();
             }
 
-            usersWithTweets = _tweetProcessor.processTimeLine( timeLine.iterator(), currentUser, null);
+            usersWithTweets.addAll(_tweetProcessor.processTimeLine(timeLine.getTwitterResult(), currentUser, previousDate));
 
             if(_shouldRunOnce){
                 break;
             }
 
-        } while (timeLine.size() > 0);
+        } while (timeLine.hasNext());
         Log.v(TAG, "reached end of timeline task, with maxID: " + currentUser.getMaxId());
 
         //below is now handled by tweet processior because it's much easier there
@@ -110,7 +89,7 @@ public abstract class ATimeLineRetriever implements ITwitterRetriever<Collection
         return usersWithTweets;
     }
 
-    protected abstract ResponseList<twitter4j.Status> getTweets(Twitter twitter_, long friendID_, Paging page_) throws  TwitterException;
+    protected abstract ITwitterResponse<T> getTweets(Twitter twitter_, long friendID_, T page_) throws  TwitterException;
 
     /**
      * Update the MaxID, SinceID and total tweet count for current user so we can pick up where we left off. This prevents us from

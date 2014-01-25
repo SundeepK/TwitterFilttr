@@ -14,14 +14,11 @@ import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.parcelable.ParcelableUserToKeywords;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
-import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 public class CustomKeywordTimelineTab extends ATimelineFragment  {
@@ -31,29 +28,28 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
        return new CursorLoader(getActivity(),
-                TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection, FriendColumn.IS_FRIEND.a() + " = ?  " + " AND "
-               + TimelineColumn.IS_KEYWORD_SEARCH_TWEET.a() + " = ? ",
-                new String[]{Integer.toString(1), Integer.toString(1)},
+                TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection,  TimelineColumn.IS_KEYWORD_SEARCH_TWEET.a() + " = ? ",
+                new String[]{ Integer.toString(1)},
                TimelineColumn.TWEET_ID.a() + " DESC " + " LIMIT " + getTimeLineCount());
     }
 
-    @Override
-    public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
-
+//    @Override
+//    public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
+//
 //        Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
 //        daos.add(_timelineDao);
-//        AsyncUserDBUpdateTask< Integer> asyncTask =
+//        AsyncUserDBUpdateTask< Intcar screeeger> asyncTask =
 //                new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
 //                        daos, _timelineBufferedDBUpdater, _pullToRefreshHandler);
 //
 //        asyncTask.execute(futureTask_.toArray(new Future[futureTask_.size()]));
+//
+//    }
 
-    }
-
-    private Collection<ParcelableUserToKeywords> getUsersWithKeywordGroup(int remainingSearchLimit_){
+    private Collection<ParcelableUser> getUsersWithKeywordGroup(int remainingSearchLimit_){
         DaoFlyWeightFactory daoFlyWeightFactory = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
 
-        IDBDao<ParcelableUserToKeywords> _keywordFriendDao = (IDBDao<ParcelableUserToKeywords>)
+        IDBDao<ParcelableUser> _keywordFriendDao = (IDBDao<ParcelableUser>)
                 daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.FRIEND_KEYWORD_DAO, null);
         return _keywordFriendDao.getEntries(null,null,
                 FriendTable.FriendColumn.COLUMN_MAXID.p() + " DESC, " +
@@ -65,10 +61,10 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
     @Override
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        if (!shouldLookForOldTweets) {
-          //  callables.addAll(getTweetRetriver().getCallableRetrieverList(getUsersWithKeywordGroup(180), shouldRunOnce_, shouldLookForOldTweets));
-        }
-        return null;
+
+            callables.addAll(getTweetRetriver().getCallableRetrieverList(getUsersWithKeywordGroup(180), shouldRunOnce_, shouldLookForOldTweets));
+
+        return callables;
     }
 
 }

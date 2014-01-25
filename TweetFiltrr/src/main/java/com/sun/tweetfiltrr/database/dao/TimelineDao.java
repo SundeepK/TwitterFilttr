@@ -67,6 +67,8 @@ public class TimelineDao extends ADBDao<ParcelableTimeLineEntry> {
                 contentValue.put(TimelineColumn.IS_FAVOURITE.s(), timeline_.isFavourite());
             }else if (TextUtils.equals(column, TimelineColumn.IS_MENTION.s())) {
                 contentValue.put(TimelineColumn.IS_MENTION.s(), timeline_.isMention());
+            }else if (TextUtils.equals(column, TimelineColumn.IS_KEYWORD_SEARCH_TWEET.s())) {
+                contentValue.put(TimelineColumn.IS_KEYWORD_SEARCH_TWEET.s(), timeline_.isKeyWordSearchedTweet());
             }
 
 		}

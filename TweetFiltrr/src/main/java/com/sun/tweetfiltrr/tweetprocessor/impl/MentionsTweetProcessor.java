@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Sundeep on 17/12/13.
  */
-public class MentionsTweetProcessor extends DateBasedTweetProcessor {
+public class MentionsTweetProcessor extends PlainTweetProcessor {
     private static final String TAG = MentionsTweetProcessor.class.getName();
 
     /**

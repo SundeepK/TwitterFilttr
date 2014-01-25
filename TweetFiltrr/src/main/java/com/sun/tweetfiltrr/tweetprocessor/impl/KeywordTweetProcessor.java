@@ -1,6 +1,8 @@
 package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 
+import android.util.Log;
+
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 
 import java.text.SimpleDateFormat;
@@ -9,6 +11,8 @@ import java.text.SimpleDateFormat;
  * Created by Sundeep on 17/12/13.
  */
 public class KeywordTweetProcessor extends DateBasedTweetProcessor {
+    private static final String TAG = KeywordTweetProcessor.class.getName();
+
     /**
      * Threadsafe class
      * <p/>
@@ -32,6 +36,7 @@ public class KeywordTweetProcessor extends DateBasedTweetProcessor {
      */
     @Override
     protected void processTweet(ParcelableTimeLineEntry tweetToProcess_) {
+        Log.v(TAG, "setting keyword tweet to true");
         tweetToProcess_.setIsKeyWordSearedTweet(true);
     }
 

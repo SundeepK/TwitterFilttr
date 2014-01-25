@@ -15,7 +15,6 @@ import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.parcelable.ParcelableUserToKeywords;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +38,7 @@ import twitter4j.TwitterException;
 public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
 
     private static final String TAG = KeywordTweetUpdateRetriever.class.getName();
-    private IDBDao<ParcelableUserToKeywords> _keywordFriendDao;
+    private IDBDao<ParcelableUser> _keywordFriendDao;
     private static final String SEARCH_RESOURCE_KEY = "/users/search";
     private TweetRetrieverWrapper _tweetRetriever;
     private ExecutorService _taskExecutor;
@@ -54,7 +53,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
 
         DaoFlyWeightFactory daoFlyWeightFactory = DaoFlyWeightFactory.getInstance(_resolver);
 
-        _keywordFriendDao = (IDBDao<ParcelableUserToKeywords>)
+        _keywordFriendDao = (IDBDao<ParcelableUser>)
                 daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.FRIEND_KEYWORD_DAO, null);
 
         _timelineDao = (IDBDao<ParcelableTimeLineEntry>)
@@ -89,13 +88,13 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
             Twitter twitter = TwitterUtil.getInstance().getTwitter();
             int remainingSearchLimit = getSearchRateLimitCount(twitter);
 
-            Collection<ParcelableUserToKeywords> friendsWithKeywords = getUsersWithKeywordGroup(remainingSearchLimit);
+            Collection<ParcelableUser> friendsWithKeywords = getUsersWithKeywordGroup(remainingSearchLimit);
 
-            for(ParcelableUserToKeywords user : friendsWithKeywords){
-                Log.v(TAG, "User for keyword srearch is: " + user.getFriend().toString() );
+            for(ParcelableUser user : friendsWithKeywords){
+                Log.v(TAG, "User for keyword srearch is: " + user.toString() );
             }
 
-            Collection<Callable<ParcelableUser>> tasks = lookForNewKeywordTweets(friendsWithKeywords);
+            Collection<Callable<Collection<ParcelableUser>>> tasks = lookForNewKeywordTweets(friendsWithKeywords);
             executeTasks(tasks);
 
             Log.v(TAG, "DONE running tasks for search");
@@ -107,9 +106,9 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
     }
 
 
-    private void executeTasks(Collection<Callable<ParcelableUser>> tasks_){
+    private void executeTasks(Collection<Callable<Collection<ParcelableUser>>> tasks_){
         try {
-            List<Future<ParcelableUser>> updatedUserFutures =  _taskExecutor.invokeAll(tasks_, 3, TimeUnit.MINUTES);
+            List<Future<Collection<ParcelableUser>>> updatedUserFutures =  _taskExecutor.invokeAll(tasks_, 3, TimeUnit.MINUTES);
             flushDBEntries(updatedUserFutures);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -118,27 +117,31 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
         }
     }
 
-    private Collection<ParcelableUserToKeywords> getUsersWithKeywordGroup(int remainingSearchLimit_){
+    private Collection<ParcelableUser> getUsersWithKeywordGroup(int remainingSearchLimit_){
         return _keywordFriendDao.getEntries(null,null,
                         FriendTable.FriendColumn.COLUMN_MAXID.p() + " DESC, " +
                                 FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.p() + " ASC " +
                                 " LIMIT " + remainingSearchLimit_ );
     }
 
-    private void flushDBEntries(List<Future<ParcelableUser>> updatedFutures_) throws ExecutionException, InterruptedException {
+    private void flushDBEntries(List<Future<Collection<ParcelableUser>>> updatedFutures_) throws ExecutionException, InterruptedException {
         Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
         Collection<ParcelableTimeLineEntry> timeLines = new ArrayList<ParcelableTimeLineEntry>();
         Collection<IDBDao<ParcelableUser>> userDao = new ArrayList<IDBDao<ParcelableUser>>();
         Collection<IDBDao<ParcelableTimeLineEntry>> timelineDao = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
 
         userDao.add(_friendDao);
-        for(Future<ParcelableUser> futureUser : updatedFutures_){
-            ParcelableUser user = futureUser.get();
+        for(Future<Collection<ParcelableUser>> futureUser : updatedFutures_){
+            Collection<ParcelableUser> user = futureUser.get();
             if(user != null){
-                users.add(user);
-                timeLines.addAll(user.getUserTimeLine());
+                users.addAll(user);
             }
         }
+
+        for(ParcelableUser user : users){
+            timeLines.addAll(user.getUserTimeLine());
+        }
+
         //Update DB
         _dbTimelineUpdater.flushToDB(timelineDao, timeLines);
         _dbUserUpdater.flushToDB(userDao, users);
@@ -169,7 +172,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
 
 
 
-    private Collection<Callable<ParcelableUser>> lookForNewKeywordTweets(Collection<ParcelableUserToKeywords> friends_){
+    private Collection<Callable<Collection<ParcelableUser>>> lookForNewKeywordTweets(Collection<ParcelableUser> friends_){
         return  _tweetRetriever.getCallableRetrieverList(friends_, false, false);
     }
 

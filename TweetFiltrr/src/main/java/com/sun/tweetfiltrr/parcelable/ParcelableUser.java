@@ -47,6 +47,7 @@ public class ParcelableUser implements IParcelableTwitter {
     private int _lastFollowerIndex;
     private int _currentFollowerCount;
     private long _lastFollowerPageNumber;
+    private ParcelableKeywordGroup _keywordGroup;
 
 
     public ParcelableUser(long userId_, String name_, String screenName_) {
@@ -134,7 +135,7 @@ public class ParcelableUser implements IParcelableTwitter {
     }
 
     @Override
-	public void writeToParcel(Parcel outParcel_, int arg1) {
+	public void writeToParcel(Parcel outParcel_, int flags) {
 		outParcel_.writeLong(_userId);
 		outParcel_.writeLong(_createdAt);
 		outParcel_.writeInt(_isProtected ? 1 : 0);
@@ -166,6 +167,7 @@ public class ParcelableUser implements IParcelableTwitter {
         outParcel_.writeInt(_lastFollowerIndex);
         outParcel_.writeInt(_currentFollowerCount);
         outParcel_.writeLong(_lastFollowerPageNumber);
+        outParcel_.writeParcelable(_keywordGroup, flags);
         outParcel_.writeTypedList(_timeline);
 
         Log.v(TAG, "in parcelableUser, curretnly timeline size is:" +  _timeline.size());
@@ -205,6 +207,7 @@ public class ParcelableUser implements IParcelableTwitter {
         _lastFollowerIndex  = parcelIn_.readInt();
         _currentFollowerCount = parcelIn_.readInt();
         _lastFollowerPageNumber = parcelIn_.readLong();
+        _keywordGroup = parcelIn_.readParcelable(ParcelableKeywordGroup.class.getClassLoader());
         parcelIn_.readTypedList(_timeline, ParcelableTimeLineEntry.CREATOR);
         Log.v(TAG, "in reading parcelableuser now, curretnly timeline size is:" +  _timeline.size());
 
@@ -487,6 +490,14 @@ public class ParcelableUser implements IParcelableTwitter {
 
     public void setTotalFollowerCount(int _totalFollowerCount) {
         this._totalFollowerCount = _totalFollowerCount;
+    }
+
+    public ParcelableKeywordGroup getKeywordGroup() {
+        return _keywordGroup;
+    }
+
+    public void setKeywordGroup(ParcelableKeywordGroup _keywordGroup) {
+        this._keywordGroup = _keywordGroup;
     }
 
     /**

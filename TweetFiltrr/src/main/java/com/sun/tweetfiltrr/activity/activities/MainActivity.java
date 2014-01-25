@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.imageloader.core.UrlImageLoader;
@@ -24,6 +25,10 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -134,7 +139,7 @@ public class MainActivity extends SherlockFragmentActivity {
 //		try
 //		{
 //		  fis=new FileInputStream(f);
-//		  fos=new FileOutputStream("/storage/extSdCard/db_dump_new4.db");
+//		  fos=new FileOutputStream("/storage/extSdCard/db_dump_new5.db");
 //		  while(true)
 //		  {
 //		    int i=fis.read();

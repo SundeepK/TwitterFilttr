@@ -1,8 +1,6 @@
 package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 
-import android.util.Log;
-
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
@@ -10,14 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import twitter4j.Status;
 
 /**
  * Created by Sundeep on 17/12/13.
  */
-public class DateBasedTweetProcessor extends ATweetProcessor {
+public class DateBasedTweetProcessor extends PlainTweetProcessor {
     private static final String  TAG  = DateBasedTweetProcessor.class.getName();
 
     /**
@@ -34,20 +31,6 @@ public class DateBasedTweetProcessor extends ATweetProcessor {
      */
     public DateBasedTweetProcessor(ThreadLocal<SimpleDateFormat> dateFormat_) {
         super(dateFormat_);
-    }
-
-    @Override
-    public void cacheLastIDs(ParcelableUser user_) {
-        final List<ParcelableTimeLineEntry> timeLine = user_.getUserTimeLine();
-        if (!timeLine.isEmpty()) {
-            ParcelableTimeLineEntry timelineFirst = timeLine.get(timeLine.size() - 1);
-            ParcelableTimeLineEntry timelineLast = timeLine.get(0);
-            Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
-            user_.setSinceId(timelineLast.getTweetID());
-            user_.setMaxId( timelineFirst.getTweetID());
-        }
-        //update the total tweets recieved
-        user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
     }
 
     /**

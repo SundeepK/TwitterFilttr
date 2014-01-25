@@ -1,18 +1,18 @@
 package com.sun.tweetfiltrr.asyncretriever.api;
 
-import android.util.Log;
-
 import com.sun.tweetfiltrr.asyncretriever.callables.MentionsRetrieverCallable;
 import com.sun.tweetfiltrr.asyncretriever.callables.TimelineRetrieverCallable;
-import com.sun.tweetfiltrr.asyncretriever.retrievers.FriendsKeywordTweetRetriever;
+import com.sun.tweetfiltrr.asyncretriever.retrievers.KeywordTweetRetriever;
 import com.sun.tweetfiltrr.asyncretriever.retrievers.MentionsRetriever;
 import com.sun.tweetfiltrr.asyncretriever.retrievers.TimeLineRetriever;
+import com.sun.tweetfiltrr.asyncretriever.twitterparameter.TwitterPageParameter;
+import com.sun.tweetfiltrr.asyncretriever.twitterparameter.TwitterQueryParameter;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.parcelable.ParcelableUserToKeywords;
 import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.tweetprocessor.impl.DateBasedTweetProcessor;
 import com.sun.tweetfiltrr.tweetprocessor.impl.KeywordTweetProcessor;
 import com.sun.tweetfiltrr.tweetprocessor.impl.MentionsTweetProcessor;
+import com.sun.tweetfiltrr.tweetprocessor.impl.PlainTweetProcessor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import twitter4j.Paging;
+import twitter4j.Query;
 
 public class TweetRetrieverWrapper {
 
@@ -54,7 +57,7 @@ public class TweetRetrieverWrapper {
 //			Log.v(TAG, " sinceID fresh from query is: " + lastUser_.getSinceId());
 //
 //			Callable<ParcelableUser> callable =
-//					new FriendsKeywordTweetRetriever(friend,
+//					new KeywordTweetRetriever(friend,
 //                            tweetProcessor,  shouldLookForOldTweets_);
 //            futures.add(fireAsyncTask(callable));
 //
@@ -62,19 +65,20 @@ public class TweetRetrieverWrapper {
 //		return futures;
 //	}
 
-    public Collection<Callable<ParcelableUser>> getCallableRetrieverList(Collection<ParcelableUserToKeywords> friendsWithKeywords_,
+    public Collection<Callable<Collection<ParcelableUser>>> getCallableRetrieverList(Collection<ParcelableUser> friendsWithKeywords_,
                                                                          boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
-        Collection<Callable<ParcelableUser>> callables = new ArrayList<Callable<ParcelableUser>>();
-        ParcelableUser lastUser_ = null;
-        ITweetProcessor tweetProcessor = getDateBasedProcessor();
+        Collection<Callable<Collection<ParcelableUser>>> callables
+                = new ArrayList<Callable<Collection<ParcelableUser>>>();
+        ITweetProcessor tweetProcessor = getKeywordTweetProcessor();
+        ITwitterParameter<Query> queryITwitterParameter = new TwitterQueryParameter();
 
-        for (ParcelableUserToKeywords friend : friendsWithKeywords_) {
-            lastUser_ = friend.getFriend();
-            Log.v(TAG, " maxID fresh from query is: " + lastUser_.getMaxId());
-            Log.v(TAG, " sinceID fresh from query is: " + lastUser_.getSinceId());
+        ITwitterRetriever retriever = new KeywordTweetRetriever(tweetProcessor, queryITwitterParameter,
+                shouldRunOnce_, shouldLookForOldTweets_);
 
-            Callable<ParcelableUser> r =
-                    new FriendsKeywordTweetRetriever(friend, tweetProcessor,  shouldLookForOldTweets_);
+        for (ParcelableUser user : friendsWithKeywords_) {
+            Callable<Collection<ParcelableUser>> r =
+                    new TimelineRetrieverCallable(user, retriever);
+
             callables.add(r);
 
         }
@@ -86,8 +90,10 @@ public class TweetRetrieverWrapper {
     public Callable<Collection<ParcelableUser>> getTimeLineRetriever(ParcelableUser user_, boolean shouldRunOnce_,
                                                          boolean shouldLookForOldTweets){
 
-            ITweetProcessor dateBasedProcessor = new DateBasedTweetProcessor(_daterFormat);
-            ITwitterRetriever retriever = new TimeLineRetriever(dateBasedProcessor, shouldLookForOldTweets);
+            ITweetProcessor dateBasedProcessor = new PlainTweetProcessor(_daterFormat);
+            ITwitterParameter<Paging> twitterParameter = new TwitterPageParameter();
+            ITwitterRetriever retriever = new TimeLineRetriever(dateBasedProcessor, twitterParameter,
+                    shouldRunOnce_, shouldLookForOldTweets);
             return new TimelineRetrieverCallable(user_,retriever);
     }
 
@@ -96,7 +102,7 @@ public class TweetRetrieverWrapper {
      * Fires an asynchronous thread to retrieve tweets in a background thread, and returns the last {@link ParcelableUser}
      * that was processed. {@link ParcelableUser} can be null if {@link java.util.Collection} passed in is null;
      *
-     * @param friends_
+     * @param user_
      * 			{@link java.util.Collection} containing the {@link ParcelableUser} that will be used to retrieve the tweets for.
      * @param shouldRunOnce_
      * 			true if only the first entry in the collection should be processed.
@@ -119,23 +125,25 @@ public class TweetRetrieverWrapper {
                                                          boolean shouldLookForOldTweets_){
 
         ITweetProcessor mentionsTweetProcessor = new MentionsTweetProcessor(_daterFormat);
-        ITwitterRetriever retriever = new MentionsRetriever(mentionsTweetProcessor, shouldLookForOldTweets_);
+        ITwitterParameter<Paging> twitterParameter = new TwitterPageParameter();
+        ITwitterRetriever retriever = new MentionsRetriever(mentionsTweetProcessor, twitterParameter,
+                shouldRunOnce_,  shouldLookForOldTweets_);
         return new MentionsRetrieverCallable(user_, retriever);
     }
 
-
-    /**
-     * Fires an asynchronous thread to retrieve tweets in a background thread, and returns the last {@link ParcelableUser}
-     * that was processed. {@link ParcelableUser} can be null if {@link java.util.Collection} passed in is null;
-     *
-     * @param friends_
-     * 			{@link java.util.Collection} containing the {@link ParcelableUser} that will be used to retrieve the tweets for.
-     * @param shouldRunOnce_
-     * 			true if only the first entry in the collection should be processed.
-     *
-     * @return  {@link java.util.Collection} of the {@link java.util.concurrent.Future}
-     *         containing the processed {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} with their updated timeLines
-     */
+//
+//    /**
+//     * Fires an asynchronous thread to retrieve tweets in a background thread, and returns the last {@link ParcelableUser}
+//     * that was processed. {@link ParcelableUser} can be null if {@link java.util.Collection} passed in is null;
+//     *
+//     * @param friends_
+//     * 			{@link java.util.Collection} containing the {@link ParcelableUser} that will be used to retrieve the tweets for.
+//     * @param shouldRunOnce_
+//     * 			true if only the first entry in the collection should be processed.
+//     *
+//     * @return  {@link java.util.Collection} of the {@link java.util.concurrent.Future}
+//     *         containing the processed {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} with their updated timeLines
+//     */
 //    public Collection<Future<Collection<ParcelableUser>>> retrieveMentionTweets(Collection<ParcelableUser> friends_,
 //                                                             boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
 //

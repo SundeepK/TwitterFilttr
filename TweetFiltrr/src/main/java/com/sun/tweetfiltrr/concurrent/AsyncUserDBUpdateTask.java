@@ -8,6 +8,7 @@ import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
 import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -46,12 +47,16 @@ import java.util.concurrent.TimeUnit;
         protected Collection<ParcelableUser> doInBackground(Future<Collection<ParcelableUser>>... params) {
             Collection<ParcelableUser> futureResults = super.doInBackground(params);
 
+            if(futureResults == null){
+                futureResults = new ArrayList<ParcelableUser>();
+            }
 
             Log.v(TAG, "trying to update tiomeline size" + futureResults.size() + " for user + " + futureResults.toString());
 
             for(IUserUpdater updater : _userUpdaters){
                 updater.updateUsersToDB(futureResults);
             }
+
             return futureResults;
 
         }
