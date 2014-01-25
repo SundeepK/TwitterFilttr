@@ -75,6 +75,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
     private Collection<IUserUpdater> _userDaoUpdaters;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

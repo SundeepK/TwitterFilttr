@@ -8,7 +8,7 @@
     <!-- android:background="@drawable/list_view_shadow" -->
 
     <TextView
-        android:id="@+id/keyword_group_details"
+        android:id="@+id/user_name"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="left|top"

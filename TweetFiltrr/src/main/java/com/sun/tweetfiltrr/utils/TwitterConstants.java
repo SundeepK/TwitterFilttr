@@ -31,6 +31,7 @@ public class TwitterConstants {
     public static final long ALARM_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
     public static final long MAX_UPDATE_TIME = 5;
     public static final String PARCELABLE_FRIEND_BUNDLE = "FRIEND_WITH_TIMELINE";
+    public static final String PARCELABLE_KEYWORDGROUP_BUNDLE = "KEYWORD_GROUP";
     public static final String ON_NEW_FRIEND_BROADCAST = "ON_NEW_FRIEND";
     public static final String AUTH_USER_ID = "AUTH_USER_ID";
     public static final String AUTH_USER_SCREEN_BG = "LOGIN_SCREEN_BG";

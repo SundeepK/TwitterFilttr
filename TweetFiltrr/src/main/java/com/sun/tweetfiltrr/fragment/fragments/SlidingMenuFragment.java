@@ -61,7 +61,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
                 startActivity(i);
                 break;
             case 1:
-                i = new Intent(getActivity(), KeywordGroupScreen.class);
+                i = new Intent(getActivity(), KeywordGroupTab.class);
                 startActivity(i);
                 break;
             case 2:

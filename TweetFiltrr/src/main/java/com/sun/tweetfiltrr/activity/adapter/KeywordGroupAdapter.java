@@ -14,9 +14,6 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
 
 public class KeywordGroupAdapter extends SimpleCursorAdapter  {
@@ -24,34 +21,20 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
 
     private static final String TAG = KeywordGroupAdapter.class.getName();
 	private final LayoutInflater _inflater;
-    Lock _lock;
-    Cursor _cachedCursor;
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
+
 
 	public KeywordGroupAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags, IDBDao<ParcelableKeywordGroup> keywordGroupDao_) {
 		super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
-        _lock = new ReentrantLock(true);
-        _keywordGroupDao = keywordGroupDao_;
-        
-	}
-
-	private synchronized Cursor getCachedCursor(Cursor cachedCursor_){
-			if(_cachedCursor == null ){
-				Log.v(TAG, "creating new ionstance ");
-				_cachedCursor = cachedCursor_;
-				if( _cachedCursor.getCount() > 0 )
-					_cachedCursor.moveToFirst();
-			}
-			return _cachedCursor;
 	}
 
 
 	@Override
 	public void bindView(View view_, Context context, Cursor _cursorToIterate) {
 		
-		TextView friendName=(TextView)view_.findViewById(R.id.keyword_group_details);
+		TextView friendName=(TextView)view_.findViewById(R.id.user_name);
 		//cursor.moveToFirst();
 //		Cursor cur = getCachedCursor(_cursorToIterate);
 //		
@@ -75,8 +58,8 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
 		builder.append("\n");
 		builder.append(keywords);
 		friendName.setText(builder.toString());
-		 Button deleteBut = (Button) view_.findViewById(R.id.delete_group);
-		 deleteBut.setOnClickListener(getDeleteButtonLis(_keywordGroupDao, rowId));
+		Button deleteBut = (Button) view_.findViewById(R.id.delete_group);
+		deleteBut.setOnClickListener(getDeleteButtonLis(_keywordGroupDao, rowId));
 
 	}
 	
