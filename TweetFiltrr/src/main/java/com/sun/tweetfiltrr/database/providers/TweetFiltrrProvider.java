@@ -51,6 +51,8 @@ public class TweetFiltrrProvider extends ContentProvider {
     public static final int USERS_TO_FOLLOWERS = 7000;
     public static final int USERS_TO_FOLLOWERS_ID = 7100;
 
+    public static final int FRIENDS_LEFT_JOIN_KEYWORDS = 8000;
+
     private static final String FRIENDS_PATH = "friends";
     private static final String USER_TO_FRIENDS_PATH = "usersToFriends";
     private static final String USER_TO_FOLLOWERS_PATH = "usersToFollowers";
@@ -59,6 +61,7 @@ public class TweetFiltrrProvider extends ContentProvider {
     private static final String FREIND_GROUP_PATH = "friendGroup";
     private static final String GROUP_TABLE_PATH = "keywordGroup";
     private static final String USERS_TABLE_PATH = "users";
+    private static final String FRIENDS_LEFT_GROUP = "friendsLeftJoinGroup";
 
 
     public static final Uri CONTENT_URI_FRIEND = Uri.parse("content://" + AUTHORITY + "/" + FRIENDS_PATH);
@@ -69,6 +72,7 @@ public class TweetFiltrrProvider extends ContentProvider {
     public static final Uri CONTENT_URI_FRIEND_GROUP = Uri.parse("content://" + AUTHORITY + "/" + FREIND_GROUP_PATH);
     public static final Uri CONTENT_URI_GROUP = Uri.parse("content://" + AUTHORITY + "/" + GROUP_TABLE_PATH);
     public static final Uri CONTENT_URI_USERS = Uri.parse("content://" + AUTHORITY + "/" + USERS_TABLE_PATH);
+    public static final Uri CONTENT_URI_FRIENDS_LEFT_GROUP = Uri.parse("content://" + AUTHORITY + "/" + FRIENDS_LEFT_GROUP);
 
 
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/tweetFiltrr";
@@ -102,6 +106,9 @@ public class TweetFiltrrProvider extends ContentProvider {
 
         sURIMatcher.addURI(AUTHORITY, USERS_TABLE_PATH, USERS);
         sURIMatcher.addURI(AUTHORITY, USERS_TABLE_PATH + "/#", USERS_ID);
+
+        sURIMatcher.addURI(AUTHORITY, FRIENDS_LEFT_GROUP, FRIENDS_LEFT_JOIN_KEYWORDS);
+
 
     }
 
@@ -240,6 +247,7 @@ public class TweetFiltrrProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(CONTENT_URI_TIMELINE_FRIEND, null);
             getContext().getContentResolver().notifyChange(CONTENT_URI_USER_TO_FRIEND, null);
             getContext().getContentResolver().notifyChange(CONTENT_URI_USER_TO_FOLLOWERS, null);
+            getContext().getContentResolver().notifyChange(CONTENT_URI_FRIENDS_LEFT_GROUP, null);
 
         } finally {
             database_.endTransaction();
@@ -285,6 +293,17 @@ public class TweetFiltrrProvider extends ContentProvider {
                 queryBuilder.setProjectionMap(null);
 
                 queryBuilder.setTables(KeywordGroupColumn.KEYWORD_GROUP_TABLE.s());
+
+                break;
+
+            case GROUP_TABLE_ID:
+                queryBuilder.setProjectionMap(ensureMap());
+
+//                queryBuilder.setProjectionMap(null);
+
+                queryBuilder.setTables(KeywordGroupColumn.KEYWORD_GROUP_TABLE.s());
+                queryBuilder.appendWhere(KeywordGroupColumn.KEYWORD_GROUP_TABLE.s() + "."
+                        + KeywordGroupColumn.COLUMN_ID.s() + "=" + uri.getLastPathSegment());
 
                 break;
 
@@ -428,8 +447,18 @@ public class TweetFiltrrProvider extends ContentProvider {
 
                 Log.v(TAG, "Friend ID " + uri.getLastPathSegment());
 
+            case FRIENDS_LEFT_JOIN_KEYWORDS:
+                queryBuilder.setProjectionMap(ensureMap());
+
+                queryBuilder.setTables(
+                        FriendColumn.FRIEND_TABLE.s() + " LEFT JOIN " + KeywordGroupColumn.KEYWORD_GROUP_TABLE.s()
+                                + " ON "
+                                + FriendColumn.FRIEND_TABLE.s() + "." + FriendColumn.COLUMN_GROUP_ID.s() + " = "
+                                + KeywordGroupColumn.KEYWORD_GROUP_TABLE.s() + "." + KeywordGroupColumn.COLUMN_ID.s());
                 break;
+
             default:
+                Log.v(TAG, "unknown URI is: " +  uriType);
                 throw new IllegalArgumentException("Unknown URI");
         }
 

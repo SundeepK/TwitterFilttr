@@ -16,6 +16,7 @@ import com.sun.imageloader.core.ImageSettings;
 import com.sun.imageloader.core.api.FailedTaskReason;
 import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
+import com.sun.tweetfiltrr.activity.activities.KeywordGroup;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrUserHome;
 import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
@@ -61,7 +62,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
                 startActivity(i);
                 break;
             case 1:
-                i = new Intent(getActivity(), KeywordGroupTab.class);
+                i = new Intent(getActivity(), KeywordGroup.class);
                 startActivity(i);
                 break;
             case 2:

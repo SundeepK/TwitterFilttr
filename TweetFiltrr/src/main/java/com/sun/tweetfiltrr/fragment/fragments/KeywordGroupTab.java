@@ -2,21 +2,25 @@ package com.sun.tweetfiltrr.fragment.fragments;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -35,6 +39,7 @@ import com.sun.tweetfiltrr.multipleselector.api.OnTextViewLoad;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.InputValidator;
+import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -43,7 +48,7 @@ import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroup
 
 
 public class KeywordGroupTab extends SherlockFragment implements
-						LoaderManager.LoaderCallbacks<Cursor>, OnTextViewLoad<ParcelableUser>{
+						LoaderManager.LoaderCallbacks<Cursor>, OnTextViewLoad<ParcelableUser>, AdapterView.OnItemClickListener {
 	
 	private CursorAdapter _groupAdapter;
 	private static final int TUTORIAL_LIST_LOADER = 0x02;
@@ -84,7 +89,6 @@ public class KeywordGroupTab extends SherlockFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.group_listview, container, false);
-        ListView listView = (ListView) rootView.findViewById(android.R.id.list);
 
         EditText groupName = (EditText) rootView.findViewById(R.id.group_name);
         groupName.addTextChangedListener(getGroupNameTextWatcher(groupName));
@@ -96,8 +100,11 @@ public class KeywordGroupTab extends SherlockFragment implements
         Button saveChangesBut = (Button) rootView.findViewById(R.id.add_new_group);
         saveChangesBut.setOnClickListener(getSaveButtonLis(_keywordGroupDao, groupName, groupKeyword));
 
+        ListView listView = (ListView) rootView.findViewById(android.R.id.list);
+
         // Assign adapter to ListView
         listView.setAdapter(_groupAdapter);
+        listView.setOnItemClickListener(this);
         getActivity().getSupportLoaderManager().initLoader(TUTORIAL_LIST_LOADER, null, this);
         return rootView;
     }
@@ -315,5 +322,18 @@ public class KeywordGroupTab extends SherlockFragment implements
 	}
 
 
-	
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.v(TAG, "item clicked  keywordgroup");
+        sendMessageToTwitterActivity(id);
+
+    }
+
+    private void sendMessageToTwitterActivity(long rowID){
+        ParcelableKeywordGroup group = _keywordGroupDao.getEntry(rowID).iterator().next();
+        Log.v(TAG, "sending group " + group.getGroupName());
+        Intent intent = new Intent(TwitterConstants.ON_BROADCAST_GROUP_SELECTED);
+        intent.putExtra(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE, group);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+    }
 }

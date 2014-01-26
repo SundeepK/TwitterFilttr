@@ -59,7 +59,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 
 	@Override
 	    public Fragment getItem(int index) {
-	 
+
 	    Bundle bundle = new Bundle();
 	    bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
 	    Fragment frag = null;
