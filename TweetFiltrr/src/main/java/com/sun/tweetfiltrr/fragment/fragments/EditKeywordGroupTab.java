@@ -69,7 +69,8 @@ public class EditKeywordGroupTab extends SherlockFragment implements
         _keywordGroupDao = new KeywordGroupDao(resolver,  keywordToParcelable  );
         _friendDao = new FriendDao(resolver, friendCursorToParcelable);
 
-        CursorToParcelable<ParcelableUser> cursorToParcelable = new KeywordFriendToParcelable(friendCursorToParcelable, keywordToParcelable);
+        CursorToParcelable<ParcelableUser> cursorToParcelable =
+                new KeywordFriendToParcelable(friendCursorToParcelable, keywordToParcelable);
 //        String[] columns = {
 //                KeywordGroupColumn.COLUMN_ID.s(),
 //                KeywordGroupColumn.COLUMN_GROUP_NAME.s(),

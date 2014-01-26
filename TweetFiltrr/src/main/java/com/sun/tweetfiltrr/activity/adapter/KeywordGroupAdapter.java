@@ -35,20 +35,7 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
 	public void bindView(View view_, Context context, Cursor _cursorToIterate) {
 		
 		TextView friendName=(TextView)view_.findViewById(R.id.user_name);
-		//cursor.moveToFirst();
-//		Cursor cur = getCachedCursor(_cursorToIterate);
-//		
-//		if(!cur.isLast()){
-//		new AsyncKeywordGroupLoader(friendName, _lock,cur ).execute();
-//		}
-//		String groupName;
-//		String keywords;
-//		int groupID;
-//		groupName =	cursor.getString(cursor.getColumnIndex(KeywordGroupColumn.COLUMN_GROUP_NAME));
-//		int groupID = cursor.getInt(cursor.getColumnIndex(FriendTable.COLUMN_GROUP_ID));
-//		keywords = 	cursor.getString(cursor.getColumnIndex(KeywordGroupColumn.COLUMN_KEYWORDS));
-//		friendName.setText(groupName);
-//		
+
 		String groupName =	_cursorToIterate.getString(_cursorToIterate.getColumnIndex(KeywordGroupColumn.COLUMN_GROUP_NAME.s()));
 		String	keywords = 	_cursorToIterate.getString(_cursorToIterate.getColumnIndex(KeywordGroupColumn.COLUMN_KEYWORDS.s()));
 		long rowId = 	_cursorToIterate.getLong((_cursorToIterate.getColumnIndex(KeywordGroupColumn.COLUMN_ID.s())));

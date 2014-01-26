@@ -24,8 +24,11 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
 	}
 
     public void onSwitchToNextFragment(ParcelableKeywordGroup group_) {
-        _fragManager.beginTransaction().remove(_currentFragment)
-                .commitAllowingStateLoss();
+
+        if(_currentFragment != null){
+            _fragManager.beginTransaction().remove(_currentFragment)
+                    .commitAllowingStateLoss();
+        }
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE, group_);
