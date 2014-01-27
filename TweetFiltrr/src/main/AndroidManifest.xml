@@ -72,7 +72,6 @@
             android:theme="@style/Theme.Sherlock.Light.NoActionBar"
             android:configChanges="keyboardHidden|orientation"
             android:windowSoftInputMode="adjustPan"
-            android:noHistory="true"
             >
 
             <!--android:theme="@style/Theme.Sherlock.Light.NoActionBar" >-->

@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#e5e5e5"
     android:descendantFocusability="beforeDescendants"
     android:focusable="true"
     android:focusableInTouchMode="true"
@@ -11,12 +10,14 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="#000000"
         android:orientation="vertical" >
 
         <EditText
             android:id="@+id/group_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textColor="#212121"
             android:layout_margin="10dp"
             android:padding="5dp" />
 
@@ -24,6 +25,7 @@
             android:id="@+id/group_keyword"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textColor="#212121"
             android:layout_margin="10dp"
             android:padding="5dp" />
 
@@ -32,7 +34,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/standardbutton"
+            android:background="#757576"
             android:padding="5dp"
             android:text="Save group"
             android:textSize="12dp" />
@@ -42,7 +44,7 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#ffffff"
+        android:background="#000000"
         android:divider="@null"
         android:dividerHeight="0dp" />
 

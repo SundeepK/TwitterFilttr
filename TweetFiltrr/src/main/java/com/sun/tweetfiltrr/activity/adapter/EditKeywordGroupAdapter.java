@@ -56,10 +56,13 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter  {
         final ParcelableUser user = getUser(cursor_);
         ImageView profileImage = (ImageView)view_.findViewById(R.id.profile_image);
 		TextView userName =(TextView)view_.findViewById(R.id.user_name);
+        TextView groupName =(TextView)view_.findViewById(R.id.group_name);
+
         ImageLoaderUtils.attemptLoadImage(profileImage,_imageLoader , user.getProfileImageUrl(),1, null);
 		userName.setText(user.getUserName());
         CheckBox isPartOfGroupCheckBox = (CheckBox) view_.findViewById(R.id.is_part_of_group_checkbox);
         ParcelableKeywordGroup usersGroup = user.getKeywordGroup();
+        groupName.setText(usersGroup.getGroupName());
 
         isPartOfGroupCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +90,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter  {
         }
 
 	}
+
 
     private void registerCheckBoxListener(final CheckBox checkBox_,
                                           final int position_, final SparseBooleanArray sparseBool_) {

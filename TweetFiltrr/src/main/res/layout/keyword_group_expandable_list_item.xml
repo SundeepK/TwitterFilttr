@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="#000000"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
@@ -13,21 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center|left"
-        android:textSize="14dp" />
-
-
-    <!--<Button-->
-        <!--android:id="@+id/edit_group"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="1dp"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:background="@drawable/standardbutton"-->
-        <!--android:padding="1dp"-->
-        <!--android:text="Edit"-->
-        <!--android:textSize="12dp" />-->
-
-    <!--android:layout_toLeftOf="@+id/edit_group"-->
+        android:layout_margin="5dp"
+        android:textColor="#757575"
+        android:text="dawdaqwd"
+        android:textSize="18dp" />
 
     <Button
         android:id="@+id/delete_group"
@@ -35,47 +25,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:focusable="false"
+        android:layout_margin="5dp"
         android:focusableInTouchMode="false"
-        android:background="@drawable/standardbutton"
         android:text="Delete"
         android:layout_marginRight="5dp"
-        android:textSize="10dp" />
+        android:textSize="16dp" />
 
-    <!--<Button-->
-    <!--android:id="@+id/add_friends"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="0.5"-->
-    <!--android:background="@drawable/standardbutton"-->
-    <!--android:text="Add friends"-->
-    <!--android:textSize="10dp" />-->
-
-    <!-- <Button -->
-    <!-- android:id="@+id/expandable_toggle_button" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_alignParentRight="true" -->
-    <!-- android:layout_margin="1dp" -->
-    <!-- android:layout_alignTop="@id/text" -->
-    <!-- android:layout_alignBottom="@+id/text" -->
-    <!-- android:background="@drawable/standardbutton" -->
-    <!-- android:text="Show friends" -->
-    <!-- android:textSize="14dp" /> -->
-
-
-    <!-- <ImageView -->
-    <!-- android:id="@+id/expandable_toggle_button" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_alignParentRight="true" -->
-    <!-- android:layout_alignParentBottom="true" -->
-    <!-- android:paddingRight="5dp" -->
-    <!-- android:adjustViewBounds="true" -->
-    <!-- android:maxHeight="10dp" -->
-    <!-- android:maxWidth="10dp" -->
-    <!-- android:scaleType="fitCenter" -->
-    <!-- android:src="@drawable/morearrow" /> -->
-
-    <!--</RelativeLayout>-->
 
 </RelativeLayout>

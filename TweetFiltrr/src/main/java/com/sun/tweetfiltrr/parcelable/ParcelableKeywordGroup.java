@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.parcelable;
 
 import android.os.Parcel;
-import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 
@@ -10,6 +10,11 @@ public class ParcelableKeywordGroup implements IParcelableTwitter {
 	private String _groupName, _groupKeywords;
 	
 	public String getGroupName() {
+
+        if(TextUtils.isEmpty(_groupName)){
+            _groupName="No group";
+        }
+
 		return _groupName;
 	}
 

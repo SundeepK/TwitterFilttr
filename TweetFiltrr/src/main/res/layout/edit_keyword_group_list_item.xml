@@ -7,21 +7,13 @@
 
      <ImageView
      android:id="@+id/profile_image"
-     android:layout_width="60dp"
-     android:layout_height="60dp"
+     android:layout_width="50dp"
+     android:layout_height="50dp"
      android:layout_alignParentLeft="true"
      android:paddingRight="5dp"
      android:adjustViewBounds="true"
      android:scaleType="fitCenter"
      />
-
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@+id/profile_image"
-        android:textSize="16sp" />
 
     <CheckBox
         android:id="@+id/is_part_of_group_checkbox"
@@ -31,6 +23,25 @@
         android:layout_alignParentRight="true"
         />
 
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/profile_image"
+        android:textColor="#757575"
+        android:text="dawdawwadawdw"
+        android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="group name"
+        android:textSize="14sp"
+        android:textColor="#757575"
+        android:layout_below="@+id/is_part_of_group_checkbox"
+        android:layout_toRightOf="@+id/profile_image" />
 
 </RelativeLayout>
