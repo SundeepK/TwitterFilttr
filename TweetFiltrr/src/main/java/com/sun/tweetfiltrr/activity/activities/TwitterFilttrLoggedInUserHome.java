@@ -20,7 +20,6 @@ import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterUserHomeTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
-import com.sun.tweetfiltrr.fragment.fragments.KeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.SettingsScreen;
 import com.sun.tweetfiltrr.fragment.fragments.SlidingMenuFragment;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
@@ -108,7 +107,7 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
 
                 break;
             case 1:
-                i = new Intent(TwitterFilttrLoggedInUserHome.this, KeywordGroupTab.class);
+                i = new Intent(TwitterFilttrLoggedInUserHome.this, KeywordGroupScreen.class);
                 startActivity(i);
                 break;
             case 2:

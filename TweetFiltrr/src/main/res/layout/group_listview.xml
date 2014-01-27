@@ -18,6 +18,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textColor="#212121"
+            android:background="#1e1d1d"
             android:layout_margin="10dp"
             android:hint="Group name"
             android:padding="5dp" />
@@ -26,8 +27,8 @@
             android:id="@+id/group_keyword"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textColor="#212121"
             android:layout_margin="10dp"
+            android:background="#1e1d1d"
             android:hint="Keywords"
             android:padding="5dp" />
 
@@ -36,7 +37,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="#757576"
+            android:textColor="#212121"
             android:padding="5dp"
             android:text="Save group"
             android:textSize="12dp" />
@@ -48,6 +49,6 @@
         android:layout_height="fill_parent"
         android:background="#000000"
         android:divider="@null"
-        android:dividerHeight="0dp" />
+        android:dividerHeight="5dp" />
 
 </LinearLayout>

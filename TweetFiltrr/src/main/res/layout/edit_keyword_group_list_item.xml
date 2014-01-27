@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="#000000"
+    android:padding="10dp"
     android:orientation="vertical">
 
 
@@ -27,7 +29,6 @@
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/profile_image"
         android:textColor="#757575"
         android:text="dawdawwadawdw"
@@ -37,11 +38,10 @@
         android:id="@+id/group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
         android:text="group name"
         android:textSize="14sp"
         android:textColor="#757575"
-        android:layout_below="@+id/is_part_of_group_checkbox"
+        android:layout_below="@+id/user_name"
         android:layout_toRightOf="@+id/profile_image" />
 
 </RelativeLayout>

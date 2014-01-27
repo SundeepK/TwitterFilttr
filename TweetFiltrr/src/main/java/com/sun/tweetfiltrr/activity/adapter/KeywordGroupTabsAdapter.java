@@ -1,15 +1,11 @@
 package com.sun.tweetfiltrr.activity.adapter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
-import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
-import com.sun.tweetfiltrr.fragment.fragments.KeywordGroupTab;
+import com.sun.tweetfiltrr.activity.activities.KeywordGroupScreen;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
-import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 
 public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
@@ -25,18 +21,18 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
 
     public void onSwitchToNextFragment(ParcelableKeywordGroup group_) {
 
-        if(_currentFragment != null){
-            _fragManager.beginTransaction().remove(_currentFragment)
-                    .commitAllowingStateLoss();
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE, group_);
-        Log.v(TAG, "inside keywordgroup dater with group " + group_.getGroupName());
-        Fragment frag =  new EditKeywordGroupTab();
-        frag.setArguments(bundle);
-        _currentFragment = frag;
-        notifyDataSetChanged();
+//        if(_currentFragment != null){
+//            _fragManager.beginTransaction().remove(_currentFragment)
+//                    .commitAllowingStateLoss();
+//        }
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE, group_);
+//        Log.v(TAG, "inside keywordgroup dater with group " + group_.getGroupName());
+//       // Fragment frag =  new EditKeywordGroupTab();
+//        frag.setArguments(bundle);
+//        _currentFragment = frag;
+//        notifyDataSetChanged();
 
     }
 
@@ -44,27 +40,27 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
 	@Override
 	    public Fragment getItem(int index) {
 
-	        switch (index) {
-	        case 0:
-
-                if(_first == null){
-                    _first =  new KeywordGroupTab();
-                }
-
-                return _first;
-	        case 1:
-
-                if(_currentFragment==null){
-                    _currentFragment = new EditKeywordGroupTab();
-                Log.v(TAG, "current tab name" + _currentFragment.toString());
-                }
-
-                return _currentFragment;
-
-	        case 2:
-
-	        }
-	 
+//	        switch (index) {
+//	        case 0:
+//
+//                if(_first == null){
+//                    _first =  new KeywordGroupScreen();
+//                }
+//
+//                return _first;
+//	        case 1:
+//
+//                if(_currentFragment==null){
+//                    _currentFragment = new EditKeywordGroupTab();
+//                Log.v(TAG, "current tab name" + _currentFragment.toString());
+//                }
+//
+//                return _currentFragment;
+//
+//	        case 2:
+//
+//	        }
+//
 	        return null;
 	    }
 	 
@@ -76,7 +72,7 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
     @Override
     public int getItemPosition(Object object)
     {
-        if (object instanceof KeywordGroupTab)
+        if (object instanceof KeywordGroupScreen)
             return POSITION_UNCHANGED;
 
         return POSITION_NONE;

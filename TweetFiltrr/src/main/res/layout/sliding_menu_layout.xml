@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,16 +15,44 @@
         android:focusable="false"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:adjustViewBounds="true"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="3dp"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="#66000000"
+        android:layout_below="@+id/profile_image"
+        android:layout_alignLeft="@id/profile_image"
+        android:textColor="#fff"
+        android:padding="5dp"
+        />
+
     <ListView
         android:id="@+id/sliding_menu_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="#00000000"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="3dp"
+        android:layout_below="@+id/user_name"
+        android:padding="5dp"
+        android:background="#66000000"
         android:dividerHeight="0dp" />
     <!--android:background="@null"-->
 
 
 
 
-</FrameLayout>
+</RelativeLayout>
