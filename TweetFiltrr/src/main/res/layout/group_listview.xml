@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:textColor="#212121"
             android:layout_margin="10dp"
+            android:hint="Group name"
             android:padding="5dp" />
 
         <EditText
@@ -27,6 +28,7 @@
             android:layout_height="wrap_content"
             android:textColor="#212121"
             android:layout_margin="10dp"
+            android:hint="Keywords"
             android:padding="5dp" />
 
         <Button

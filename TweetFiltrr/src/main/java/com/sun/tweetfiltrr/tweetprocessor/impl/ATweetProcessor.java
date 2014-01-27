@@ -126,7 +126,7 @@ public abstract class ATweetProcessor implements ITweetProcessor {
         Log.v(TAG, "" + tweet_.getInReplyToScreenName());
         Log.v(TAG, "Tweet date: " + tweetCreateAt.toString());
         final Date now = DateUtils.getCurrentDate();
-        final ParcelableTimeLineEntry parcelableTimeLineEntry = getTimeLineEntry(tweet_, user, dateFormat_, now );
+        final ParcelableTimeLineEntry parcelableTimeLineEntry = getTimeLineEntry(tweet_, user, dateFormat_, tweetCreateAt );
         processTweet(parcelableTimeLineEntry);
         addToMap(usersKeyToTimline_, user, parcelableTimeLineEntry);
         return true;

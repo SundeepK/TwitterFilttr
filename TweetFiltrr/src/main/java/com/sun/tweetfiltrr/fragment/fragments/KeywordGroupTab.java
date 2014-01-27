@@ -56,7 +56,7 @@ public class KeywordGroupTab extends SherlockFragment implements
 	private IDBDao<ParcelableUser> _friendDao;
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
 	private InputValidator _inputValidator;
-	
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,59 +121,82 @@ public class KeywordGroupTab extends SherlockFragment implements
 					int after) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if(_inputValidator.compareWordCount(s.toString(), 10)){
-					groupKeyword_.setError("Group name cannot be empty");
-				}else{
-					groupKeyword_.setError(null);
-				}
-			}
-		};
+                isEditTextValid(groupKeyword_, s , 10, 50);
+		}
+      };
 	}
-	
-	private TextWatcher getGroupNameTextWatcher(final EditText groupName_){
-		return new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {}
-			@Override
-			public void afterTextChanged(Editable s) {
-				if(_inputValidator.checkNullInput(s.toString())){
-					groupName_.setError("Group name cannot be empty");
-				}else{
-					groupName_.setError(null);
-				}
-			}
-		};
-	}
-	
-	
-	
-	private OnClickListener getSaveButtonLis(final IDBDao<ParcelableKeywordGroup> keywordGroupDao_,
-			final EditText groupName_, final EditText groupKeywords_){
-		return new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-					String name = groupName_.getText().toString().toLowerCase(Locale.US);
-					String keywords = groupKeywords_.getText().toString().toLowerCase(Locale.US);
-					ParcelableKeywordGroup keywordGroup = new ParcelableKeywordGroup(name, keywords);
 
-                    Collection<ParcelableKeywordGroup>	keywordGroups = keywordGroupDao_.getEntries(KeywordGroupColumn.COLUMN_GROUP_NAME.s() + " =? ", new String[]{name}, null);
-					
-					if(keywordGroups.size() == 0){
-						keywordGroups.add(keywordGroup);
-						keywordGroupDao_.insertOrUpdate(keywordGroups);
-						groupKeywords_.setText("");
-						groupName_.setText("");
-					}
-									
-			}
-		};
-	}
+    private TextWatcher getGroupNameTextWatcher(final EditText groupName_){
+        return new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                isEditTextValid(groupName_, s , 10, 50);
+            }
+        };
+    }
+
+
+    private boolean isEditTextValid(EditText editTextToValidate_,  int wordCount, int maxLenght_) {
+        final Editable editableText = editTextToValidate_.getEditableText();
+        return isEditTextValid(editTextToValidate_, editableText, wordCount, maxLenght_);
+    }
+
+    private boolean isEditTextValid(EditText editTextToValidate_, Editable editableText_,  int wordCount, int maxLenght_) {
+        boolean isValid = false;
+        String inputString = editableText_.toString().toLowerCase(Locale.US);
+        if(_inputValidator.compareWordCount(inputString, wordCount)){
+            editTextToValidate_.setError("Must use less than " + wordCount + " keywords");
+            isValid = false;
+        }else if (_inputValidator.checkNullInput(inputString)) {
+            editTextToValidate_.setError("Input cannot be empty");
+            isValid = false;
+        }else if ((inputString.length() > maxLenght_)) {
+            editTextToValidate_.setError("Input is too big");
+            isValid = false;
+        }else {
+            editTextToValidate_.setError(null);
+            isValid = true;
+        }
+        return isValid;
+    }
 	
-	private void prepareEditTextView(final String default_, final EditText editText_){
+
+
+    private OnClickListener getSaveButtonLis(final IDBDao<ParcelableKeywordGroup> keywordGroupDao_,
+                                             final EditText groupName_, final EditText groupKeywords_) {
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                String name = groupName_.getEditableText().toString().toLowerCase(Locale.US);
+                String keywords = groupKeywords_.getEditableText().toString().toLowerCase(Locale.US);
+
+                if (isEditTextValid(groupName_, 10, 50) && isEditTextValid(groupKeywords_, 10, 50)) {
+
+                        ParcelableKeywordGroup keywordGroup = new ParcelableKeywordGroup(name, keywords);
+                        Collection<ParcelableKeywordGroup> keywordGroups =
+                                keywordGroupDao_.getEntries(KeywordGroupColumn.COLUMN_GROUP_NAME.s() + " =? ", new String[]{name}, null);
+
+                        if (keywordGroups.size() == 0) {
+                            keywordGroups.add(keywordGroup);
+                            keywordGroupDao_.insertOrUpdate(keywordGroups);
+                            groupKeywords_.setText("");
+                            groupName_.setText("");
+
+                    }
+                }
+
+            }
+        };
+    }
+
+    private void prepareEditTextView(final String default_, final EditText editText_){
 		editText_.setTextColor(Color.GRAY);
 		editText_.setText(default_);		
 		
@@ -189,11 +212,9 @@ public class KeywordGroupTab extends SherlockFragment implements
 	            	editText.setText(default_);
 	            	return;
 	            } else if (hasFocus && editText.getText().toString().equals(default_)){
-	        		editText_.setTextColor(Color.BLACK);
 	            	editText.setText("");
 	            	return;
 	            } 
-            	editText.setTextColor(Color.BLACK);
 	        }
 	    }); 
 	}

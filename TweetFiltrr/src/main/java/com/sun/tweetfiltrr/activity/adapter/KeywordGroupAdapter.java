@@ -28,6 +28,7 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
 			String[] from, int[] to, int flags, IDBDao<ParcelableKeywordGroup> keywordGroupDao_) {
 		super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
+        _keywordGroupDao = keywordGroupDao_;
 	}
 
 
