@@ -356,6 +356,9 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 
          bmp = BitmapFactory.decodeFile(filePath_);
 
+//           Bitmap bmp = null;
+//         bmp = _blurredImageProcessor.processImage(bitmap);
+
         return bmp;
     }
 
