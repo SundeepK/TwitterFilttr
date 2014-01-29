@@ -27,10 +27,10 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
     private final OnTweetOperation _onTweetOperationLis;
 
     public interface OnTweetOperation {
-        public void onTweetFav(ParcelableTweet tweet_);
-        public void onReTweet(ParcelableTweet tweet_);
-        public void onReplyTweet(ParcelableTweet tweet_);
-        public void onQuoteTweet(ParcelableTweet tweet_);
+        public void onTweetFav(View view_, ParcelableTweet tweet_);
+        public void onReTweet(View view_,ParcelableTweet tweet_);
+        public void onReplyTweet(View view_, ParcelableTweet tweet_);
+        public void onQuoteTweet(View view_ ,ParcelableTweet tweet_);
 
     }
 
@@ -80,7 +80,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(tweetToFav_);
+                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
             }
         };
     }
@@ -89,7 +89,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(tweetToFav_);
+                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
             }
         };
     }
@@ -98,7 +98,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(tweetToFav_);
+                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
            }
         };
     }
@@ -107,7 +107,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
        return new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               onTweetOperationLis_.onTweetFav(tweetToFav_);
+               onTweetOperationLis_.onTweetFav(v,tweetToFav_);
 //               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
 //                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
 //                               new ParcelableTweet[]{tweetToFav_});

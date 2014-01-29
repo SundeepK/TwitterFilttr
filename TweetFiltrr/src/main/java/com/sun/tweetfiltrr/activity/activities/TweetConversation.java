@@ -40,6 +40,7 @@ import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
+import com.sun.tweetfiltrr.tweetoperations.TweetOperationHandler;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
@@ -123,7 +124,10 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 
         SmoothProgressBarWrapper smoothProgressBarWrapper = new SmoothProgressBarWrapper(progressBar);
 
-        _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader , smoothProgressBarWrapper, _timelineDao);
+        SingleTweetAdapter.OnTweetOperation onTweetOperationListener
+                = new TweetOperationHandler(smoothProgressBarWrapper, _timelineDao);
+
+        _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
 
 
         _blurredImageProcessor = new BlurredImageGenerator(this);
