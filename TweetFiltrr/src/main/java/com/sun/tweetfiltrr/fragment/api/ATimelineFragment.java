@@ -38,7 +38,7 @@ import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineUserUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.UserUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -65,11 +65,11 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private SimpleCursorAdapter _dataAdapter;
     private static final int TUTORIAL_LIST_LOADER = 0x04;
     private int _currentLimitCount = 50;
-    private IDBDao<ParcelableTimeLineEntry> _timelineDao;
+    private IDBDao<ParcelableTweet> _timelineDao;
     private IDBDao<ParcelableUser> _friendDao;
     private ThreadPoolExecutor _threadExecutor;
     private TweetRetrieverWrapper _tweetRetriver;
-    private IDBUpdater<ParcelableTimeLineEntry> _timelineBufferedDBUpdater;
+    private IDBUpdater<ParcelableTweet> _timelineBufferedDBUpdater;
     private UrlImageLoader _sicImageLoader;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
@@ -111,7 +111,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         ThreadLocal<SimpleDateFormat> simpleDateFormatLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
 
         _timelineBufferedDBUpdater =
-                new SimpleDBUpdater<ParcelableTimeLineEntry>();
+                new SimpleDBUpdater<ParcelableTweet>();
 
         //initialise TweetRetrieverWrapper to easy tweet retrieval
         _tweetRetriver = new TweetRetrieverWrapper(_threadExecutor, simpleDateFormatLocal);
@@ -226,10 +226,10 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         int tweetID =
                 cursor.getInt(cursor.getColumnIndexOrThrow(TimelineColumn._ID.a()));
         Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
-        Collection<ParcelableTimeLineEntry> tweets = _timelineDao.getEntry(tweetID);
+        Collection<ParcelableTweet> tweets = _timelineDao.getEntry(tweetID);
         //we should only retrieve 1 friend since rowId is unique, so we iterate once
         ParcelableUser user = friends.iterator().next();
-        ParcelableTimeLineEntry tweet = tweets.iterator().next();
+        ParcelableTweet tweet = tweets.iterator().next();
         user.setRowId(rowId);
         user.addTimeLineEntry(tweet);
         Log.v(TAG, "user queroed is :" + user.toString());

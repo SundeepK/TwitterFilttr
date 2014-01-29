@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 import android.util.Log;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
@@ -24,7 +24,7 @@ public class PlainTweetProcessor extends ATweetProcessor {
      * Threadsafe class
      * <p/>
      * Base class for runnable's which need to retrieve tweets from twitter. It provides default functionality to convert
-     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
+     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
      * be updated in the database.
      *
      * This class ensures that we do not filter tweets on dates, so we essentially keep all tweets that is returned via
@@ -38,10 +38,10 @@ public class PlainTweetProcessor extends ATweetProcessor {
 
     @Override
     public void cacheLastIDs(ParcelableUser user_) {
-        final List<ParcelableTimeLineEntry> timeLine = user_.getUserTimeLine();
+        final List<ParcelableTweet> timeLine = user_.getUserTimeLine();
         if (!timeLine.isEmpty()) {
-            ParcelableTimeLineEntry timelineFirst = timeLine.get(timeLine.size() - 1);
-            ParcelableTimeLineEntry timelineLast = timeLine.get(0);
+            ParcelableTweet timelineFirst = timeLine.get(timeLine.size() - 1);
+            ParcelableTweet timelineLast = timeLine.get(0);
             Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
             user_.setSinceId(timelineLast.getTweetID());
             user_.setMaxId( timelineFirst.getTweetID());
@@ -64,7 +64,7 @@ public class PlainTweetProcessor extends ATweetProcessor {
     }
 
     @Override
-    protected void processTweet(ParcelableTimeLineEntry tweetToProcess_) {
+    protected void processTweet(ParcelableTweet tweetToProcess_) {
 
     }
 

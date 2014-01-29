@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 import android.util.Log;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
 import java.text.SimpleDateFormat;
 
@@ -17,7 +17,7 @@ public class KeywordTweetProcessor extends DateBasedTweetProcessor {
      * Threadsafe class
      * <p/>
      * Base class for runnable's which need to retrieve tweets from twitter. It provides default functionality to convert
-     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
+     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
      * be updated in the database.
      *
      * This class ensures that we do not filter tweets on dates, so we essentially keep all tweets that is returned via
@@ -35,7 +35,7 @@ public class KeywordTweetProcessor extends DateBasedTweetProcessor {
      * @param tweetToProcess_
      */
     @Override
-    protected void processTweet(ParcelableTimeLineEntry tweetToProcess_) {
+    protected void processTweet(ParcelableTweet tweetToProcess_) {
         Log.v(TAG, "setting keyword tweet to true");
         tweetToProcess_.setIsKeyWordSearedTweet(true);
     }

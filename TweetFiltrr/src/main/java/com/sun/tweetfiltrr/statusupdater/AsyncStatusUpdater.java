@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.statusupdater;
 
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import twitter4j.StatusUpdate;
@@ -10,10 +10,10 @@ import twitter4j.TwitterException;
 
 public class AsyncStatusUpdater implements Runnable {
 
-	private ParcelableTimeLineEntry _tweetToUpdate;
+	private ParcelableTweet _tweetToUpdate;
 	private OnStatusUpdateFailCallback _exceptionCallBack;
 	
-	public AsyncStatusUpdater(ParcelableTimeLineEntry tweetToUpdate_, OnStatusUpdateFailCallback exceptionCallBack_){
+	public AsyncStatusUpdater(ParcelableTweet tweetToUpdate_, OnStatusUpdateFailCallback exceptionCallBack_){
 		_tweetToUpdate = tweetToUpdate_;
 		_exceptionCallBack = exceptionCallBack_;
 	}

@@ -13,31 +13,34 @@ import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 
 import java.net.URISyntaxException;
 import java.util.List;
 
 public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
 
-    private List<ParcelableUser> _currentUser;
-    int _userTweetsListView;
-    private UrlImageLoader _sicUrlImageLoader;
+    private final int _userTweetsListView;
+    private final UrlImageLoader _sicUrlImageLoader;
     private static final String TAG = SingleTweetAdapter.class.getName();
-    private SmoothProgressBarWrapper _smoothProgressBarWrapper;
-    IDBDao<ParcelableTimeLineEntry> _timelineDao;
+    private final OnTweetOperation _onTweetOperationLis;
+
+    public interface OnTweetOperation {
+        public void onTweetFav(ParcelableTweet tweet_);
+        public void onReTweet(ParcelableTweet tweet_);
+        public void onReplyTweet(ParcelableTweet tweet_);
+        public void onQuoteTweet(ParcelableTweet tweet_);
+
+    }
 
     public SingleTweetAdapter(Context context,   int userTweetsListView_,
-                              List<ParcelableUser> objects_,  UrlImageLoader sicUrlImageLoader_,
-                              SmoothProgressBarWrapper smoothProgressBarWrapper_, IDBDao<ParcelableTimeLineEntry> timelineDao_) {
+                              List<ParcelableUser> objects_,  UrlImageLoader sicUrlImageLoader_,OnTweetOperation onTweetOperationLis_
+                              ) {
         super(context, userTweetsListView_, objects_);
         this._userTweetsListView = userTweetsListView_;
         _sicUrlImageLoader = sicUrlImageLoader_;
-        _smoothProgressBarWrapper = smoothProgressBarWrapper_;
-        _timelineDao = timelineDao_;
+        _onTweetOperationLis = onTweetOperationLis_;
     }
 
 
@@ -55,7 +58,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         final ParcelableUser currentUser = getItem(position);
 
 
-        ParcelableTimeLineEntry tweet = currentUser.getUserTimeLine().iterator().next();
+        ParcelableTweet tweet = currentUser.getUserTimeLine().iterator().next();
         viewHolder._friendName.setText(currentUser.getUserName());
         viewHolder._tweetText.setText(tweet.getTweetDate());
         viewHolder._tweetText.setText(tweet.getTweetText());
@@ -65,21 +68,49 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
             e.printStackTrace();
         }
 
-//        viewHolder._retweetBut.setOnClickListener();
-        viewHolder._favouriteBut.setOnClickListener(getFavOnClick(tweet));
-//        viewHolder._quoteBut.setOnClickListener();
-//        viewHolder._replyBut.setOnClickListener();
+        viewHolder._retweetBut.setOnClickListener(getReTweetOnClick(tweet, _onTweetOperationLis));
+        viewHolder._favouriteBut.setOnClickListener(getFavOnClick(tweet, _onTweetOperationLis));
+        viewHolder._quoteBut.setOnClickListener(getQuoteOnClick(tweet, _onTweetOperationLis));
+        viewHolder._replyBut.setOnClickListener(getReplyOnClick(tweet, _onTweetOperationLis));
 
         return view;
     }
 
-    private View.OnClickListener getFavOnClick(final ParcelableTimeLineEntry tweetToFav_){
+    private View.OnClickListener getReplyOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTweetOperationLis_.onReplyTweet(tweetToFav_);
+            }
+        };
+    }
+
+    private View.OnClickListener getQuoteOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTweetOperationLis_.onReplyTweet(tweetToFav_);
+            }
+        };
+    }
+
+    private View.OnClickListener getReTweetOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTweetOperationLis_.onReplyTweet(tweetToFav_);
+           }
+        };
+    }
+
+    private View.OnClickListener getFavOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
        return new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               onTweetOperationLis_.onTweetFav(tweetToFav_);
 //               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
 //                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
-//                               new ParcelableTimeLineEntry[]{tweetToFav_});
+//                               new ParcelableTweet[]{tweetToFav_});
            }
        };
     }

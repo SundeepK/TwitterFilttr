@@ -22,7 +22,7 @@ import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.imageprocessor.IOnImageProcessCallback;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.screencap.IScreenCapGenerator;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -39,7 +39,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
 	private final LayoutInflater _inflater;
     private UrlImageLoader _imageLoadermine;
     private ParcelableUser _currentFriend;
-    private IDBDao<ParcelableTimeLineEntry> _timelineDao;
+    private IDBDao<ParcelableTweet> _timelineDao;
 	private ThreadPoolExecutor _executor;
 	private ConversationRetriever.OnConvoLoadListener _convoLoadLis;
 	private Handler _currentHandler;
@@ -52,7 +52,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
 	public TimelineCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags, ParcelableUser currentFriend_,
 			ConversationRetriever.OnConvoLoadListener convoLoadLis_,	Handler currentHandler_,
-            IDBDao<ParcelableTimeLineEntry> timelineDao_,
+            IDBDao<ParcelableTweet> timelineDao_,
             IImageProcessor blurredImageProcessor_, IScreenCapGenerator screenCapGenerator_,
             IOnImageProcessCallback imageProcessCallback_) {
 		super(context, layout, c, from, to, flags);
@@ -82,7 +82,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
     public TimelineCursorAdapter(Context context, int layout, Cursor c,
                                  String[] from, int[] to, int flags, ParcelableUser currentFriend_,
                                  ConversationRetriever.OnConvoLoadListener convoLoadLis_,	Handler currentHandler_,
-                                 IDBDao<ParcelableTimeLineEntry> timelineDao_,
+                                 IDBDao<ParcelableTweet> timelineDao_,
                                  IImageProcessor blurredImageProcessor_) {
         super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
@@ -119,7 +119,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
 	@Override
 	public void bindView(View view_, Context context, Cursor cursor_) {
 
-		ParcelableTimeLineEntry tweet = getParcelable(cursor_);
+		ParcelableTweet tweet = getParcelable(cursor_);
 		TextView friendName=(TextView)view_.findViewById(R.id.timeline_friend_name);
 
 		TextView dateTime=(TextView)view_.findViewById(R.id.timeline_date_time);
@@ -152,7 +152,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
 
 
 	private OnClickListener getConversationLis(final ParcelableUser currentFriend_,
-			final IDBDao<ParcelableTimeLineEntry> timelineDao_, final ThreadPoolExecutor executor_, final ConversationRetriever.OnConvoLoadListener listener_, final Handler currentHandler_){
+			final IDBDao<ParcelableTweet> timelineDao_, final ThreadPoolExecutor executor_, final ConversationRetriever.OnConvoLoadListener listener_, final Handler currentHandler_){
 		return new OnClickListener() {
 
 			@Override
@@ -175,7 +175,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
 		};
 	}
 
-	protected ParcelableTimeLineEntry getParcelable(Cursor cursorTimeline_) {
+	protected ParcelableTweet getParcelable(Cursor cursorTimeline_) {
         long friendID = cursorTimeline_.getLong(cursorTimeline_
                 .getColumnIndexOrThrow(TimelineColumn.FRIEND_ID.a()));
         long tweetID = cursorTimeline_.getLong(cursorTimeline_
@@ -199,7 +199,7 @@ public class TimelineCursorAdapter extends SimpleCursorAdapter  {
         boolean ismention = cursorTimeline_.getInt(cursorTimeline_
                 .getColumnIndexOrThrow(TimelineColumn.IS_MENTION.a())) == 1 ;
 
-        return new ParcelableTimeLineEntry(tweetText, tweetDate, tweetID, friendID,
+        return new ParcelableTweet(tweetText, tweetDate, tweetID, friendID,
                 inReplyToScreenName,inReplyToTweetId,inReplyToUserId, photoUrl, isFav, isRetweeted , ismention);
 	}
 

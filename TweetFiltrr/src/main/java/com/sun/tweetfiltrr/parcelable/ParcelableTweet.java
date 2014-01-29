@@ -1,7 +1,6 @@
 package com.sun.tweetfiltrr.parcelable;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
@@ -9,7 +8,7 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 
-public class ParcelableTimeLineEntry implements IParcelableTwitter {
+public class ParcelableTweet implements IParcelableTwitter {
 
     private static final String PHOTO_MEDIA_TYPE = "photo";
 	private String _tweetText;
@@ -25,18 +24,18 @@ public class ParcelableTimeLineEntry implements IParcelableTwitter {
     private boolean _isKeyWordSearedTweet;
     private boolean _isMention;
 
-	public static final Creator<ParcelableTimeLineEntry> CREATOR = new Creator<ParcelableTimeLineEntry>() {
+	public static final Creator<ParcelableTweet> CREATOR = new Creator<ParcelableTweet>() {
 		@Override
-		public ParcelableTimeLineEntry createFromParcel(Parcel in) {
-			return new ParcelableTimeLineEntry(in);
+		public ParcelableTweet createFromParcel(Parcel in) {
+			return new ParcelableTweet(in);
 		}
 
 		@Override
-		public ParcelableTimeLineEntry[] newArray(int size) {
-			return new ParcelableTimeLineEntry[size];
+		public ParcelableTweet[] newArray(int size) {
+			return new ParcelableTweet[size];
 		}
 	};
-    private static final String TAG = ParcelableTimeLineEntry.class.getName();
+    private static final String TAG = ParcelableTweet.class.getName();
 
     @Override
     public void writeToParcel(Parcel out_, int flags) {
@@ -55,7 +54,7 @@ public class ParcelableTimeLineEntry implements IParcelableTwitter {
 
     }
 
-	public ParcelableTimeLineEntry(Parcel parcelIn_) {
+	public ParcelableTweet(Parcel parcelIn_) {
 		_tweetText = parcelIn_.readString();
 		_tweetDate = parcelIn_.readString();
 		_tweetID = parcelIn_.readLong();
@@ -72,7 +71,7 @@ public class ParcelableTimeLineEntry implements IParcelableTwitter {
     }
 
 	
-	public ParcelableTimeLineEntry(Status tweet, String dateCreated_, long friendID_) {
+	public ParcelableTweet(Status tweet, String dateCreated_, long friendID_) {
 		_tweetText = tweet.getText();
 		_tweetDate = dateCreated_;
 		_tweetID = tweet.getId();
@@ -106,10 +105,10 @@ public class ParcelableTimeLineEntry implements IParcelableTwitter {
     }
 
 	
-	public ParcelableTimeLineEntry(String tweetText_, String tweetDate_,
-			long tweetID_, long friendID_, String inReplyToScreenName_,
-            long inReplyToUserId_, long inReplyToTweetId_, String photoUrl_,
-            boolean isFavourite_, boolean isRetweeted_, boolean isMention_) {
+	public ParcelableTweet(String tweetText_, String tweetDate_,
+                           long tweetID_, long friendID_, String inReplyToScreenName_,
+                           long inReplyToUserId_, long inReplyToTweetId_, String photoUrl_,
+                           boolean isFavourite_, boolean isRetweeted_, boolean isMention_) {
 		_tweetText = tweetText_;
 		_tweetDate = tweetDate_;
 		_tweetID = tweetID_;

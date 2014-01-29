@@ -15,7 +15,7 @@ import twitter4j.Status;
 public interface ITweetProcessor {
 
     /**
-     * Processes a {@link twitter4j.Status}, convert them into {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry}
+     * Processes a {@link twitter4j.Status}, convert them into {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet}
      * timeline and adds to the user's timeline {@link java.util.Collection}.
      *
      * The friend's last updatedate time will also be set to the date passed in, so we know when the last update occured

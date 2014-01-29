@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -28,16 +28,16 @@ import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 public class ConversationRetriever implements Runnable{
 
 	private static final String TAG = ConversationRetriever.class.getName();
-	private ParcelableTimeLineEntry _tweetFirsInConvo;
+	private ParcelableTweet _tweetFirsInConvo;
 	private ParcelableUser _friend;
-	private IDBDao<ParcelableTimeLineEntry> _timelineDao;
+	private IDBDao<ParcelableTweet> _timelineDao;
 	private Date _today;
 	private SimpleDateFormat _dateFormat;
 	private OnConvoLoadListener _onFinishLis;
 	private Handler _currentHandler;
 	
 	public ConversationRetriever(
-            ParcelableUser friend_, IDBDao<ParcelableTimeLineEntry> timelineDao_,
+            ParcelableUser friend_, IDBDao<ParcelableTweet> timelineDao_,
             OnConvoLoadListener onFinishLis_, Handler currentHandler_) {
 	
 		_friend = friend_;
@@ -52,7 +52,7 @@ public class ConversationRetriever implements Runnable{
 	}
 	
 //	public ConversationRetriever(
-//			ParcelableTimeLineEntry tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
+//			ParcelableTweet tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
 //	
 //		_tweetFirsInConvo = tweetFirsInConvo_;
 //		_timelineDao = timelineDao_;
@@ -65,7 +65,7 @@ public class ConversationRetriever implements Runnable{
 //	}
 	
 //	protected ConversationRetriever(Handler timelineHandler_, int flag_,
-//			ParcelableTimeLineEntry tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
+//			ParcelableTweet tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
 //		super(timelineHandler_, flag_);
 //		_tweetFirsInConvo = tweetFirsInConvo_;
 //		_timelineDao = timelineDao_;
@@ -115,8 +115,8 @@ public class ConversationRetriever implements Runnable{
 			User user = tweet.getUser();
 			ParcelableUser parcelUser = new ParcelableUser(user);
 			
-			ParcelableTimeLineEntry timeLineEntry =
-					new ParcelableTimeLineEntry(tweet,_dateFormat.format(tweet.getCreatedAt()), parcelUser.getUserId());
+			ParcelableTweet timeLineEntry =
+					new ParcelableTweet(tweet,_dateFormat.format(tweet.getCreatedAt()), parcelUser.getUserId());
 			parcelUser.addTimeLineEntry(timeLineEntry);
 			users.add(parcelUser);
 		}
@@ -128,7 +128,7 @@ public class ConversationRetriever implements Runnable{
 //		LinkedList<ParcelableUser>  users =  null;
 //		try {
 //
-//			for(ParcelableTimeLineEntry tweet : tweetFirsInConvo_.getUserTimeLine()){
+//			for(ParcelableTweet tweet : tweetFirsInConvo_.getUserTimeLine()){
 //				RelatedResults results =twitter_.getRelatedResults(tweet.getTweetID());
 //				ResponseList<Status> convos =	results.getTweetsWithReply();
 //				users = processTimeline(convos.iterator());
@@ -142,13 +142,13 @@ public class ConversationRetriever implements Runnable{
 //		return users;
 //	}
 	
-	private LinkedList <ParcelableUser> getConversation(ParcelableUser tweetFirsInConvo_,  IDBDao<ParcelableTimeLineEntry> timelineDao_, Twitter twitter_){
+	private LinkedList <ParcelableUser> getConversation(ParcelableUser tweetFirsInConvo_,  IDBDao<ParcelableTweet> timelineDao_, Twitter twitter_){
 		LinkedList <ParcelableUser>	convo = new LinkedList <ParcelableUser>();
 
 		
-		for(ParcelableTimeLineEntry tweetFirsInConvo : tweetFirsInConvo_.getUserTimeLine()){
+		for(ParcelableTweet tweetFirsInConvo : tweetFirsInConvo_.getUserTimeLine()){
 
-//			Collection<ParcelableTimeLineEntry> tweets =timelineDao_.getEntries(TimelineColumn.TWEET_ID.a() + "=?",
+//			Collection<ParcelableTweet> tweets =timelineDao_.getEntries(TimelineColumn.TWEET_ID.a() + "=?",
 //				new String[]{tweetFirsInConvo.getInReplyToTweetId() + ""}, null);
 		
 //		if(!tweets.isEmpty() && tweets.size() > 0){
@@ -171,7 +171,7 @@ public class ConversationRetriever implements Runnable{
         Status replyTweet = twitter_.showStatus(tweetReplyId_);
         User user = replyTweet.getUser();
         ParcelableUser parcelableUser = new ParcelableUser(user);
-        ParcelableTimeLineEntry parcelableTimeline = new ParcelableTimeLineEntry(
+        ParcelableTweet parcelableTimeline = new ParcelableTweet(
                 replyTweet, _dateFormat.format(replyTweet
                 .getCreatedAt()), user.getId());
         parcelableUser.addTimeLineEntry(parcelableTimeline);
@@ -189,7 +189,7 @@ public class ConversationRetriever implements Runnable{
 
         conversation_.add(twitterUser_);
         //We only really expect on tweet here, but we loop any way
-        for (ParcelableTimeLineEntry tweet : twitterUser_.getUserTimeLine()) {
+        for (ParcelableTweet tweet : twitterUser_.getUserTimeLine()) {
             Log.v(TAG, twitterUser_.toString());
             Log.v(TAG, tweet.toString());
             if (tweet.getInReplyToTweetId() > 0	&& tweet.getInReplyToUserId() > 0) {
@@ -215,14 +215,14 @@ public class ConversationRetriever implements Runnable{
         }
     }
 
-	private void  getConversationFromDB(ParcelableTimeLineEntry tweetFirsInConvo_,
-			Collection<ParcelableTimeLineEntry> conversation_, TimelineDao timelineDao_){
+	private void  getConversationFromDB(ParcelableTweet tweetFirsInConvo_,
+			Collection<ParcelableTweet> conversation_, TimelineDao timelineDao_){
 		
-		Collection<ParcelableTimeLineEntry> convo =_timelineDao.getEntries(TimelineColumn.TWEET_ID.s() + "=?",
+		Collection<ParcelableTweet> convo =_timelineDao.getEntries(TimelineColumn.TWEET_ID.s() + "=?",
 				new String[]{tweetFirsInConvo_.getInReplyToTweetId() + ""}, null);
 		conversation_.addAll(convo);
 		if(!convo.isEmpty() && convo.size() > 0){
-			for(ParcelableTimeLineEntry friend : convo){
+			for(ParcelableTweet friend : convo){
 				if(friend.getInReplyToTweetId() != 0){
 					getConversationFromDB(friend, conversation_, timelineDao_);
 				}

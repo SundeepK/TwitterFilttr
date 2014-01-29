@@ -18,7 +18,7 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.net.URISyntaxException;
@@ -50,7 +50,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
 	public void bindView(View view_, Context context, Cursor cursor_) {
 		
 		ParcelableUser user = getParcelable(cursor_);
-        ParcelableTimeLineEntry firstTweet = user.getUserTimeLine().get(0);
+        ParcelableTweet firstTweet = user.getUserTimeLine().get(0);
         ImageView profilePic =(ImageView)view_.findViewById(R.id.profile_image);
         ImageView mediaPhoto =(ImageView)view_.findViewById(R.id.media_photo);
 
@@ -90,7 +90,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
 	
 	
 	private OnClickListener getConversationLis(final ParcelableUser currentFriend_,
-			final IDBDao<ParcelableTimeLineEntry> timelineDao_, final ThreadPoolExecutor executor_, final ConversationRetriever.OnConvoLoadListener listener_, final Handler currentHandler_){
+			final IDBDao<ParcelableTweet> timelineDao_, final ThreadPoolExecutor executor_, final ConversationRetriever.OnConvoLoadListener listener_, final Handler currentHandler_){
 		return new OnClickListener() {
 			
 			@Override

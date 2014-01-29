@@ -5,7 +5,7 @@ import android.util.Log;
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  public  class AsyncUserDBUpdateTask<V> extends AsyncFutureTaskWrapper<Collection<ParcelableUser>, V> {
 
         private final static String TAG = AsyncUserDBUpdateTask.class.getName();
-        private IDBUpdater<ParcelableTimeLineEntry> _databaseUpdater;
+        private IDBUpdater<ParcelableTweet> _databaseUpdater;
         private Collection<IUserUpdater> _userUpdaters;
         private OnAsyncTaskPostExecute _postExecuteLis;
         /**

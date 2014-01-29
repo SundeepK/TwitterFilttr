@@ -4,17 +4,17 @@ import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 
-public class TimelineToParcelable implements CursorToParcelable<ParcelableTimeLineEntry>{
+public class TimelineToParcelable implements CursorToParcelable<ParcelableTweet>{
 
     private static final String TAG = TimelineToParcelable.class.getName();
 
     @Override
-	public ParcelableTimeLineEntry getParcelable(Cursor cursorTimeline_) {
+	public ParcelableTweet getParcelable(Cursor cursorTimeline_) {
 		long friendID = cursorTimeline_.getLong(cursorTimeline_
 				.getColumnIndexOrThrow(TimelineColumn.FRIEND_ID.a()));
 		long tweetID = cursorTimeline_.getLong(cursorTimeline_
@@ -43,7 +43,7 @@ public class TimelineToParcelable implements CursorToParcelable<ParcelableTimeLi
         }
 
 
-		return new ParcelableTimeLineEntry(tweetText, tweetDate, tweetID, friendID,
+		return new ParcelableTweet(tweetText, tweetDate, tweetID, friendID,
 				inReplyToScreenName,inReplyToTweetId,inReplyToUserId, photoUrl, isFav, isRetweeted , isMention);
 	}
 

@@ -23,7 +23,7 @@ import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineUserUpdater;
 import com.sun.tweetfiltrr.fragment.api.IFragmentCallback;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -54,10 +54,10 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     protected SimpleCursorAdapter _cursorAdapter;
     protected AbsListView.OnScrollListener _onscOnScrollListener;
     protected ParcelableUser _currentUser;
-    protected IDBDao<ParcelableTimeLineEntry> _timelineDao;
+    protected IDBDao<ParcelableTweet> _timelineDao;
     protected IDBDao<ParcelableUser> _friendDao;
     protected ThreadPoolExecutor _threadExecutor;
-    protected IDBUpdater<ParcelableTimeLineEntry> _timelineBufferedDBUpdater;
+    protected IDBUpdater<ParcelableTweet> _timelineBufferedDBUpdater;
     protected int _timelineCount = 50;
     protected OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
@@ -95,7 +95,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _friendDao = (IDBDao<ParcelableUser>) flyWeight.getDao(
                 DaoFlyWeightFactory.DaoFactory.FRIEND_DAO, _currentUser);
         _timelineBufferedDBUpdater =
-                new SimpleDBUpdater<ParcelableTimeLineEntry>();
+                new SimpleDBUpdater<ParcelableTweet>();
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,

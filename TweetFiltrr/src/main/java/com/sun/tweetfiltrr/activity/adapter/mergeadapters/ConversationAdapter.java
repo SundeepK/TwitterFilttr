@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.multipleselector.impl.AItemSelector;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
@@ -62,7 +62,7 @@ public class ConversationAdapter extends AItemSelector<ParcelableUser> {
         ParcelableUser user = getItem(position_);
         _viewHolder._userName.setText(user.getUserName());
 
-        for (ParcelableTimeLineEntry tweet : user.getUserTimeLine()) {
+        for (ParcelableTweet tweet : user.getUserTimeLine()) {
             _viewHolder._textEntry.setText(tweet.getTweetText());
             break;
         }

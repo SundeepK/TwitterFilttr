@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.asyncretriever.api;
 
 import android.util.Log;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
@@ -98,10 +98,10 @@ public abstract class ATimeLineRetriever<T> implements ITwitterRetriever<Collect
      * @param friend_
      * @param timeLineEntries_
      */
-    protected void setUpdateUserDetails(final ICachedUser friend_, final List<ParcelableTimeLineEntry> timeLineEntries_){
+    protected void setUpdateUserDetails(final ICachedUser friend_, final List<ParcelableTweet> timeLineEntries_){
         if (!timeLineEntries_.isEmpty()) {
-            ParcelableTimeLineEntry timelineFirst = timeLineEntries_.get(timeLineEntries_.size() - 1);
-            ParcelableTimeLineEntry timelineLast = timeLineEntries_.get(0);
+            ParcelableTweet timelineFirst = timeLineEntries_.get(timeLineEntries_.size() - 1);
+            ParcelableTweet timelineLast = timeLineEntries_.get(0);
             Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
             friend_.setSinceId(timelineLast.getTweetID());
             friend_.setMaxId( timelineFirst.getTweetID());

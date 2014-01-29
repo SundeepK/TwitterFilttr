@@ -59,15 +59,15 @@ public class ConversationDisplayer extends MultipleItemSelector<ParcelableUser> 
 //                        Log.v(TAG, _tweetTxtBox.getText().toString());
 //
 //                        for (ParcelableUser user : _users) {
-//                            for (ParcelableTimeLineEntry tweet : user.getUserTimeLine()) {
+//                            for (ParcelableTweet tweet : user.getUserTimeLine()) {
 //                                Log.v(TAG, tweet.toString());
 //                            }
 //                        }
 //                        ParcelableUser user = _users.get(_users.size() - 1);
 //                        //At this point the app user can only reply to one tweet, but resonse can be sent ot multiple people
 //                        //so we can just break after first iteration
-//                        for (ParcelableTimeLineEntry tweet : user.getUserTimeLine()) {
-//                            ParcelableTimeLineEntry reply = new ParcelableTimeLineEntry(_tweetTxtBox.getText().toString(), "", 0, 0, "", 0, tweet.getTweetID());
+//                        for (ParcelableTweet tweet : user.getUserTimeLine()) {
+//                            ParcelableTweet reply = new ParcelableTweet(_tweetTxtBox.getText().toString(), "", 0, 0, "", 0, tweet.getTweetID());
 //                            AsyncStatusUpdater statusUpdater = new AsyncStatusUpdater(reply, null);
 //                            ThreadPoolExecutor executor = TwitterUtil.getInstance().getGlobalExecutor();
 //                            executor.execute(statusUpdater);
@@ -97,7 +97,7 @@ public class ConversationDisplayer extends MultipleItemSelector<ParcelableUser> 
     public void onLoadFinish(LinkedList<ParcelableUser> conversation_) {
 
 //		for (ParcelableUser user : conversation_) {
-//			for (ParcelableTimeLineEntry tweet : user.getUserTimeLine()) {
+//			for (ParcelableTweet tweet : user.getUserTimeLine()) {
 //				Log.v(TAG, tweet.toString());
 //			}
 //		}

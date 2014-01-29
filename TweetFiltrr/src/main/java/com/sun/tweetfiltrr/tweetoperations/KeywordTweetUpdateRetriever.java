@@ -13,7 +13,7 @@ import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
@@ -43,10 +43,10 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
     private TweetRetrieverWrapper _tweetRetriever;
     private ExecutorService _taskExecutor;
     private IDBUpdater<ParcelableUser> _dbUserUpdater;
-    private IDBUpdater<ParcelableTimeLineEntry> _dbTimelineUpdater;
+    private IDBUpdater<ParcelableTweet> _dbTimelineUpdater;
     private ContentResolver _resolver;
     private IDBDao<ParcelableUser> _friendDao;
-    IDBDao<ParcelableTimeLineEntry> _timelineDao;
+    IDBDao<ParcelableTweet> _timelineDao;
     public KeywordTweetUpdateRetriever(ExecutorService taskExecutor_, ContentResolver resolver_) {
         _taskExecutor = taskExecutor_;
         _resolver = resolver_;
@@ -56,13 +56,13 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
         _keywordFriendDao = (IDBDao<ParcelableUser>)
                 daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.FRIEND_KEYWORD_DAO, null);
 
-        _timelineDao = (IDBDao<ParcelableTimeLineEntry>)
+        _timelineDao = (IDBDao<ParcelableTweet>)
                 daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.TIMELINE_DAO, null);
 
         _friendDao = (IDBDao<ParcelableUser>)
                 daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.FRIEND_DAO, null);
 
-        _dbTimelineUpdater = new SimpleDBUpdater<ParcelableTimeLineEntry>();
+        _dbTimelineUpdater = new SimpleDBUpdater<ParcelableTweet>();
         _dbUserUpdater = new SimpleDBUpdater<ParcelableUser>();
 
         for(String s :DBUtils.getprojections(TimelineTable.TimelineColumn.values()) ){
@@ -126,9 +126,9 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever {
 
     private void flushDBEntries(List<Future<Collection<ParcelableUser>>> updatedFutures_) throws ExecutionException, InterruptedException {
         Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
-        Collection<ParcelableTimeLineEntry> timeLines = new ArrayList<ParcelableTimeLineEntry>();
+        Collection<ParcelableTweet> timeLines = new ArrayList<ParcelableTweet>();
         Collection<IDBDao<ParcelableUser>> userDao = new ArrayList<IDBDao<ParcelableUser>>();
-        Collection<IDBDao<ParcelableTimeLineEntry>> timelineDao = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
+        Collection<IDBDao<ParcelableTweet>> timelineDao = new ArrayList<IDBDao<ParcelableTweet>>();
 
         userDao.add(_friendDao);
         for(Future<Collection<ParcelableUser>> futureUser : updatedFutures_){

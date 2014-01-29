@@ -37,7 +37,7 @@ import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.merge.MergeAdapter;
 import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -65,7 +65,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
     private ImageView _backgroundImage;
     private UrlImageLoader  _sicImageLoader;
     private ConversationAdapter _convoAdapter;
-    private IDBDao<ParcelableTimeLineEntry> _timelineDao;
+    private IDBDao<ParcelableTweet> _timelineDao;
     private Handler _currentHandler;
     private List<ParcelableUser> _convoUsers;
     private UserConversationDisplayer _conversationDisplayer;
@@ -91,22 +91,6 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 			e1.printStackTrace();
 		}
 
-
-//        LayoutInflater inflater = getLayoutInflater();
-//        View header = inflater.inflate(R.layout.tweet_button_fragment, null);
-
-//        Fragment myFragment = getSupportFragmentManager().findFragmentById(R.id.tweets_button_frag);
-//
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//        //add a fragment
-//
-//        fragmentTransaction.add(myFragment, TweetButtons.class.getName()) ;
-//        fragmentTransaction.commit();
-
-
-
         _screenWidth = getScreenWidth(this);
 
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
@@ -128,7 +112,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
 
         //init the Dao object using the flyweight so that we can share the Dao's between different fragments
-        _timelineDao = (IDBDao<ParcelableTimeLineEntry>) flyWeight
+        _timelineDao = (IDBDao<ParcelableTweet>) flyWeight
                 .getDao(DaoFlyWeightFactory.DaoFactory.TIMELINE_DAO, _currentUser);
         _convoUsers = new ArrayList<ParcelableUser>();
 
@@ -191,9 +175,6 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
             }
         });
 
-
-
-
         loadConversation();
         overridePendingTransition(R.anim.display_anim_bot_to_top, 0);
     }
@@ -219,7 +200,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 
 
     private void loadConversation(){
-        ParcelableTimeLineEntry tweet = _currentUser.getUserTimeLine().iterator().next();
+        ParcelableTweet tweet = _currentUser.getUserTimeLine().iterator().next();
         if(tweet.getInReplyToUserId() > 0){
         ConversationRetriever convoRetriever = new ConversationRetriever(_currentUser, _timelineDao, _conversationDisplayer, _currentHandler);
         _threadExecutor.execute(convoRetriever);

@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ public class DateBasedTweetProcessor extends PlainTweetProcessor {
      * Threadsafe class
      * <p/>
      * Base class for runnable's which need to retrieve tweets from twitter. It provides default functionality to convert
-     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
+     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
      * be updated in the database.
      *
      * This class ensures that we do not filter tweets on dates, so we essentially keep all tweets that is returned via
@@ -51,7 +51,7 @@ public class DateBasedTweetProcessor extends PlainTweetProcessor {
      * @param tweetToProcess_
      */
     @Override
-    protected void processTweet(ParcelableTimeLineEntry tweetToProcess_) {
+    protected void processTweet(ParcelableTweet tweetToProcess_) {
         
     }
 

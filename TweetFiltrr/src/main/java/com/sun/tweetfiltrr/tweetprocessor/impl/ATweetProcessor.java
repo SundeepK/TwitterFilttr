@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.tweetprocessor.impl;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.asyncretriever.api.ATweetRetiever;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
@@ -34,7 +34,7 @@ public abstract class ATweetProcessor implements ITweetProcessor {
      * Threadsafe calss
      *
      * Base class for runnable's which need to retrieve tweets from twitter. It provides default functionality to convert
-     * tweets to {@link ParcelableTimeLineEntry} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
+     * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
      * be updated in the database.
 
      * @param dateFormat_
@@ -48,7 +48,7 @@ public abstract class ATweetProcessor implements ITweetProcessor {
     @Override
     public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
            final  SimpleDateFormat dateFormat = _simpleDateFormatThreadLocal.get();
-           final Map<User, Collection<ParcelableTimeLineEntry>> userToTimeline = new HashMap<User, Collection<ParcelableTimeLineEntry>>();
+           final Map<User, Collection<ParcelableTweet>> userToTimeline = new HashMap<User, Collection<ParcelableTweet>>();
 
             while (iterator_.hasNext()) {
                 Status tweet = iterator_.next();
@@ -63,18 +63,18 @@ public abstract class ATweetProcessor implements ITweetProcessor {
         return flattenMap(userToTimeline);
     }
 
-    private Collection<ParcelableUser> flattenMap(final Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_){
-        Set<Map.Entry<User,Collection<ParcelableTimeLineEntry>>> usersAndTimeLineSet = usersKeyToTimline_.entrySet();
+    private Collection<ParcelableUser> flattenMap(final Map<User, Collection<ParcelableTweet>> usersKeyToTimline_){
+        Set<Map.Entry<User,Collection<ParcelableTweet>>> usersAndTimeLineSet = usersKeyToTimline_.entrySet();
         return getUsersWithTimeLine(usersAndTimeLineSet);
     }
 
-    private Collection<ParcelableUser> getUsersWithTimeLine(final Set<Map.Entry<User,Collection<ParcelableTimeLineEntry>>> usersWithTimeLineSet_){
-         final Iterator<Map.Entry<User,Collection<ParcelableTimeLineEntry>>> entryIterator =  usersWithTimeLineSet_ .iterator();
+    private Collection<ParcelableUser> getUsersWithTimeLine(final Set<Map.Entry<User,Collection<ParcelableTweet>>> usersWithTimeLineSet_){
+         final Iterator<Map.Entry<User,Collection<ParcelableTweet>>> entryIterator =  usersWithTimeLineSet_ .iterator();
          final Collection<ParcelableUser> usersWithTweets = new ArrayList<ParcelableUser>();
 
          while(entryIterator.hasNext()){
-            final Map.Entry<User, Collection<ParcelableTimeLineEntry>> entry = entryIterator.next();
-            final Collection<ParcelableTimeLineEntry> timeline = entry.getValue();
+            final Map.Entry<User, Collection<ParcelableTweet>> entry = entryIterator.next();
+            final Collection<ParcelableTweet> timeline = entry.getValue();
             final ParcelableUser user = new ParcelableUser(entry.getKey());
 
              if(timeline != null){
@@ -89,10 +89,10 @@ public abstract class ATweetProcessor implements ITweetProcessor {
 
     public abstract void cacheLastIDs(final ParcelableUser user_);
 
-    private void addToMap(final Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_, final User user_, final ParcelableTimeLineEntry tweet_){
-        final Collection<ParcelableTimeLineEntry> tweets = usersKeyToTimline_.get(user_);
+    private void addToMap(final Map<User, Collection<ParcelableTweet>> usersKeyToTimline_, final User user_, final ParcelableTweet tweet_){
+        final Collection<ParcelableTweet> tweets = usersKeyToTimline_.get(user_);
         if(tweets == null){
-            final Collection<ParcelableTimeLineEntry> nonNullTweets = new ArrayList<ParcelableTimeLineEntry>();
+            final Collection<ParcelableTweet> nonNullTweets = new ArrayList<ParcelableTweet>();
             nonNullTweets.add(tweet_);
             usersKeyToTimline_.put(user_, nonNullTweets);
         }else{
@@ -103,8 +103,8 @@ public abstract class ATweetProcessor implements ITweetProcessor {
 
     /**
      *
-     * Process the actual tweet to convert it to a {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} and add it
-     * to the user's internal {@link java.util.Collection} of {@link com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry} tweets
+     * Process the actual tweet to convert it to a {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} and add it
+     * to the user's internal {@link java.util.Collection} of {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} tweets
      * @param tweet_ {@link twitter4j.Status} which contains the tweet info
      * @param today_ {@link java.util.Date} is used to break early if the tweet {@link java.util.Date} does not match the
      *                                     specified date and so we can filter out tweets older than
@@ -112,7 +112,7 @@ public abstract class ATweetProcessor implements ITweetProcessor {
      * @param dateFormat_ {@link java.text.SimpleDateFormat} used to format the date to a readable format
      * @return true if the tweet {@link java.util.Date} is newer than the one specified in the parameter
      */
-    private boolean processTweet(Status tweet_, Date today_,SimpleDateFormat dateFormat_,  Map<User, Collection<ParcelableTimeLineEntry>> usersKeyToTimline_){
+    private boolean processTweet(Status tweet_, Date today_,SimpleDateFormat dateFormat_,  Map<User, Collection<ParcelableTweet>> usersKeyToTimline_){
         final Date tweetCreateAt = tweet_.getCreatedAt();
         final User user = tweet_.getUser();
 
@@ -126,19 +126,19 @@ public abstract class ATweetProcessor implements ITweetProcessor {
         Log.v(TAG, "" + tweet_.getInReplyToScreenName());
         Log.v(TAG, "Tweet date: " + tweetCreateAt.toString());
         final Date now = DateUtils.getCurrentDate();
-        final ParcelableTimeLineEntry parcelableTimeLineEntry = getTimeLineEntry(tweet_, user, dateFormat_, tweetCreateAt );
-        processTweet(parcelableTimeLineEntry);
-        addToMap(usersKeyToTimline_, user, parcelableTimeLineEntry);
+        final ParcelableTweet parcelableTweet = getTimeLineEntry(tweet_, user, dateFormat_, tweetCreateAt );
+        processTweet(parcelableTweet);
+        addToMap(usersKeyToTimline_, user, parcelableTweet);
         return true;
     }
 
-    private ParcelableTimeLineEntry getTimeLineEntry(final Status tweet_,final User user_,
+    private ParcelableTweet getTimeLineEntry(final Status tweet_,final User user_,
                                                     final SimpleDateFormat dateFormat_, final Date tweetCreateAt_ ){
-       return  new ParcelableTimeLineEntry(tweet_, dateFormat_.format(tweetCreateAt_), tweet_.getUser().getId());
+       return  new ParcelableTweet(tweet_, dateFormat_.format(tweetCreateAt_), tweet_.getUser().getId());
     }
 
 
-    protected abstract void processTweet(ParcelableTimeLineEntry tweetToProcess_);
+    protected abstract void processTweet(ParcelableTweet tweetToProcess_);
 
 
 }

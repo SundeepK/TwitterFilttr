@@ -10,13 +10,13 @@ import android.util.Log;
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
 import java.util.Collection;
 
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public class TimelineDao extends ADBDao<ParcelableTimeLineEntry> {
+public class TimelineDao extends ADBDao<ParcelableTweet> {
 
 	private static final String TAG = TimelineDao.class.getName();
 
@@ -25,13 +25,13 @@ public class TimelineDao extends ADBDao<ParcelableTimeLineEntry> {
 	
 	Uri _timelineUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_TIMELINE + "/" + 110);
 	
-	public TimelineDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableTimeLineEntry> cursorToParcelable_) {
+	public TimelineDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableTweet> cursorToParcelable_) {
 		super(contentResolver_, cursorToParcelable_);
 		
 	}
 
 	@Override
-	protected ContentValues getContentValues(ParcelableTimeLineEntry timeline_, String[] columns_, boolean shouldSetNull_){
+	protected ContentValues getContentValues(ParcelableTweet timeline_, String[] columns_, boolean shouldSetNull_){
 		ContentValues contentValue = new ContentValues();
 
 		for(String column : columns_){
@@ -77,7 +77,7 @@ public class TimelineDao extends ADBDao<ParcelableTimeLineEntry> {
 	}
 
 	@Override
-	public Collection<ParcelableTimeLineEntry> getEntries(String selection_,
+	public Collection<ParcelableTweet> getEntries(String selection_,
 			String[] selectionArgs_, String sortOrder_) {
 //		Uri uri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_FRIEND + "/"
 //				+ TweetFiltrrProvider.FRIEND_TABLE);
@@ -96,7 +96,7 @@ public class TimelineDao extends ADBDao<ParcelableTimeLineEntry> {
 	}
 
 	@Override
-	public Collection<ParcelableTimeLineEntry> getEntry(long rowID_, String selection_,
+	public Collection<ParcelableTweet> getEntry(long rowID_, String selection_,
 			String[] selectionArgs_, String sortOrder_) {
 		Uri uri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_TIMELINE + "/"
 				+ rowID_);
@@ -120,7 +120,7 @@ public class TimelineDao extends ADBDao<ParcelableTimeLineEntry> {
 
 
     @Override
-	public int deleteEntries(Collection<ParcelableTimeLineEntry> entries_) {
+	public int deleteEntries(Collection<ParcelableTweet> entries_) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

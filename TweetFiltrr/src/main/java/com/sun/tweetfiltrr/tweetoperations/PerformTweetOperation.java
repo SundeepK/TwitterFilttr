@@ -15,12 +15,12 @@ import twitter4j.Twitter;
 /**
  * Created by Sundeep on 01/01/14.
  */
-public abstract class SimpleTweetOperation extends AsyncSmoothProgressBarTask<TwitterOperation, Void, Collection<ParcelableTweet>> {
+public abstract class PerformTweetOperation extends AsyncSmoothProgressBarTask<TwitterOperation, Void, Collection<ParcelableTweet>> {
 
-    private static final String TAG = SimpleTweetOperation.class.getName() ;
+    private static final String TAG = PerformTweetOperation.class.getName() ;
     private final IDBDao<ParcelableTweet> _timelineDao;
 
-    public SimpleTweetOperation(SmoothProgressBarWrapper progressBar_, IDBDao<ParcelableTweet> timelineDao_){
+    public PerformTweetOperation(SmoothProgressBarWrapper progressBar_, IDBDao<ParcelableTweet> timelineDao_){
         super(progressBar_);
         _timelineDao = timelineDao_;
     }

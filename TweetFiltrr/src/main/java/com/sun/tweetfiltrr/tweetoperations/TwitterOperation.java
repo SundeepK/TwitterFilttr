@@ -1,6 +1,6 @@
 package com.sun.tweetfiltrr.tweetoperations;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.tweetoperations.api.ITwitterOperation;
 
 import java.util.Collection;
@@ -11,14 +11,14 @@ import java.util.Collection;
 public class TwitterOperation {
 
     private ITwitterOperation _twitterOperation;
-    private Collection<ParcelableTimeLineEntry> _tweets;
-    public TwitterOperation(ITwitterOperation twitterOperation_, Collection<ParcelableTimeLineEntry> tweets_){
+    private Collection<ParcelableTweet> _tweets;
+    public TwitterOperation(ITwitterOperation twitterOperation_, Collection<ParcelableTweet> tweets_){
         _twitterOperation = twitterOperation_;
         _tweets = tweets_;
     }
 
-    public Collection<ParcelableTimeLineEntry> processTwitterOperations(){
-        for(ParcelableTimeLineEntry tweet : _tweets){
+    public Collection<ParcelableTweet> processTwitterOperations(){
+        for(ParcelableTweet tweet : _tweets){
             _twitterOperation.performTwitterOperation(tweet);
         }
         return _tweets;

@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.cursorToParcelable;
 
 import android.database.Cursor;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTimeLineEntry;
+import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 
@@ -22,7 +22,7 @@ public class FriendTimeLineToParcelable implements CursorToParcelable<Parcelable
     @Override
     public ParcelableUser getParcelable(Cursor cursor_) {
         ParcelableUser user = _friendToParcelable.getParcelable(cursor_);
-        ParcelableTimeLineEntry timeline = _timelineToParcelable.getParcelable(cursor_);
+        ParcelableTweet timeline = _timelineToParcelable.getParcelable(cursor_);
         user.addTimeLineEntry(timeline);
         return user;
     }

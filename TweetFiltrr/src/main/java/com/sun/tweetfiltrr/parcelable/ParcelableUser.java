@@ -32,7 +32,7 @@ public class ParcelableUser implements IParcelableTwitter {
     private long _sinceIdForMentions;
     private long _lastFriendPageNumber;
     private int _lastTimelinePageNumber;
-    private List<ParcelableTimeLineEntry> _timeline;
+    private List<ParcelableTweet> _timeline;
     private long _groupID;
     private int _totalFriendCount;
     private long _rowId;
@@ -54,7 +54,7 @@ public class ParcelableUser implements IParcelableTwitter {
 		_userId = userId_;
 		_name = name_;
 		_screenName = screenName_;
-		_timeline =new ArrayList<ParcelableTimeLineEntry>();
+		_timeline =new ArrayList<ParcelableTweet>();
 
 	}
 
@@ -63,7 +63,7 @@ public class ParcelableUser implements IParcelableTwitter {
 		_name = name_;
 		_sinceId = sinceId_;
 		_maxId = maxId_;
-		_timeline =new ArrayList<ParcelableTimeLineEntry>();
+		_timeline =new ArrayList<ParcelableTweet>();
 	}
 
 	public ParcelableUser(User user_) {
@@ -77,7 +77,7 @@ public class ParcelableUser implements IParcelableTwitter {
 		_profileImageUrl = user_.getBiggerProfileImageURL();
 		_profileBackgroundImageUrl = user_.getProfileBackgroundImageURL();
 		_profileBannerImageUrl = user_.getProfileBannerURL();
-		_timeline =new ArrayList<ParcelableTimeLineEntry>();
+		_timeline =new ArrayList<ParcelableTweet>();
 		_sinceId = 1l;
 		_maxId = 1l;
 		_totalFriendCount =	user_.getFriendsCount();
@@ -96,7 +96,7 @@ public class ParcelableUser implements IParcelableTwitter {
 	}
 
     /**
-     * This copy constructor DOES NOT copy the user's timeline {@link ParcelableTimeLineEntry},
+     * This copy constructor DOES NOT copy the user's timeline {@link ParcelableTweet},
      * you can set it explicitly through its setter.
      *
      * @param user_
@@ -116,7 +116,7 @@ public class ParcelableUser implements IParcelableTwitter {
         _profileImageUrl = user_.getProfileImageUrl();
         _profileBackgroundImageUrl = user_.getProfileBackgroundImageUrl();
         _profileBannerImageUrl = user_.getProfileBannerImageUrl();
-        _timeline =new ArrayList<ParcelableTimeLineEntry>();
+        _timeline =new ArrayList<ParcelableTweet>();
         _sinceId = user_.getSinceId();
         _maxId = user_.getMaxId();
         _totalFriendCount =	user_.getTotalFriendCount();
@@ -175,7 +175,7 @@ public class ParcelableUser implements IParcelableTwitter {
 	}
 
 	public ParcelableUser(Parcel parcelIn_) {
-		_timeline =new ArrayList<ParcelableTimeLineEntry>();
+		_timeline =new ArrayList<ParcelableTweet>();
 		_userId = parcelIn_.readLong();
 		_createdAt = parcelIn_.readLong();
 		_isProtected = parcelIn_.readInt() == 1 ? true : false;
@@ -208,7 +208,7 @@ public class ParcelableUser implements IParcelableTwitter {
         _currentFollowerCount = parcelIn_.readInt();
         _lastFollowerPageNumber = parcelIn_.readLong();
         _keywordGroup = parcelIn_.readParcelable(ParcelableKeywordGroup.class.getClassLoader());
-        parcelIn_.readTypedList(_timeline, ParcelableTimeLineEntry.CREATOR);
+        parcelIn_.readTypedList(_timeline, ParcelableTweet.CREATOR);
         Log.v(TAG, "in reading parcelableuser now, curretnly timeline size is:" +  _timeline.size());
 
 	}
@@ -273,11 +273,11 @@ public class ParcelableUser implements IParcelableTwitter {
 		this._profileBackgroundImageUrl = _profileBackgroundImageUrl;
 	}
 
-    public void addAll(Collection<ParcelableTimeLineEntry> tweets_){
+    public void addAll(Collection<ParcelableTweet> tweets_){
         _timeline.addAll(tweets_);
     }
 
-	public void addTimeLineEntry(ParcelableTimeLineEntry tweet_){
+	public void addTimeLineEntry(ParcelableTweet tweet_){
 		_timeline.add(tweet_);
 	}
 
@@ -398,7 +398,7 @@ public class ParcelableUser implements IParcelableTwitter {
 		this._maxId = _pageNumber;
 	}
 
-	public List<ParcelableTimeLineEntry> getUserTimeLine(){
+	public List<ParcelableTweet> getUserTimeLine(){
 		return _timeline;
 	}
 	

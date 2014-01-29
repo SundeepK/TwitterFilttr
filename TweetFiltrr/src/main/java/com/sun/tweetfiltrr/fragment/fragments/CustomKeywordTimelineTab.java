@@ -36,7 +36,7 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
 //    @Override
 //    public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
 //
-//        Collection<IDBDao<ParcelableTimeLineEntry>> daos = new ArrayList<IDBDao<ParcelableTimeLineEntry>>();
+//        Collection<IDBDao<ParcelableTweet>> daos = new ArrayList<IDBDao<ParcelableTweet>>();
 //        daos.add(_timelineDao);
 //        AsyncUserDBUpdateTask< Intcar screeeger> asyncTask =
 //                new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
