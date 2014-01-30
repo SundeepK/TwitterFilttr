@@ -16,7 +16,6 @@ public class WaitingTweetOperationThread implements Callable<Void>{
     private Collection<AsyncTask<TwitterOperation, Void, ParcelableTweet>> _tasks;
 
     public  WaitingTweetOperationThread(ParcelableTweet tweet){
-        _tasks = new ConcurrentLinkedQueue<AsyncTask<TwitterOperation, Void, ParcelableTweet>>;
     }
 
     public void submitNewTask(){

@@ -28,7 +28,7 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
 
     @Override
     public void onTweetFav(ParcelableTweet tweet_) {
-            F
+
     }
 
     @Override
