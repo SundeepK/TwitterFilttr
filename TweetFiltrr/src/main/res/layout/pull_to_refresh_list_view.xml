@@ -5,7 +5,7 @@
         android:background="#00ffffff"
         android:layout_height="match_parent">
 
-    <ListView
+    <com.sun.tweetfiltrr.zoomlistview.ZoomListView
             android:id="@+id/refreshable_listview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -13,6 +13,6 @@
             android:divider="@null"
             android:dividerHeight="12dp" >
 
-     </ListView>
+     </com.sun.tweetfiltrr.zoomlistview.ZoomListView>
 
 </uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshLayout>

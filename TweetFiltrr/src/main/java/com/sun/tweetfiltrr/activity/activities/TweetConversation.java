@@ -128,6 +128,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
                 = new TweetOperationHandler(smoothProgressBarWrapper, _timelineDao);
 
         _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
+        _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
 
 
         _blurredImageProcessor = new BlurredImageGenerator(this);

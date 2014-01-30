@@ -67,6 +67,7 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
         SubmittableTask task = new SubmittableTask(_progressBar,_tweetDao, tweet_, this );
         task.execute(operation_);
         return new TwitterOperationTask(view_, task);
+
     }
 
     @Override
