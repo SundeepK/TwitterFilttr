@@ -1,14 +1,13 @@
 package com.sun.tweetfiltrr.zoomlistview;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-
-import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 /**
  * Created by Sundeep.Kahlon on 30/01/14.
@@ -17,7 +16,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
 
     private static final String TAG = ZoomListView.class.getName();
-
+    private int mDownX;
+    private int mDownY;
+    private int mActivePointerId;
+    private Rect _viewBounds;
+    private boolean _isZoomed;
+    private OnItemClickListener _listner;
+    
     public ZoomListView(Context context_) {
         super(context_);
         init(context_);
@@ -35,50 +40,101 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
     }
 
+    @Override
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        if(!(listener == null)){
+        _listner = listener;
+        }
+        super.setOnItemClickListener(listener);
+    }
 
     private void init(Context context_){
         setOnItemLongClickListener(this);
     }
 
 
-    private void scaleChildViews(long rowId_, int itemPos_){
-        ListAdapter adapter = getAdapter();
-        int viewCount = getChildCount();
-
-//        int firstVisiblePosition = getFirstVisiblePosition();
-        int lastVisiblePosition = getLastVisiblePosition();
-
-        int firstVisiblePosition = getFirstVisiblePosition() - getHeaderViewsCount(); // This is the same as child #0
-        int startingChild = itemPos_ - firstVisiblePosition;
-
-        for(int i = 0; i < lastVisiblePosition;  i++){
-            Log.v(TAG, "scalling item number : " + i + " with iem id: " + adapter.getItemId(i) + " comparing to id " + rowId_);
-//            if(rowId_ != adapter.getItemId(i)){
-//            if(i != itemPos_){
-            int position = firstVisiblePosition + i;
-
-            View view = getChildAt(i);
-                if(view != null){
-                 view.setScaleX(0.5f);
-                 view.setScaleY(0.5f);
-                }else{
-                    Log.v(TAG, "scalling item number : " + i + " is null");
-//                }
-            }
-//            }
+    private void scaleChildViews(long rowId_, int itemPos_, float scale){
+        if(_isZoomed){
+            getParent().requestDisallowInterceptTouchEvent(true);
         }
+        int firstVisiblePosition = getFirstVisiblePosition() ;
+        int pos =  pointToPosition(mDownX, mDownY);
+        int positionOrg = pos - firstVisiblePosition;
+
+        for (int i = 0; i <= getLastVisiblePosition() - getFirstVisiblePosition(); i++){
+            if(getAdapter().getItemId(positionOrg) !=  getAdapter().getItemId(i)){
+            int position =  i;
+            View view = getChildAt(position);
+                if(view != null){
+                 view.setScaleX(scale);
+                 view.setScaleY(scale);
+                }
+            }
+
+        }
+
 
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.v(TAG, "im on long item click");
-//        View v = getChildAt(i);
-        scaleChildViews(l, i);
+        _isZoomed = true;
+        setOnItemClickListener(null);
+        scaleChildViews(l, i, 0.8f);
         return true;
     }
 
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
 
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mDownX = (int) event.getX();
+                mDownY = (int) event.getY();
+                mActivePointerId = event.getPointerId(0);
+
+                if(_isZoomed){
+                    if (!_viewBounds.contains(mDownX, mDownY)) {
+                        getParent().requestDisallowInterceptTouchEvent(false);
+                        _isZoomed = false;
+                        scaleChildViews(1, 1, 1f);
+                    }
+                    break;
+                }
+
+
+                    int position = pointToPosition(mDownX, mDownY);
+                    int childNum = (position != INVALID_POSITION) ? position - getFirstVisiblePosition() : -1;
+                    View itemView = (childNum >= 0) ? getChildAt(childNum) : null;
+                    if (itemView != null) {
+                       _viewBounds = getChildViewRect(this, itemView);
+                    }
+                setOnItemClickListener(_listner);
+
+
+                break;
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+
+    private Rect getChildViewRect(View parentView, View childView) {
+        final Rect childRect = new Rect(childView.getLeft(), childView.getTop(), childView.getRight(), childView.getBottom());
+        if (parentView == childView) {
+            return childRect;
+        }
+
+        ViewGroup parent = (ViewGroup) childView.getParent();
+        while (parent != parentView) {
+            childRect.offset(parent.getLeft(), parent.getTop());
+            childView = parent;
+            parent = (ViewGroup) childView.getParent();
+        }
+
+        return childRect;
+    }
 
 }

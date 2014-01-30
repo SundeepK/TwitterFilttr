@@ -18,6 +18,7 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
@@ -77,6 +78,20 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
 
        
 	}
+
+    @Override
+    public long getItemId(int position) {
+        Cursor cursor = getCursor();
+        cursor.moveToPosition(position);
+        long id =  cursor.getLong(cursor.getColumnIndexOrThrow(TimelineTable.TimelineColumn.TWEET_ID.a()));
+        Log.v(TAG, "item id in cursor adapter " + id);
+        return id;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
 
     private void loadImage(ImageView view_,String url_){
         if (!TextUtils.isEmpty(url_)) {
