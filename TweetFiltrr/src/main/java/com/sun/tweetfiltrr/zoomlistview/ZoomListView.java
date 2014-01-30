@@ -16,13 +16,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
 
     private static final String TAG = ZoomListView.class.getName();
-    private int mDownX;
-    private int mDownY;
-    private int mActivePointerId;
+    private int _xPos;
+    private int _yPos;
+    private int _pointerId;
     private Rect _viewBounds;
     private boolean _isZoomed;
     private OnItemClickListener _listner;
-    
+
     public ZoomListView(Context context_) {
         super(context_);
         init(context_);
@@ -58,7 +58,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             getParent().requestDisallowInterceptTouchEvent(true);
         }
         int firstVisiblePosition = getFirstVisiblePosition() ;
-        int pos =  pointToPosition(mDownX, mDownY);
+        int pos =  pointToPosition(_xPos, _yPos);
         int positionOrg = pos - firstVisiblePosition;
 
         for (int i = 0; i <= getLastVisiblePosition() - getFirstVisiblePosition(); i++){
@@ -91,12 +91,12 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                mDownX = (int) event.getX();
-                mDownY = (int) event.getY();
-                mActivePointerId = event.getPointerId(0);
+                _xPos = (int) event.getX();
+                _yPos = (int) event.getY();
+                _pointerId = event.getPointerId(0);
 
                 if(_isZoomed){
-                    if (!_viewBounds.contains(mDownX, mDownY)) {
+                    if (!_viewBounds.contains(_xPos, _yPos)) {
                         getParent().requestDisallowInterceptTouchEvent(false);
                         _isZoomed = false;
                         scaleChildViews(1, 1, 1f);
@@ -105,7 +105,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 }
 
 
-                    int position = pointToPosition(mDownX, mDownY);
+                    int position = pointToPosition(_xPos, _yPos);
                     int childNum = (position != INVALID_POSITION) ? position - getFirstVisiblePosition() : -1;
                     View itemView = (childNum >= 0) ? getChildAt(childNum) : null;
                     if (itemView != null) {
