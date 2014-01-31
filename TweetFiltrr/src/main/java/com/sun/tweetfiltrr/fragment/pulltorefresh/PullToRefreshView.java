@@ -27,6 +27,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +49,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
     private static final String TAG = PullToRefreshView.class.getName();
     protected PullToRefreshLayout _pullToRefreshView;
-    protected ListView _pullToRefreshListView;
+    protected ZoomListView _pullToRefreshListView;
     protected Activity _activity;
     protected AdapterView.OnItemClickListener _onItemClick;
     protected SimpleCursorAdapter _cursorAdapter;
@@ -62,7 +63,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     protected OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
     private Collection<IUserUpdater> _updaters;
-
+    private ZoomListView.OnItemDisabled _itemDisabledLis;
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
         public Collection<Callable<T>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
@@ -73,17 +74,18 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, int headerLayout_){
+                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, int headerLayout_, ZoomListView.OnItemDisabled itemDisabledLis_){
        this(activity_, currentUser_,onItemClick_, cursorAdapter_,  pullToRefreshLis_,
-               loadMoreLis_);
+               loadMoreLis_, itemDisabledLis_);
         _headerLayout =headerLayout_;
+
     }
 
     public PullToRefreshView(Activity activity_, ParcelableUser currentUser_,
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_){
+                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemDisabled itemDisabledLis_){
         _activity = activity_;
         _currentUser = currentUser_;
         _onItemClick = onItemClick_;
@@ -102,7 +104,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _pullToRefreshLis, loadMoreLis_, 5);
         _updaters  = new ArrayList<IUserUpdater>();
         _updaters.add(new TimelineUserUpdater(_timelineDao));
-
+        _itemDisabledLis =  itemDisabledLis_;
         Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
     }
 
@@ -132,9 +134,9 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                 .setup(_pullToRefreshView);
 
 
-        _pullToRefreshListView = (ListView) rootView.findViewById(R.id.refreshable_listview);
+        _pullToRefreshListView = (ZoomListView) rootView.findViewById(R.id.refreshable_listview);
         _pullToRefreshListView.setOnItemClickListener(_onItemClick);
-
+        _pullToRefreshListView.setOnItemDisableListener(_itemDisabledLis);
         if(_headerLayout > 0){
             View headerView = inflater.inflate(_headerLayout, null);
             if(headerView != null){

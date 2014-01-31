@@ -44,6 +44,7 @@ import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
+import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -147,17 +148,17 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
             FriendTimeLineToParcelable friendTimeLineToParcelable = new FriendTimeLineToParcelable(new FriendToParcelable(),
                     new TimelineToParcelable());
-
-            _dataAdapter = new UserTimelineCursorAdapter(getActivity(), R.layout.user_timeline_list_view_row,
+            UserTimelineCursorAdapter timelineCursorAdapter = new UserTimelineCursorAdapter(getActivity(), R.layout.user_timeline_list_view_row,
                     null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader);
-
-            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser);
+            _dataAdapter = timelineCursorAdapter;
+            ZoomListView.OnItemDisabled listener = timelineCursorAdapter;
+            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener);
 
 
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_){
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this);
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemDisabled listener_){
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_ );
     }
 
     @Override

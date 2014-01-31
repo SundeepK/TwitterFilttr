@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +14,18 @@ import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
+import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.net.URISyntaxException;
 
-public class FriendsCursorAdapter extends SimpleCursorAdapter  {
+public class FriendsCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemDisabled {
 
 	
     private static final String TAG = FriendsCursorAdapter.class.getName();
 	private final LayoutInflater _inflater;
     private  UrlImageLoader _imageLoadermine;
     private int _rowCount = 20;
+    private SparseArray<Boolean> _enabledItems;
 
 	public FriendsCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags, UrlImageLoader imageLoader_) {
@@ -102,4 +105,14 @@ public class FriendsCursorAdapter extends SimpleCursorAdapter  {
         return view;
 	}
 
+    @Override
+    public boolean isEnabled(int position) {
+        Boolean isenabled = _enabledItems.get(position, true);
+        return isenabled;
+    }
+
+    @Override
+    public void itemEnabledStatus(int position, boolean status_) {
+        _enabledItems.put(position, status_);
+    }
 }

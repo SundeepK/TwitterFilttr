@@ -36,6 +36,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,17 +164,19 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
                 R.id.list_image
         };
 
-        _dataAdapter = new FriendsCursorAdapter(getActivity(), R.layout.listview_for_twitter,
+        FriendsCursorAdapter friendsCursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.listview_for_twitter,
                 null, columns, to, 0, _sicImageLoader);
 
-        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser());
+        _dataAdapter = friendsCursorAdapter;
+        ZoomListView.OnItemDisabled listener = friendsCursorAdapter;
+        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser(), listener);
 
 
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_){
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemDisabled listener){
         return new PullToRefreshView<Collection<ParcelableUser>>
-                (getActivity(), currentUser_, this, adapter_ ,this, this);
+                (getActivity(), currentUser_, this, adapter_ ,this, this, listener);
     }
 
 

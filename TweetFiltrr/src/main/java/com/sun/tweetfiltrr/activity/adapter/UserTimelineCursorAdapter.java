@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,11 +22,12 @@ import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
+public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemDisabled {
 
 
     private static final String TAG = UserTimelineCursorAdapter.class.getName();
@@ -33,6 +35,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
     private UrlImageLoader  _imageLoader;
 	private int _layout;
     private FriendTimeLineToParcelable _friendTimeLineToParcelable;
+    private SparseArray<Boolean> _enabledItems;
 
 
     public UserTimelineCursorAdapter(Context context, int layout, Cursor c,
@@ -43,7 +46,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
         _layout = layout;
         _friendTimeLineToParcelable = friendTimeLineToParcelable_;
         _imageLoader = imageLoader_;
-
+        _enabledItems = new SparseArray<Boolean>();
 	}
 
 
@@ -78,6 +81,12 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
 
        
 	}
+
+    @Override
+    public boolean isEnabled(int position) {
+        Boolean isenabled = _enabledItems.get(position, true);
+        return isenabled;
+    }
 
     @Override
     public long getItemId(int position) {
@@ -141,6 +150,8 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter  {
 	}
 
 
-
-
+    @Override
+    public void itemEnabledStatus(int position, boolean status_) {
+        _enabledItems.put(position, status_);
+    }
 }

@@ -20,6 +20,7 @@ import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
+import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,8 +51,8 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
     }
 
     @Override
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_) {
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment);
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,  ZoomListView.OnItemDisabled listener_) {
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment, listener_);
     }
 
     @Override
