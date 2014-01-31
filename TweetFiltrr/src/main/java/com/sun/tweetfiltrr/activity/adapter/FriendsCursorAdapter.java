@@ -32,6 +32,7 @@ public class FriendsCursorAdapter extends SimpleCursorAdapter implements ZoomLis
 		super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
         _imageLoadermine = imageLoader_;
+        _enabledItems = new SparseArray<Boolean>();
 	}
 
 

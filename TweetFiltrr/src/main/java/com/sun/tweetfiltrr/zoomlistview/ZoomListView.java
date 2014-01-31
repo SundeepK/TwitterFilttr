@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -66,7 +68,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     }
 
     private void scaleChildViews(long rowId_, int itemPos_, float scale, boolean shouldEnable){
-        
+
         if (_isZoomed) {
             getParent().requestDisallowInterceptTouchEvent(true);
         }
@@ -78,22 +80,40 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     }
 
     private void scaleAllVisibleViews(int clickedItemPosition_, float scale_, boolean shouldEnable_) {
+        Animation scaleAnimation;
+        if(_isZoomed){
+            scaleAnimation = getZoomAnimation(1f, 0.8f, 1f, 0.8f);
+        }else{
+            scaleAnimation = getZoomAnimation(0.8f, 1f, 0.8f, 1f);
+        }
         for (int i = 0; i <= getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
             if (_isZoomed) {
                 if (getAdapter().getItemId(clickedItemPosition_) != getAdapter().getItemId(i)) {
-                    scaleView(i, scale_, shouldEnable_);
+                    scaleView(i, scale_, shouldEnable_, scaleAnimation);
                 }
             } else {
-                scaleView(i, scale_, shouldEnable_);
+                scaleView(i, scale_, shouldEnable_, scaleAnimation);
             }
         }
     }
 
-    private void scaleView(int position_, float scale_, boolean shouldEnable_){
+    private Animation getZoomAnimation(float fromX_, float toX_, float fromY_, float toY_){
+      Animation  scaleAnimation = new ScaleAnimation(
+                fromX_, toX_,
+                fromY_, toY_,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setFillAfter(true);
+        scaleAnimation.setDuration(500);
+        return scaleAnimation;
+    }
+
+    private void scaleView(int position_, float scale_, boolean shouldEnable_, Animation animation_){
         View view = getChildAt(position_);
         if (view != null) {
-            view.setScaleX(scale_);
-            view.setScaleY(scale_);
+            view.startAnimation(animation_);
+//            view.setScaleX(scale_);
+//            view.setScaleY(scale_);
             if (_onItemDisableLis != null) {
                 _onItemDisableLis.itemEnabledStatus(position_, shouldEnable_);
             }
@@ -111,15 +131,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 _xPos = (int) event.getX();
                 _yPos = (int) event.getY();
                 _pointerId = event.getPointerId(0);
 
-                if(_isZoomed){
+                if (_isZoomed) {
                     if (!_viewBounds.contains(_xPos, _yPos)) {
                         _isZoomed = false;
                         scaleChildViews(1, 1, 1f, true);
@@ -127,17 +145,15 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                     return false;
                 }
 
-                    int position = pointToPosition(_xPos, _yPos);
-                    int childNum = (position != INVALID_POSITION) ? position - getFirstVisiblePosition() : -1;
-                    View itemView = (childNum >= 0) ? getChildAt(childNum) : null;
-                    if (itemView != null) {
-                       _viewBounds = getChildViewRect(this, itemView);
-                    }
+                int position = pointToPosition(_xPos, _yPos);
+                int childNum = (position != INVALID_POSITION) ? position - getFirstVisiblePosition() : -1;
+                View itemView = (childNum >= 0) ? getChildAt(childNum) : null;
+                if (itemView != null) {
+                    _viewBounds = getChildViewRect(this, itemView);
+                }
 
                 break;
-
         }
-
         return super.onTouchEvent(event);
     }
 
@@ -154,7 +170,6 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             childView = parent;
             parent = (ViewGroup) childView.getParent();
         }
-
         return childRect;
     }
 
