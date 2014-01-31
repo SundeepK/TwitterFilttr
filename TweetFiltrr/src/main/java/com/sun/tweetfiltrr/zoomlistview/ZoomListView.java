@@ -66,27 +66,40 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     }
 
     private void scaleChildViews(long rowId_, int itemPos_, float scale, boolean shouldEnable){
+        
         if (_isZoomed) {
             getParent().requestDisallowInterceptTouchEvent(true);
         }
+
         int firstVisiblePosition = getFirstVisiblePosition();
         int pos = pointToPosition(_xPos, _yPos);
         int positionOrg = pos - firstVisiblePosition;
+        scaleAllVisibleViews(positionOrg, scale, shouldEnable);
+    }
 
+    private void scaleAllVisibleViews(int clickedItemPosition_, float scale_, boolean shouldEnable_) {
         for (int i = 0; i <= getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
-            if (getAdapter().getItemId(positionOrg) != getAdapter().getItemId(i)) {
-                int position = i;
-                View view = getChildAt(position);
-                if (view != null) {
-                    view.setScaleX(scale);
-                    view.setScaleY(scale);
-                    if (_onItemDisableLis != null) {
-                        _onItemDisableLis.itemEnabledStatus(position, shouldEnable);
-                    }
+            if (_isZoomed) {
+                if (getAdapter().getItemId(clickedItemPosition_) != getAdapter().getItemId(i)) {
+                    scaleView(i, scale_, shouldEnable_);
                 }
+            } else {
+                scaleView(i, scale_, shouldEnable_);
             }
         }
     }
+
+    private void scaleView(int position_, float scale_, boolean shouldEnable_){
+        View view = getChildAt(position_);
+        if (view != null) {
+            view.setScaleX(scale_);
+            view.setScaleY(scale_);
+            if (_onItemDisableLis != null) {
+                _onItemDisableLis.itemEnabledStatus(position_, shouldEnable_);
+            }
+        }
+    }
+
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
