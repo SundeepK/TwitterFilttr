@@ -2,12 +2,14 @@ package com.sun.tweetfiltrr.smoothprogressbarwrapper;
 
 import android.view.View;
 
+import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
+
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 /**
  * Created by Sundeep on 01/01/14.
  */
-public class SmoothProgressBarWrapper {
+public class SmoothProgressBarWrapper implements IProgress {
 
     private SmoothProgressBar _progressBar;
     private int registeredCount = 0 ;
@@ -17,7 +19,7 @@ public class SmoothProgressBarWrapper {
         _progressBar = progressBar_;
     }
 
-    public synchronized void stop(){
+    private synchronized void stop(){
 
         if(registeredCount < 1){
             throw new IllegalStateException("Cannot stop progressbar because start has not been called");
@@ -32,7 +34,7 @@ public class SmoothProgressBarWrapper {
         }
     }
 
-    public synchronized void start(){
+    private synchronized void start(){
         if(registeredCount <=0){
             _progressBar.setVisibility(View.VISIBLE);
 
@@ -42,4 +44,13 @@ public class SmoothProgressBarWrapper {
         }
     }
 
+    @Override
+    public void startRefresh() {
+        start();
+    }
+
+    @Override
+    public void setRefreshFinish() {
+        stop();
+    }
 }

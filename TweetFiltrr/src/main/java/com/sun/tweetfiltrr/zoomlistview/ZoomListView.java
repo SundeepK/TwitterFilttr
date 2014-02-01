@@ -104,27 +104,15 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                         View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
 
                         viewToShow.setVisibility(VISIBLE);
-                        Animation flip = new CyclicFlipAnimation(50f,-50f);
+                        Animation flip = new CyclicFlipAnimation(50f);
                         flip.setDuration(500);
                         viewToShow.startAnimation(flip);
-//                        Log.v(TAG, "Y value " + view.getY());
-//                        Log.v(TAG, "viewToShow height " + viewToShow.getY());
-//                        Log.v(TAG, "viewToShow pos " + (viewToShow.getHeight()));
-//                        Log.v(TAG, "focused view height " + view.getHeight());
-//                        Log.v(TAG, "height of focused view " + view.getLayoutParams().height);
-//                        Log.v(TAG, "measured height of view " + view.getMeasuredHeight());
 
-//                        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//                         int height = view.getMeasuredHeight();
-//
-//                        if(_expandingViewHeight <= 0){
-//                            viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//                            _expandingViewHeight = view.getMeasuredHeight();
-//                        }
-//
-//                        view.getLayoutParams().height = height + _expandingViewHeight;
-//                        view.requestLayout();
-//                        viewToShow.setY(height);
+                        if(_expandingViewHeight <= 0){
+                            viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                            _expandingViewHeight = viewToShow.getMeasuredHeight();
+                            Log.v(TAG, "expanding view hieght is + " + _expandingViewHeight);
+                        }
 
                     }else{
                         Log.v(TAG, "view is null");
@@ -132,12 +120,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 }
             } else {
                 View view = getChildAt(i);
-//                view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//
-//                int height = view.getMeasuredHeight();
-//
-//                view.getLayoutParams().height = height - _expandingViewHeight;
-//                view.requestLayout();
+
                 View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
 
                 if(viewToShow != null){
@@ -210,7 +193,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
 
     private Rect getChildViewRect(View parentView, View childView) {
-        final Rect childRect = new Rect(childView.getLeft(), childView.getTop(), childView.getRight(), childView.getBottom());
+        final Rect childRect = new Rect(childView.getLeft(), childView.getTop(), childView.getRight(), childView.getBottom() + _expandingViewHeight);
         if (parentView == childView) {
             return childRect;
         }

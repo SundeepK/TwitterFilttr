@@ -87,7 +87,7 @@
     <RelativeLayout
         android:id="@+id/tweet_operation_buttons"
         android:orientation="horizontal"
-        android:background="#fff"
+        android:background="#000"
         android:layout_width="match_parent"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
@@ -96,12 +96,12 @@
         android:layout_height="wrap_content">
 
 
-        <ImageButton
+    <ImageButton
             android:id="@+id/reply_but"
             android:text="copy"
             android:layout_margin="0dp"
             android:padding="0dp"
-            android:background="#4e4d4d"
+            android:background="#000"
             android:src="@drawable/reply_32"
             android:layout_width="35dp"
             android:layout_height="35dp"/>
@@ -112,6 +112,7 @@
             android:padding="0dp"
             android:background="@null"
             android:scaleType="centerInside"
+            android:layout_toRightOf="@+id/reply_but"
             android:src="@drawable/retweet_32"
             android:layout_width="35dp"
             android:layout_height="35dp"/>
@@ -123,6 +124,7 @@
             android:padding="0dp"
             android:background="@null"
             android:scaleType="centerInside"
+            android:layout_toRightOf="@+id/retweet_but"
             android:layout_width="35dp"
             android:layout_height="35dp"/>
 
@@ -133,6 +135,7 @@
             android:padding="0dp"
             android:background="@null"
             android:src="@drawable/quote_32"
+            android:layout_toRightOf="@+id/favourite_but"
             android:layout_width="35dp"
             android:layout_height="35dp"/>
 

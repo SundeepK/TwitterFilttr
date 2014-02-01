@@ -3,8 +3,8 @@ package com.sun.tweetfiltrr.tweetoperations;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
-import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 import com.sun.tweetfiltrr.tweetoperations.api.ISubmittable;
 import com.sun.tweetfiltrr.tweetoperations.api.ITwitterOperation;
 
@@ -21,11 +21,12 @@ public class SubmittableTask extends AsyncSmoothProgressBarTask<ITwitterOperatio
     private final Collection<ITwitterOperation> _operations = new ArrayList<ITwitterOperation>();
     private final ParcelableTweet _tweetToProcess;
     private final OnTwitterTaskComplete _listener;
+
     public interface OnTwitterTaskComplete{
         public void onComplete(ParcelableTweet tweet_);
     }
 
-    public SubmittableTask(SmoothProgressBarWrapper progressBar_, IDBDao<ParcelableTweet> timelineDao_,
+    public SubmittableTask(IProgress progressBar_, IDBDao<ParcelableTweet> timelineDao_,
                            ParcelableTweet tweetToProcess_, OnTwitterTaskComplete listener_){
         super(progressBar_);
         _timelineDao = timelineDao_;

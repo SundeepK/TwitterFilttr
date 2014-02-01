@@ -45,7 +45,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  * Created by Sundeep on 12/01/14.
  */
 public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListener,
-        OnAsyncTaskPostExecute<T>{
+        OnAsyncTaskPostExecute<T>, IProgress{
 
     private static final String TAG = PullToRefreshView.class.getName();
     protected PullToRefreshLayout _pullToRefreshView;
@@ -64,6 +64,9 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     private int _headerLayout;
     private Collection<IUserUpdater> _updaters;
     private ZoomListView.OnItemFocused _itemDisabledLis;
+
+
+
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
         public Collection<Callable<T>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
@@ -121,8 +124,6 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     public View onCreateViewCallback(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.pull_to_refresh_list_view, container, false);
         _pullToRefreshView = (PullToRefreshLayout) rootView.findViewById(R.id.pulls_refresh_layout);
-
-
         ActionBarPullToRefresh.from(_activity)
                 // Mark All Children as pullable
                 .allChildrenArePullable()
@@ -168,7 +169,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
     @Override
     public void onPreExecute() {
-        _pullToRefreshView.setRefreshing(true);
+        startRefresh();
     }
 
     @Override
@@ -186,6 +187,17 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
     public int getRowCount() {
         return _timelineCount;
+    }
+
+    @Override
+    public void startRefresh() {
+        _pullToRefreshView.setRefreshing(true);
+    }
+
+    @Override
+    public void setRefreshFinish() {
+        _pullToRefreshView.setRefreshComplete();
+
     }
 
 

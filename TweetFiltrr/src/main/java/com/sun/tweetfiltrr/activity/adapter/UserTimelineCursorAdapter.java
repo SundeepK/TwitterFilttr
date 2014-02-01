@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
+import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
@@ -36,17 +38,19 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 	private int _layout;
     private FriendTimeLineToParcelable _friendTimeLineToParcelable;
     private SparseArray<Boolean> _enabledItems;
-
+    private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
 
     public UserTimelineCursorAdapter(Context context, int layout, Cursor c,
                                      String[] from, int[] to, int flags,
-                                     FriendTimeLineToParcelable friendTimeLineToParcelable_, UrlImageLoader imageLoader_) {
+                                     FriendTimeLineToParcelable friendTimeLineToParcelable_, UrlImageLoader imageLoader_,
+                                     SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ) {
 		super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
         _layout = layout;
         _friendTimeLineToParcelable = friendTimeLineToParcelable_;
         _imageLoader = imageLoader_;
         _enabledItems = new SparseArray<Boolean>();
+        _onTweetOperationLis = onTweetOperationLis_;
 	}
 
 
@@ -79,6 +83,8 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         TextView tweetTextView =(TextView)view_.findViewById(R.id.timeline_entry);
         tweetTextView.setText(firstTweet.getTweetText());
 
+        ImageButton favBut = (ImageButton) view_.findViewById(R.id.favourite_but);
+        favBut.setOnClickListener(getFavOnClick(firstTweet, _onTweetOperationLis));
        
 	}
 
@@ -158,5 +164,46 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
     @Override
     public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_) {
         return focusedView_.findViewById(R.id.tweet_operation_buttons);
+    }
+
+    private View.OnClickListener getReplyOnClick(final ParcelableTweet tweetToFav_, final SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+            }
+        };
+    }
+
+    private View.OnClickListener getQuoteOnClick(final ParcelableTweet tweetToFav_, final SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+            }
+        };
+    }
+
+    private View.OnClickListener getReTweetOnClick(final ParcelableTweet tweetToFav_, final SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+            }
+        };
+    }
+
+    private View.OnClickListener getFavOnClick(final ParcelableTweet tweetToFav_, final SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               // v.setVisibility(View.GONE);
+                onTweetOperationLis_.onTweetFav(v,tweetToFav_);
+//               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
+//                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
+//                               new ParcelableTweet[]{tweetToFav_});
+            }
+        };
     }
 }

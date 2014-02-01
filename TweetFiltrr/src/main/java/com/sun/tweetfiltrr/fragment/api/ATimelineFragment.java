@@ -23,6 +23,7 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
+import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.asyncretriever.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
@@ -41,6 +42,7 @@ import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
+import com.sun.tweetfiltrr.tweetoperations.TweetOperationHandler;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
@@ -60,7 +62,7 @@ import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 public abstract class ATimelineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>, TabListener,
         IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
-        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
+        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation {
 
     private static final String TAG = ATimelineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
@@ -76,6 +78,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
     private Collection<IUserUpdater> _userDaoUpdaters;
+    private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,12 +151,13 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
             FriendTimeLineToParcelable friendTimeLineToParcelable = new FriendTimeLineToParcelable(new FriendToParcelable(),
                     new TimelineToParcelable());
+
             UserTimelineCursorAdapter timelineCursorAdapter = new UserTimelineCursorAdapter(getActivity(), R.layout.user_timeline_list_view_row,
-                    null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader);
+                    null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader, this);
             _dataAdapter = timelineCursorAdapter;
             ZoomListView.OnItemFocused listener = timelineCursorAdapter;
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener);
-
+            _onTweetOperationLis = new TweetOperationHandler(_pullToRefreshHandler, _timelineDao);
 
     }
 
@@ -287,5 +291,28 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     protected ParcelableUser getCurrentUser(){
         return _currentUser;
+    }
+
+    @Override
+    public void onTweetFav(View view_, ParcelableTweet tweet_) {
+        _onTweetOperationLis.onTweetFav(view_, tweet_);
+    }
+
+    @Override
+    public void onReTweet(View view_, ParcelableTweet tweet_) {
+        _onTweetOperationLis.onReTweet(view_, tweet_);
+
+    }
+
+    @Override
+    public void onReplyTweet(View view_, ParcelableTweet tweet_) {
+        _onTweetOperationLis.onReplyTweet(view_, tweet_);
+
+    }
+
+    @Override
+    public void onQuoteTweet(View view_, ParcelableTweet tweet_) {
+        _onTweetOperationLis.onQuoteTweet(view_, tweet_);
+
     }
 }

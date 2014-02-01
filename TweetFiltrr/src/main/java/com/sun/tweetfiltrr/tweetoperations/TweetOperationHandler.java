@@ -4,8 +4,8 @@ import android.view.View;
 
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
-import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 import com.sun.tweetfiltrr.tweetoperations.api.ITwitterOperation;
 import com.sun.tweetfiltrr.tweetoperations.api.ITwitterOperationTask;
 import com.sun.tweetfiltrr.tweetoperations.api.TwitterOperationTask;
@@ -20,12 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperation, SubmittableTask.OnTwitterTaskComplete {
 
-    private final SmoothProgressBarWrapper _progressBar;
+    private final IProgress _progressBar;
     private final ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterOperation>>> _twitterOperationsMap;
     private final IDBDao<ParcelableTweet> _tweetDao;
     private final ITwitterOperation _favouriteTweet = new FavouriteTweet();
 
-    public TweetOperationHandler(SmoothProgressBarWrapper progressBar_, IDBDao<ParcelableTweet> tweetDao_){
+    public TweetOperationHandler(IProgress progressBar_, IDBDao<ParcelableTweet> tweetDao_){
         _progressBar = progressBar_;
         _twitterOperationsMap = new ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterOperation>>>();
         _tweetDao = tweetDao_;
