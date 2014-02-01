@@ -18,9 +18,9 @@ public class TwitterOperation {
     }
 
     public Collection<ParcelableTweet> processTwitterOperations(){
-        for(ParcelableTweet tweet : _tweets){
-            _twitterOperation.performTwitterOperation(tweet);
-        }
+//        for(ParcelableTweet tweet : _tweets){
+//            _twitterOperation.performTwitterOperation(tweet);
+//        }
         return _tweets;
     }
 

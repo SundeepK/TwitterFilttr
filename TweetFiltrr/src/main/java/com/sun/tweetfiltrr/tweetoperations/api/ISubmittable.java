@@ -5,7 +5,7 @@ package com.sun.tweetfiltrr.tweetoperations.api;
  */
 public interface ISubmittable<V> {
 
-    public boolean submitNewTask(V callableToSubmit_);
     public boolean isComplete();
+    public boolean isFailed();
 
 }

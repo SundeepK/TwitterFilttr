@@ -3,6 +3,7 @@ package com.sun.tweetfiltrr.tweetoperations;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
+import com.sun.tweetfiltrr.tweetoperations.api.IOnTweetOperationFail;
 import com.sun.tweetfiltrr.tweetoperations.api.ITwitterOperation;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
@@ -23,7 +24,7 @@ public  class RetweetTweet implements ITwitterOperation {
     }
 
     @Override
-    public ParcelableTweet performTwitterOperation(ParcelableTweet tweets_) {
+    public ParcelableTweet performTwitterOperation(ParcelableTweet tweets_,IOnTweetOperationFail failLister_ ) {
         Twitter twitter = TwitterUtil.getInstance().getTwitter();
         ParcelableTweet tweet = null;
         SimpleDateFormat format = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal().get();
@@ -35,6 +36,7 @@ public  class RetweetTweet implements ITwitterOperation {
         } catch (TwitterException e) {
             e.printStackTrace();
             Log.v(TAG, "Error occured whilst trying to re-tweet");
+            failLister_.onTweetOperationFail(e);
         }
 
         return tweet;

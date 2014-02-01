@@ -25,18 +25,14 @@ public class TwitterOperationTask implements ITwitterOperationTask<ITwitterOpera
         return _submittable;
     }
 
-    @Override
-    public void performTask(ITwitterOperation[] objectsToSubmit_) {
-
-    }
-
-    @Override
-    public boolean submitNewTask(ITwitterOperation callableToSubmit_) {
-        return _submittable.submitNewTask(callableToSubmit_);
-    }
 
     @Override
     public boolean isComplete() {
         return _submittable.isComplete();
+    }
+
+    @Override
+    public boolean isFailed() {
+        return _submittable.isFailed();
     }
 }

@@ -9,5 +9,4 @@ public interface ITwitterOperationTask<V> extends ISubmittable<V>{
 
     public View getView();
     public ISubmittable<V> getSubmittableTask();
-    public void performTask(V[] objectsToSubmit_);
 }

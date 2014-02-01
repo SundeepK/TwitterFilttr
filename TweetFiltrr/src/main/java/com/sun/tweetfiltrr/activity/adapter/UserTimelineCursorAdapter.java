@@ -85,6 +85,8 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
         ImageButton favBut = (ImageButton) view_.findViewById(R.id.favourite_but);
         favBut.setOnClickListener(getFavOnClick(firstTweet, _onTweetOperationLis));
+        ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
+        reTweetBut.setOnClickListener(getReTweetOnClick(firstTweet, _onTweetOperationLis));
        
 	}
 
@@ -188,7 +190,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+                onTweetOperationLis_.onReTweet(v,tweetToFav_);
             }
         };
     }
