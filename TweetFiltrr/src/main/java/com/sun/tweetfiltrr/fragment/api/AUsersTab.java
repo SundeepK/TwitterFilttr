@@ -25,12 +25,10 @@ import com.sun.tweetfiltrr.asyncretriever.api.UsersFriendRetriever;
 import com.sun.tweetfiltrr.asyncretriever.callables.FriendsRetriever;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
-import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.UserUpdater;
-import com.sun.tweetfiltrr.database.tables.UsersToFriendsTable;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
@@ -47,17 +45,16 @@ import java.util.concurrent.TimeUnit;
 
 import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
-import static com.sun.tweetfiltrr.database.tables.UsersToFriendsTable.*;
 
 
-public abstract class UsersTab extends ATwitterFragment implements LoaderManager.LoaderCallbacks<Cursor>,
+public abstract class AUsersTab extends ATwitterFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         TabListener,  AdapterView.OnItemClickListener,
         PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
 
     private int _currentLimitCount = 50;
 
-    private static final String TAG = UsersTab.class.getName();
+    private static final String TAG = AUsersTab.class.getName();
     private SimpleCursorAdapter _dataAdapter;
     private static final int LIST_LOADER = 0x05;
     private IDBDao<ParcelableUser> _friendDao;
@@ -168,13 +165,13 @@ public abstract class UsersTab extends ATwitterFragment implements LoaderManager
                 null, columns, to, 0, _sicImageLoader);
 
         _dataAdapter = friendsCursorAdapter;
-        ZoomListView.OnItemDisabled listener = friendsCursorAdapter;
+        ZoomListView.OnItemFocused listener = friendsCursorAdapter;
         _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser(), listener);
 
 
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemDisabled listener){
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemFocused listener){
         return new PullToRefreshView<Collection<ParcelableUser>>
                 (getActivity(), currentUser_, this, adapter_ ,this, this, listener);
     }

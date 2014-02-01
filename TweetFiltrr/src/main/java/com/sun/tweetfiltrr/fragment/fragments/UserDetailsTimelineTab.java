@@ -51,7 +51,7 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
     }
 
     @Override
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,  ZoomListView.OnItemDisabled listener_) {
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,  ZoomListView.OnItemFocused listener_) {
         return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment, listener_);
     }
 

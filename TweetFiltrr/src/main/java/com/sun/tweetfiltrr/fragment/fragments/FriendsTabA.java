@@ -13,14 +13,14 @@ import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.UserFriendsDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.fragment.api.UsersTab;
+import com.sun.tweetfiltrr.fragment.api.AUsersTab;
 
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.UsersToFriendsTable.UsersToFriendsColumn;
 
 
-public class FriendsTab extends UsersTab{
-    private static final String TAG = FriendsTab.class.getName();
+public class FriendsTabA extends AUsersTab {
+    private static final String TAG = FriendsTabA.class.getName();
 
 
     @Override

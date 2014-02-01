@@ -27,7 +27,7 @@ import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemDisabled {
+public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemFocused {
 
 
     private static final String TAG = UserTimelineCursorAdapter.class.getName();
@@ -145,13 +145,18 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 	
 	@Override
 	public View newView(Context context, Cursor  cursor, ViewGroup parent) {
-		final View view=_inflater.inflate(_layout,parent,false); 
+		final View view=_inflater.inflate(_layout,parent,false);
         return view;
 	}
 
 
     @Override
-    public void itemEnabledStatus(int position, boolean status_) {
+    public void onItemOutOfFocus(int position, boolean status_) {
         _enabledItems.put(position, status_);
+    }
+
+    @Override
+    public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_) {
+        return focusedView_.findViewById(R.id.tweet_operation_buttons);
     }
 }

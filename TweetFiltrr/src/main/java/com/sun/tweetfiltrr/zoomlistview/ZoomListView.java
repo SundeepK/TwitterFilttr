@@ -3,6 +3,7 @@ package com.sun.tweetfiltrr.zoomlistview;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +25,17 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private Rect _viewBounds;
     private boolean _isZoomed;
     private OnItemClickListener _listner;
-    private OnItemDisabled _onItemDisableLis;
-    public interface OnItemDisabled{
+    private OnItemFocused _onItemFocusedLis;
+    private int _expandingViewHeight = 0;
+    private int _previousFocusedViewHeight;
+    public interface OnItemFocused {
 
         /**
          * This interface can be used to be notified when a particular item should be disabled, or is currently not focused
          * @param position
          */
-        public void itemEnabledStatus(int position, boolean status_);
+        public void onItemOutOfFocus(int position, boolean status_);
+        public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_);
     }
 
     public ZoomListView(Context context_) {
@@ -63,8 +67,8 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         setOnItemLongClickListener(this);
     }
 
-    public void setOnItemDisableListener(OnItemDisabled listener_){
-        _onItemDisableLis = listener_;
+    public void setOnItemDisableListener(OnItemFocused listener_){
+        _onItemFocusedLis = listener_;
     }
 
     private void scaleChildViews(long rowId_, int itemPos_, float scale, boolean shouldEnable){
@@ -90,9 +94,54 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             if (_isZoomed) {
                 if (getAdapter().getItemId(clickedItemPosition_) != getAdapter().getItemId(i)) {
                     scaleView(i, scale_, shouldEnable_, scaleAnimation);
+                }else{
+                    View view = getChildAt(i);
+
+                    if(view != null){
+                        Log.v(TAG, "view is valid");
+                        View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
+
+                        viewToShow.setVisibility(VISIBLE);
+
+                        Log.v(TAG, "Y value " + view.getY());
+                        Log.v(TAG, "viewToShow height " + viewToShow.getY());
+                        Log.v(TAG, "viewToShow pos " + (viewToShow.getHeight()));
+                        Log.v(TAG, "focused view height " + view.getHeight());
+                        Log.v(TAG, "height of focused view " + view.getLayoutParams().height);
+                        Log.v(TAG, "measured height of view " + view.getMeasuredHeight());
+
+//                        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//                         int height = view.getMeasuredHeight();
+//
+//                        if(_expandingViewHeight <= 0){
+//                            viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//                            _expandingViewHeight = view.getMeasuredHeight();
+//                        }
+//
+//                        view.getLayoutParams().height = height + _expandingViewHeight;
+//                        view.requestLayout();
+//                        viewToShow.setY(height);
+
+                    }else{
+                        Log.v(TAG, "view is null");
+                    }
                 }
             } else {
+                View view = getChildAt(i);
+//                view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//
+//                int height = view.getMeasuredHeight();
+//
+//                view.getLayoutParams().height = height - _expandingViewHeight;
+//                view.requestLayout();
+                View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
+
+                if(viewToShow != null){
+                    viewToShow.setVisibility(GONE);
+                }
                 scaleView(i, scale_, shouldEnable_, scaleAnimation);
+
+
             }
         }
     }
@@ -114,8 +163,8 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             view.startAnimation(animation_);
 //            view.setScaleX(scale_);
 //            view.setScaleY(scale_);
-            if (_onItemDisableLis != null) {
-                _onItemDisableLis.itemEnabledStatus(position_, shouldEnable_);
+            if (_onItemFocusedLis != null) {
+                _onItemFocusedLis.onItemOutOfFocus(position_, shouldEnable_);
             }
         }
     }

@@ -45,7 +45,7 @@ public class TwitterUserHomeTabsAdapter extends FragmentPagerAdapter {
 //                frag.setArguments(bundle);
 //                return frag;
 //
-//                frag = new FollowersTab();
+//                frag = new FollowersTabA();
 //                frag.setArguments(bundle);
 //                return frag;
         }

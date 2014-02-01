@@ -19,8 +19,8 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.alarm.TwitterUpdateReceiver;
-import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
-import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
+import com.sun.tweetfiltrr.fragment.fragments.FollowersTabA;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsTabA;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 public class TwitterFilttrUserHome extends ATwitterActivity implements TabListener, TwitterTabsAdapter.OnFragmentChange {
@@ -121,13 +121,13 @@ public class TwitterFilttrUserHome extends ATwitterActivity implements TabListen
         Fragment frag = null;
                 if(_currentTabType == 3){
             Log.v(TAG, "Current tab number" + _currentTabType);
-            frag =  new FollowersTab();
+            frag =  new FollowersTabA();
             frag.setArguments(bundle);
 
 
         }else{
 
-            frag = new FriendsTab();
+            frag = new FriendsTabA();
             frag.setArguments(bundle);
         }
 

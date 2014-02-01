@@ -151,13 +151,13 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             UserTimelineCursorAdapter timelineCursorAdapter = new UserTimelineCursorAdapter(getActivity(), R.layout.user_timeline_list_view_row,
                     null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader);
             _dataAdapter = timelineCursorAdapter;
-            ZoomListView.OnItemDisabled listener = timelineCursorAdapter;
+            ZoomListView.OnItemFocused listener = timelineCursorAdapter;
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener);
 
 
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemDisabled listener_){
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemFocused listener_){
         return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_ );
     }
 

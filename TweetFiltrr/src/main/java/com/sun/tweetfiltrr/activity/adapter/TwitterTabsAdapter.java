@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsTabA;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -44,7 +44,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 
         }else{
 
-            frag = new FriendsTab();
+            frag = new FriendsTabA();
             frag.setArguments(bundle);
         }
         _currentFragment = frag;
@@ -76,7 +76,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter {
 	        case 1:
 
                 if(_currentFragment==null){
-                    _currentFragment = new FriendsTab();
+                    _currentFragment = new FriendsTabA();
                 Log.v(TAG, "current tab name" + _currentFragment.toString());
                 }
 

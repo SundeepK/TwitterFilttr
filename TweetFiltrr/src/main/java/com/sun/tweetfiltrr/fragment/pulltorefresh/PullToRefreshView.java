@@ -63,7 +63,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     protected OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
     private Collection<IUserUpdater> _updaters;
-    private ZoomListView.OnItemDisabled _itemDisabledLis;
+    private ZoomListView.OnItemFocused _itemDisabledLis;
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
         public Collection<Callable<T>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
@@ -74,7 +74,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, int headerLayout_, ZoomListView.OnItemDisabled itemDisabledLis_){
+                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_){
        this(activity_, currentUser_,onItemClick_, cursorAdapter_,  pullToRefreshLis_,
                loadMoreLis_, itemDisabledLis_);
         _headerLayout =headerLayout_;
@@ -85,7 +85,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemDisabled itemDisabledLis_){
+                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemFocused itemDisabledLis_){
         _activity = activity_;
         _currentUser = currentUser_;
         _onItemClick = onItemClick_;

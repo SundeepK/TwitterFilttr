@@ -18,7 +18,7 @@ import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.net.URISyntaxException;
 
-public class FriendsCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemDisabled {
+public class FriendsCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemFocused {
 
 	
     private static final String TAG = FriendsCursorAdapter.class.getName();
@@ -113,7 +113,12 @@ public class FriendsCursorAdapter extends SimpleCursorAdapter implements ZoomLis
     }
 
     @Override
-    public void itemEnabledStatus(int position, boolean status_) {
+    public void onItemOutOfFocus(int position, boolean status_) {
         _enabledItems.put(position, status_);
+    }
+
+    @Override
+    public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_) {
+        return null;
     }
 }
