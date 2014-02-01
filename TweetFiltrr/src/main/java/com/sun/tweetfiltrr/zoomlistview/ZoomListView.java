@@ -12,6 +12,8 @@ import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.sun.tweetfiltrr.animation.CyclicFlipAnimation;
+
 /**
  * Created by Sundeep.Kahlon on 30/01/14.
  */
@@ -102,13 +104,15 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                         View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
 
                         viewToShow.setVisibility(VISIBLE);
-
-                        Log.v(TAG, "Y value " + view.getY());
-                        Log.v(TAG, "viewToShow height " + viewToShow.getY());
-                        Log.v(TAG, "viewToShow pos " + (viewToShow.getHeight()));
-                        Log.v(TAG, "focused view height " + view.getHeight());
-                        Log.v(TAG, "height of focused view " + view.getLayoutParams().height);
-                        Log.v(TAG, "measured height of view " + view.getMeasuredHeight());
+                        Animation flip = new CyclicFlipAnimation(50f,-50f);
+                        flip.setDuration(500);
+                        viewToShow.startAnimation(flip);
+//                        Log.v(TAG, "Y value " + view.getY());
+//                        Log.v(TAG, "viewToShow height " + viewToShow.getY());
+//                        Log.v(TAG, "viewToShow pos " + (viewToShow.getHeight()));
+//                        Log.v(TAG, "focused view height " + view.getHeight());
+//                        Log.v(TAG, "height of focused view " + view.getLayoutParams().height);
+//                        Log.v(TAG, "measured height of view " + view.getMeasuredHeight());
 
 //                        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 //                         int height = view.getMeasuredHeight();
@@ -161,8 +165,6 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         View view = getChildAt(position_);
         if (view != null) {
             view.startAnimation(animation_);
-//            view.setScaleX(scale_);
-//            view.setScaleY(scale_);
             if (_onItemFocusedLis != null) {
                 _onItemFocusedLis.onItemOutOfFocus(position_, shouldEnable_);
             }
