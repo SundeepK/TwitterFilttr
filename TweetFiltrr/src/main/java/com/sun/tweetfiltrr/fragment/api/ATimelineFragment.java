@@ -33,10 +33,10 @@ import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineUserUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.UserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
@@ -77,7 +77,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
-    private Collection<IUserUpdater> _userDaoUpdaters;
+    private Collection<IDatabaseUpdater> _userDaoUpdaters;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
 
     @Override
@@ -119,14 +119,14 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
         //initialise TweetRetrieverWrapper to easy tweet retrieval
         _tweetRetriver = new TweetRetrieverWrapper(_threadExecutor, simpleDateFormatLocal);
-        _userDaoUpdaters = new ArrayList<IUserUpdater>();
-        _userDaoUpdaters.add(new TimelineUserUpdater(_timelineDao));
+        _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
+        _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(),
                 FriendColumn.TWEET_COUNT.s(), FriendColumn.COLUMN_MAXID.s(), FriendColumn.COLUMN_SINCEID.s(),
                 FriendColumn.MAXID_FOR_MENTIONS.s(), FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendColumn.FRIEND_COUNT.s()
                 , FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(), FriendColumn.PROFILE_IMAGE_URL.s(),
                 FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.DESCRIPTION.s()};
-        _userDaoUpdaters.add(new UserUpdater(_friendDao,cols ));
+        _userDaoUpdaters.add(new DatabaseUpdater(_friendDao,cols ));
 
 
     }

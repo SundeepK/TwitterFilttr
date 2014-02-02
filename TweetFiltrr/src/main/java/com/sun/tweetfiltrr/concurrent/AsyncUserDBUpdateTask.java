@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
         private final static String TAG = AsyncUserDBUpdateTask.class.getName();
         private IDBUpdater<ParcelableTweet> _databaseUpdater;
-        private Collection<IUserUpdater> _userUpdaters;
+        private Collection<IDatabaseUpdater> _userUpdaters;
         private OnAsyncTaskPostExecute _postExecuteLis;
         /**
          *
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
          * @param timeUnit_
          */
         public AsyncUserDBUpdateTask(long timeout_, TimeUnit timeUnit_,
-                                     Collection<IUserUpdater> daosToUpdate_,
+                                     Collection<IDatabaseUpdater> daosToUpdate_,
                                      OnAsyncTaskPostExecute postExecuteLis_) {
             super(timeout_, timeUnit_);
             _userUpdaters = daosToUpdate_;
@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 
             Log.v(TAG, "trying to update tiomeline size" + futureResults.size() + " for user + " + futureResults.toString());
 
-            for(IUserUpdater updater : _userUpdaters){
+            for(IDatabaseUpdater updater : _userUpdaters){
                 updater.updateUsersToDB(futureResults);
             }
 

@@ -35,4 +35,9 @@ public class TwitterOperationTask implements ITwitterOperationTask<ITwitterOpera
     public boolean isFailed() {
         return _submittable.isFailed();
     }
+
+    @Override
+    public boolean isRunning() {
+        return _submittable.isRunning();
+    }
 }

@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.tweetoperations;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
@@ -21,8 +22,9 @@ import twitter4j.TwitterException;
 /**
  * Created by Sundeep.Kahlon on 29/01/14.
  */
-public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperation, SubmittableTask.OnTwitterTaskComplete {
+public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperation, TweetOperationTask.OnTwitterTaskComplete {
 
+    private static final String TAG = TweetOperationHandler.class.getName();
     private final IProgress _progressBar;
     private final ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterOperation>>> _twitterOperationsMap;
     private final IDBDao<ParcelableTweet> _tweetDao;
@@ -90,7 +92,7 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
     }
 
     private ITwitterOperationTask<ITwitterOperation> getSubmittableTask(View view_, ParcelableTweet tweet_, ITwitterOperation operation_){
-        SubmittableTask task = new SubmittableTask(_progressBar,_tweetDao, tweet_, this );
+        TweetOperationTask task = new TweetOperationTask(_progressBar,_tweetDao, tweet_, this );
         task.execute(operation_);
         return new TwitterOperationTask(view_, task);
 
@@ -122,13 +124,18 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
     @Override
     public void onTaskFail(ParcelableTweet tweetThatFailed_,TwitterException exception_) {
         Collection<ITwitterOperationTask<ITwitterOperation>> operations = _twitterOperationsMap.get(tweetThatFailed_);
+        Log.v(TAG, "on task failed");
 
         if (!operations.isEmpty()) {
             final Iterator<ITwitterOperationTask<ITwitterOperation>> itr = operations.iterator();
             while (itr.hasNext()) {
                 ITwitterOperationTask<ITwitterOperation> task = itr.next();
-                if (task.isComplete()) {
+                if (task.isRunning()) {
+                    Log.v(TAG, "task complete");
+
                     if (task.isFailed()) {
+                        Log.v(TAG, "task is failed");
+
                         itr.remove();
                         View v = task.getView();
                         v.setEnabled(true);

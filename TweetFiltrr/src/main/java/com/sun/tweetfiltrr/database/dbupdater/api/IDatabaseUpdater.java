@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Created by Sundeep.Kahlon on 23/01/14.
  */
-public interface IUserUpdater {
+public interface IDatabaseUpdater {
 
     public void updateUsersToDB(Collection<ParcelableUser> users_);
 

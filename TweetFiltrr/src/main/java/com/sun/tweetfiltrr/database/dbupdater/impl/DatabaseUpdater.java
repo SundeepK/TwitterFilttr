@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.database.dbupdater.impl;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
@@ -9,17 +9,17 @@ import java.util.Collection;
 /**
  * Created by Sundeep.Kahlon on 23/01/14.
  */
-public class UserUpdater implements IUserUpdater {
+public class DatabaseUpdater implements IDatabaseUpdater {
 
     private IDBDao<ParcelableUser> _userDao;
     private String[] _columns;
 
-    public UserUpdater(IDBDao<ParcelableUser> userDao_, String[] columns_){
+    public DatabaseUpdater(IDBDao<ParcelableUser> userDao_, String[] columns_){
         _userDao =userDao_;
         _columns = columns_;
     }
 
-    public UserUpdater(IDBDao<ParcelableUser> userDao_){
+    public DatabaseUpdater(IDBDao<ParcelableUser> userDao_){
         _userDao =userDao_;
     }
 

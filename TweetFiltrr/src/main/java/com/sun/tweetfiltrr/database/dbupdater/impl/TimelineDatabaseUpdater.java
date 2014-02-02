@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.database.dbupdater.impl;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
@@ -11,9 +11,9 @@ import java.util.Collection;
 /**
  * Created by Sundeep.Kahlon on 23/01/14.
  */
-public class TimelineUserUpdater implements IUserUpdater {
+public class TimelineDatabaseUpdater implements IDatabaseUpdater {
     private IDBDao<ParcelableTweet> _timeLineDao;
-    public TimelineUserUpdater(IDBDao<ParcelableTweet> timeLineDao_){
+    public TimelineDatabaseUpdater(IDBDao<ParcelableTweet> timeLineDao_){
         _timeLineDao = timeLineDao_;
     }
 

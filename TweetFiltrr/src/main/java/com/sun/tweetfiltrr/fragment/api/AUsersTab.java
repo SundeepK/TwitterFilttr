@@ -26,9 +26,9 @@ import com.sun.tweetfiltrr.asyncretriever.callables.FriendsRetriever;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.UserUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
@@ -67,7 +67,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     private ITwitterRetriever<Collection<ParcelableUser>>  _userRetriever;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading;
-    private Collection<IUserUpdater> _updaters = new ArrayList<IUserUpdater>();
+    private Collection<IDatabaseUpdater> _updaters = new ArrayList<IDatabaseUpdater>();
 
 
 
@@ -139,8 +139,8 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
         _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();
 
-        _updaters.add(new UserUpdater(_friendDao ));
-        _updaters.add(new UserUpdater(_usersToFriendDao));
+        _updaters.add(new DatabaseUpdater(_friendDao ));
+        _updaters.add(new DatabaseUpdater(_usersToFriendDao));
 
 
     }

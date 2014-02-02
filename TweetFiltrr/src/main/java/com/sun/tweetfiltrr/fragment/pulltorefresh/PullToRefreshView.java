@@ -19,9 +19,9 @@ import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.api.IUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineUserUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.api.IFragmentCallback;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
@@ -62,7 +62,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     protected int _timelineCount = 50;
     protected OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
-    private Collection<IUserUpdater> _updaters;
+    private Collection<IDatabaseUpdater> _updaters;
     private ZoomListView.OnItemFocused _itemDisabledLis;
 
 
@@ -105,8 +105,8 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
         _pullToRefreshLis, loadMoreLis_, 5);
-        _updaters  = new ArrayList<IUserUpdater>();
-        _updaters.add(new TimelineUserUpdater(_timelineDao));
+        _updaters  = new ArrayList<IDatabaseUpdater>();
+        _updaters.add(new TimelineDatabaseUpdater(_timelineDao));
         _itemDisabledLis =  itemDisabledLis_;
         Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
     }

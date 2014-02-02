@@ -3,6 +3,7 @@ package com.sun.tweetfiltrr.tweetoperations;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.tweetoperations.api.IOnTweetOperationFail;
@@ -17,10 +18,10 @@ import twitter4j.TwitterException;
 /**
  * Created by Sundeep on 01/01/14.
  */
-public class SubmittableTask extends AsyncSmoothProgressBarTask<ITwitterOperation, Void, Collection<ParcelableTweet>>
+public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterOperation, Void, Collection<ParcelableTweet>>
         implements ISubmittable<ITwitterOperation> , IOnTweetOperationFail {
 
-    private static final String TAG = SubmittableTask.class.getName() ;
+    private static final String TAG = TweetOperationTask.class.getName() ;
     private final IDBDao<ParcelableTweet> _timelineDao;
     private final Collection<ITwitterOperation> _operations = new ArrayList<ITwitterOperation>();
     private final ParcelableTweet _tweetToProcess;
@@ -28,33 +29,37 @@ public class SubmittableTask extends AsyncSmoothProgressBarTask<ITwitterOperatio
     private final Collection<TwitterException> _exceptions;
     private boolean _isFailed = false;
 
-    @Override
-    public void onTweetOperationFail(TwitterException exception_) {
-        _exceptions.add(exception_);
-    }
+
 
     public interface OnTwitterTaskComplete{
         public void onSuccessfulComplete(ParcelableTweet tweet_);
         public void onTaskFail(ParcelableTweet failedTweet_,TwitterException exception_);
     }
 
-    public SubmittableTask(IProgress progressBar_, IDBDao<ParcelableTweet> timelineDao_,
-                           ParcelableTweet tweetToProcess_, OnTwitterTaskComplete listener_){
+    public TweetOperationTask(IProgress progressBar_, IDBDao<ParcelableTweet> timelineDao_,
+                              ParcelableTweet tweetToProcess_, OnTwitterTaskComplete listener_){
         super(progressBar_);
         _timelineDao = timelineDao_;
         _tweetToProcess = tweetToProcess_;
         _listener = listener_;
-        _exceptions = new ArrayList<TwitterException>(1);  //we will only have exception if something goes wrong
+        _exceptions = new ArrayList<TwitterException>(1);  //we will only have one exception if something goes wrong
+    }
+
+    @Override
+    public void onTweetOperationFail(TwitterException exception_) {
+        _exceptions.add(exception_);
     }
 
     @Override
     protected void onPostExecute( Collection<ParcelableTweet> status) {
-        _timelineDao.insertOrUpdate(status);
+        _timelineDao.insertOrUpdate(status, new String[]{TimelineTable.TimelineColumn.IS_FAVOURITE.s(),
+                TimelineTable.TimelineColumn.IS_MENTION.s(), TimelineTable.TimelineColumn.IS_RETWEETED.s()});
         Log.v(TAG, "Updating database");
 
         if(!_exceptions.isEmpty()){
-            _listener.onTaskFail(_tweetToProcess,_exceptions.iterator().next());
+            Log.v(TAG, "exceptions are not empty so calling fail listener");
             _isFailed = true;
+            _listener.onTaskFail(_tweetToProcess,_exceptions.iterator().next());
         }else{
             _listener.onSuccessfulComplete(_tweetToProcess);
         }
@@ -115,6 +120,18 @@ public class SubmittableTask extends AsyncSmoothProgressBarTask<ITwitterOperatio
     @Override
     public boolean isFailed() {
         return _isFailed;
+    }
+
+    @Override
+    public boolean isRunning() {
+        boolean isRunning = false;
+
+        synchronized (this) {
+            if (getStatus() == Status.RUNNING) {
+                isRunning = true;
+            }
+        }
+        return isRunning;
     }
 
 

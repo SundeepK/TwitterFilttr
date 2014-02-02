@@ -30,6 +30,16 @@ public  class FavouriteTweet implements ITwitterOperation {
         try {
             twitter4j.Status status = twitter.createFavorite(tweets_.getTweetID());
             newTweet = new ParcelableTweet(status, format.format(status.getCreatedAt()), status.getUser().getId());
+
+            if(tweets_.isKeyWordSearchedTweet()){
+                newTweet.setIsKeyWordSearedTweet(true);
+            }
+
+            if(tweets_.isMention()){
+                newTweet.setIsMention(true);
+            }
+
+
         } catch (TwitterException e) {
             e.printStackTrace();
             Log.v(TAG, "Error occured whilst trying to fav tweet");

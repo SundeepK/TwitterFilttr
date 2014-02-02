@@ -7,5 +7,6 @@ public interface ISubmittable<V> {
 
     public boolean isComplete();
     public boolean isFailed();
+    public boolean isRunning();
 
 }
