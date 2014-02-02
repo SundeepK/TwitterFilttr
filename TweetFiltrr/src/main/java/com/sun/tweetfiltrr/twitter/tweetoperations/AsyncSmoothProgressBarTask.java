@@ -17,16 +17,24 @@ public abstract class AsyncSmoothProgressBarTask<V, T, E>  extends AsyncTask<V, 
         _progressBar = progressBar_;
     }
 
+    public  AsyncSmoothProgressBarTask(){
+    }
+
     @Override
     protected void onPostExecute(E status) {
+        if(_progressBar != null){
         _progressBar.setRefreshFinish();
+        }
+
         super.onPostExecute(status);
 
     }
 
     @Override
     protected void onPreExecute() {
-        _progressBar.startRefresh();
+        if(_progressBar != null){
+            _progressBar.startRefresh();
+        }
         super.onPreExecute();
     }
 

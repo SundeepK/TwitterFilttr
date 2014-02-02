@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.twitter.tweetoperations;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperation;
+import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 
 import java.util.Collection;
 
@@ -10,9 +10,9 @@ import java.util.Collection;
  */
 public class TwitterOperation {
 
-    private ITwitterOperation _twitterOperation;
+    private ITweetOperation _twitterOperation;
     private Collection<ParcelableTweet> _tweets;
-    public TwitterOperation(ITwitterOperation twitterOperation_, Collection<ParcelableTweet> tweets_){
+    public TwitterOperation(ITweetOperation twitterOperation_, Collection<ParcelableTweet> tweets_){
         _twitterOperation = twitterOperation_;
         _tweets = tweets_;
     }

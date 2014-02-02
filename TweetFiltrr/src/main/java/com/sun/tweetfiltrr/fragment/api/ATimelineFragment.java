@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Window;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
+import com.sun.tweetfiltrr.activity.activities.ReplyTweetActivity;
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
@@ -294,25 +295,25 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     }
 
     @Override
-    public void onTweetFav(View view_, ParcelableTweet tweet_) {
-        _onTweetOperationLis.onTweetFav(view_, tweet_);
+    public void onTweetFav(View view_, ParcelableUser user_) {
+        _onTweetOperationLis.onTweetFav(view_, user_);
     }
 
     @Override
-    public void onReTweet(View view_, ParcelableTweet tweet_) {
-        _onTweetOperationLis.onReTweet(view_, tweet_);
-
-    }
-
-    @Override
-    public void onReplyTweet(View view_, ParcelableTweet tweet_) {
-        _onTweetOperationLis.onReplyTweet(view_, tweet_);
+    public void onReTweet(View view_, ParcelableUser user_) {
+        _onTweetOperationLis.onReTweet(view_, user_);
 
     }
 
     @Override
-    public void onQuoteTweet(View view_, ParcelableTweet tweet_) {
-        _onTweetOperationLis.onQuoteTweet(view_, tweet_);
+    public void onReplyTweet(View view_, ParcelableUser user_) {
+        Intent tweetConvo = new Intent(getActivity(), ReplyTweetActivity.class);
+        tweetConvo.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, user_);
+        getActivity().startActivity(tweetConvo);
+    }
+
+    @Override
+    public void onQuoteTweet(View view_, ParcelableUser user_) {
 
     }
 }

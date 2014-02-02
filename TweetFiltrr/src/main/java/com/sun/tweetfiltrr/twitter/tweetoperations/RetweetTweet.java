@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.IOnTweetOperationFail;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperation;
+import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
@@ -15,7 +15,7 @@ import twitter4j.TwitterException;
 /**
  * Created by Sundeep on 01/01/14.
  */
-public  class RetweetTweet implements ITwitterOperation {
+public  class RetweetTweet implements ITweetOperation {
 
     private static final String TAG = RetweetTweet.class.getName() ;
 

@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.tweetprocessor.impl;
+package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;

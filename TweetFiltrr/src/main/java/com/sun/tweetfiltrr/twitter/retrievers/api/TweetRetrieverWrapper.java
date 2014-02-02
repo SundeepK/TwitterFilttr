@@ -8,11 +8,11 @@ import com.sun.tweetfiltrr.twitter.retrievers.TimeLineRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.twitterparameter.TwitterPageParameter;
 import com.sun.tweetfiltrr.twitter.retrievers.twitterparameter.TwitterQueryParameter;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
-import com.sun.tweetfiltrr.tweetprocessor.impl.DateBasedTweetProcessor;
-import com.sun.tweetfiltrr.tweetprocessor.impl.KeywordTweetProcessor;
-import com.sun.tweetfiltrr.tweetprocessor.impl.MentionsTweetProcessor;
-import com.sun.tweetfiltrr.tweetprocessor.impl.PlainTweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.DateBasedTweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.KeywordTweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.MentionsTweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.PlainTweetProcessor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

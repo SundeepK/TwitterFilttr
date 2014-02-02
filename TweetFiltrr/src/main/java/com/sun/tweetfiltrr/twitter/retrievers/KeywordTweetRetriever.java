@@ -4,7 +4,7 @@ import com.sun.tweetfiltrr.twitter.retrievers.api.ATimeLineRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterParameter;
 import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterResponse;
 import com.sun.tweetfiltrr.twitter.retrievers.twitterresponse.TwitterQueryResponse;
-import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;

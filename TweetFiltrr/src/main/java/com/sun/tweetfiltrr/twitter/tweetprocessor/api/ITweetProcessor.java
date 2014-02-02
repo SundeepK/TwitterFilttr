@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.tweetprocessor.api;
+package com.sun.tweetfiltrr.twitter.tweetprocessor.api;
 
 
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;

@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.tweetprocessor.impl;
+package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 
 
 import android.util.Log;
@@ -7,18 +7,13 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
-import twitter4j.Status;
 
 /**
  * Created by Sundeep on 17/12/13.
  */
-public class PlainTweetProcessor extends ATweetProcessor {
-    private static final String TAG = PlainTweetProcessor.class.getName();
+public class MentionsTweetProcessor extends PlainTweetProcessor {
+    private static final String TAG = MentionsTweetProcessor.class.getName();
 
     /**
      * Threadsafe class
@@ -32,8 +27,18 @@ public class PlainTweetProcessor extends ATweetProcessor {
      *
      * @param dateFormat_    The {@link java.text.SimpleDateFormat} that is used to manipulate {@link java.util.Date}
      */
-    public PlainTweetProcessor(ThreadLocal<SimpleDateFormat> dateFormat_) {
+    public MentionsTweetProcessor(ThreadLocal<SimpleDateFormat> dateFormat_) {
         super(dateFormat_);
+    }
+
+
+    /**
+     * We just want to process the tweet java.lang.Stringand indicate that its a keyword tweet
+     * @param tweetToProcess_
+     */
+    @Override
+    protected void processTweet(ParcelableTweet tweetToProcess_) {
+        tweetToProcess_.setIsMention(true);
     }
 
     @Override
@@ -43,29 +48,10 @@ public class PlainTweetProcessor extends ATweetProcessor {
             ParcelableTweet timelineFirst = timeLine.get(timeLine.size() - 1);
             ParcelableTweet timelineLast = timeLine.get(0);
             Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
-            user_.setSinceId(timelineLast.getTweetID());
-            user_.setMaxId( timelineFirst.getTweetID());
+            user_.setSinceIdForMentions(timelineLast.getTweetID());
+            user_.setMaxIdForMentions( timelineFirst.getTweetID());
         }
-        //update the total tweets recieved
         user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
-    }
-    /**
-     *
-     * This doesn't take tweet date into consideration so it will process all tweets
-     *
-     * @param iterator_ {@link java.util.Iterator} which contains the {@link twitter4j.Status} to process and extract tweets from
-     * @param friend_ {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} to associate the tweet to.
-     * @param today_ the date to check tweets against
-     * @return
-     */
-    @Override
-    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
-        return super.processTimeLine(iterator_,friend_,null);
-    }
-
-    @Override
-    protected void processTweet(ParcelableTweet tweetToProcess_) {
 
     }
-
 }

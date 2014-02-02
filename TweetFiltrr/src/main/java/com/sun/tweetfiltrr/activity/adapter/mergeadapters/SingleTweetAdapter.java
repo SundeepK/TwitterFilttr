@@ -27,10 +27,10 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
     private final OnTweetOperation _onTweetOperationLis;
 
     public interface OnTweetOperation {
-        public void onTweetFav(View view_, ParcelableTweet tweet_);
-        public void onReTweet(View view_,ParcelableTweet tweet_);
-        public void onReplyTweet(View view_, ParcelableTweet tweet_);
-        public void onQuoteTweet(View view_ ,ParcelableTweet tweet_);
+        public void onTweetFav(View view_, ParcelableUser user_);
+        public void onReTweet(View view_,ParcelableUser user_);
+        public void onReplyTweet(View view_, ParcelableUser user_);
+        public void onQuoteTweet(View view_ ,ParcelableUser user_);
 
     }
 
@@ -68,46 +68,46 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
             e.printStackTrace();
         }
 
-        viewHolder._retweetBut.setOnClickListener(getReTweetOnClick(tweet, _onTweetOperationLis));
-        viewHolder._favouriteBut.setOnClickListener(getFavOnClick(tweet, _onTweetOperationLis));
-        viewHolder._quoteBut.setOnClickListener(getQuoteOnClick(tweet, _onTweetOperationLis));
-        viewHolder._replyBut.setOnClickListener(getReplyOnClick(tweet, _onTweetOperationLis));
+        viewHolder._retweetBut.setOnClickListener(getReTweetOnClick(currentUser, _onTweetOperationLis));
+        viewHolder._favouriteBut.setOnClickListener(getFavOnClick(currentUser, _onTweetOperationLis));
+        viewHolder._quoteBut.setOnClickListener(getQuoteOnClick(currentUser, _onTweetOperationLis));
+        viewHolder._replyBut.setOnClickListener(getReplyOnClick(currentUser, _onTweetOperationLis));
 
         return view;
     }
 
-    private View.OnClickListener getReplyOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+    private View.OnClickListener getReplyOnClick(final  ParcelableUser user_, final OnTweetOperation onTweetOperationLis_ ){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+                onTweetOperationLis_.onReplyTweet(v,user_);
             }
         };
     }
 
-    private View.OnClickListener getQuoteOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+    private View.OnClickListener getQuoteOnClick(final  ParcelableUser user_, final OnTweetOperation onTweetOperationLis_ ){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+                onTweetOperationLis_.onReplyTweet(v,user_);
             }
         };
     }
 
-    private View.OnClickListener getReTweetOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+    private View.OnClickListener getReTweetOnClick(final ParcelableUser user_, final OnTweetOperation onTweetOperationLis_ ){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(v,tweetToFav_);
+                onTweetOperationLis_.onReplyTweet(v,user_);
            }
         };
     }
 
-    private View.OnClickListener getFavOnClick(final ParcelableTweet tweetToFav_, final OnTweetOperation onTweetOperationLis_ ){
+    private View.OnClickListener getFavOnClick(final  ParcelableUser user_, final OnTweetOperation onTweetOperationLis_ ){
        return new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               onTweetOperationLis_.onTweetFav(v,tweetToFav_);
+               onTweetOperationLis_.onTweetFav(v,user_);
 //               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
 //                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
 //                               new ParcelableTweet[]{tweetToFav_});

@@ -5,7 +5,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 /**
  * Created by Sundeep.Kahlon on 24/01/14.
  */
-public interface ITwitterOperation {
+public interface ITweetOperation {
 
     public ParcelableTweet performTwitterOperation(ParcelableTweet tweet_, IOnTweetOperationFail failLister_);
 

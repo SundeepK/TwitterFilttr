@@ -8,7 +8,8 @@ import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperation;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperationTask;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.TwitterOperationTask;
 
@@ -26,61 +27,66 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
 
     private static final String TAG = TweetOperationHandler.class.getName();
     private final IProgress _progressBar;
-    private final ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterOperation>>> _twitterOperationsMap;
+    private final ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITweetOperation>>> _twitterOperationsMap;
     private final IDBDao<ParcelableTweet> _tweetDao;
-    private final ITwitterOperation _favouriteTweet = new FavouriteTweet();
-    private final ITwitterOperation _retweet = new RetweetTweet();
+    private final ITweetOperation _favouriteTweet = new FavouriteTweet();
+    private final ITweetOperation _retweet = new RetweetTweet();
 
     public TweetOperationHandler(IProgress progressBar_, IDBDao<ParcelableTweet> tweetDao_){
         _progressBar = progressBar_;
-        _twitterOperationsMap = new ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterOperation>>>();
+        _twitterOperationsMap = new ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITweetOperation>>>();
         _tweetDao = tweetDao_;
     }
 
 
     @Override
-    public void onTweetFav(View view_, ParcelableTweet tweet_) {
+    public void onTweetFav(View view_, ParcelableUser user_) {
         view_.setEnabled(false);
         view_.setBackgroundColor(Color.rgb(71,71,71));
-        submitTask(view_, tweet_, _favouriteTweet);
+        submitTask(view_, getTweet(user_), _favouriteTweet);
     }
 
     @Override
-    public void onReTweet(View view_,ParcelableTweet tweet_) {
+    public void onReTweet(View view_,ParcelableUser user_) {
+
         view_.setEnabled(false);
         view_.setBackgroundColor(Color.rgb(71,71,71));
-        submitTask(view_, tweet_, _retweet);
+        submitTask(view_, getTweet(user_), _retweet);
     }
 
     @Override
-    public void onReplyTweet(View view_,ParcelableTweet tweet_) {
+    public void onReplyTweet(View view_,ParcelableUser user_) {
 
     }
 
     @Override
-    public void onQuoteTweet(View view_,ParcelableTweet tweet_) {
+    public void onQuoteTweet(View view_,ParcelableUser user_) {
 
+    }
+
+    private ParcelableTweet getTweet(ParcelableUser user_){
+       return user_.getUserTimeLine().iterator().next(); //we only expect one tweet to reply too
     }
 
     private void submitTask(View view_,
-                                        ParcelableTweet tweet_, ITwitterOperation operation_){
-        Collection<ITwitterOperationTask<ITwitterOperation>> operations = _twitterOperationsMap.get(tweet_);
+                                        ParcelableTweet tweet_, ITweetOperation operation_){
+        Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweet_);
         if(operations != null){
             submitTask(operations, view_,tweet_, operation_);
         }else{
-            operations = new ArrayList<ITwitterOperationTask<ITwitterOperation>>();
-            ITwitterOperationTask<ITwitterOperation> op =  getSubmittableTask(view_, tweet_, operation_);
+            operations = new ArrayList<ITwitterOperationTask<ITweetOperation>>();
+            ITwitterOperationTask<ITweetOperation> op =  getSubmittableTask(view_, tweet_, operation_);
             operations.add(op);
             _twitterOperationsMap.put(tweet_,operations);
         }
     }
 
-    private void submitTask( Collection<ITwitterOperationTask<ITwitterOperation>> operations_, View view_,
-                             ParcelableTweet tweet_, ITwitterOperation operation_){
-        final Iterator<ITwitterOperationTask<ITwitterOperation>> itr = operations_.iterator();
-        ITwitterOperationTask<ITwitterOperation> newTask = null;
+    private void submitTask( Collection<ITwitterOperationTask<ITweetOperation>> operations_, View view_,
+                             ParcelableTweet tweet_, ITweetOperation operation_){
+        final Iterator<ITwitterOperationTask<ITweetOperation>> itr = operations_.iterator();
+        ITwitterOperationTask<ITweetOperation> newTask = null;
         while(itr.hasNext()){
-            ITwitterOperationTask<ITwitterOperation> task = itr.next();
+            ITwitterOperationTask<ITweetOperation> task = itr.next();
                 if(!itr.hasNext()){
                     newTask = getSubmittableTask(view_,tweet_, operation_);
                 }
@@ -91,7 +97,7 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
         }
     }
 
-    private ITwitterOperationTask<ITwitterOperation> getSubmittableTask(View view_, ParcelableTweet tweet_, ITwitterOperation operation_){
+    private ITwitterOperationTask<ITweetOperation> getSubmittableTask(View view_, ParcelableTweet tweet_, ITweetOperation operation_){
         TweetOperationTask task = new TweetOperationTask(_progressBar,_tweetDao, tweet_, this );
         task.execute(operation_);
         return new TwitterOperationTask(view_, task);
@@ -102,13 +108,13 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
 
     @Override
     public void onSuccessfulComplete(ParcelableTweet tweet_) {
-        Collection<ITwitterOperationTask<ITwitterOperation>> operations = _twitterOperationsMap.get(tweet_);
+        Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweet_);
 
         if (!operations.isEmpty()) {
 
-            final Iterator<ITwitterOperationTask<ITwitterOperation>> itr = operations.iterator();
+            final Iterator<ITwitterOperationTask<ITweetOperation>> itr = operations.iterator();
             while (itr.hasNext()) {
-                ITwitterOperationTask<ITwitterOperation> task = itr.next();
+                ITwitterOperationTask<ITweetOperation> task = itr.next();
                 if (task.isComplete()) {
                     if (!task.isFailed()) {
                         itr.remove();
@@ -123,13 +129,13 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
 
     @Override
     public void onTaskFail(ParcelableTweet tweetThatFailed_,TwitterException exception_) {
-        Collection<ITwitterOperationTask<ITwitterOperation>> operations = _twitterOperationsMap.get(tweetThatFailed_);
+        Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweetThatFailed_);
         Log.v(TAG, "on task failed");
 
         if (!operations.isEmpty()) {
-            final Iterator<ITwitterOperationTask<ITwitterOperation>> itr = operations.iterator();
+            final Iterator<ITwitterOperationTask<ITweetOperation>> itr = operations.iterator();
             while (itr.hasNext()) {
-                ITwitterOperationTask<ITwitterOperation> task = itr.next();
+                ITwitterOperationTask<ITweetOperation> task = itr.next();
                 if (task.isRunning()) {
                     Log.v(TAG, "task complete");
 

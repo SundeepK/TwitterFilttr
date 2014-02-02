@@ -1,11 +1,11 @@
-package com.sun.tweetfiltrr.tweetprocessor.impl;
+package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 
 import android.util.Log;
 
 import com.sun.tweetfiltrr.twitter.retrievers.api.ATweetRetiever;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
 
 import java.text.SimpleDateFormat;

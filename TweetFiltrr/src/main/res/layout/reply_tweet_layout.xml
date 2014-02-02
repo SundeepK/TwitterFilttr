@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="#000"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:id="@+id/profile_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:adjustViewBounds="true"
+        android:layout_alignParentLeft="true"
+        android:clickable="false"
+        android:layout_marginLeft="10dip"
+        android:focusable="false"
+        android:scaleType="centerCrop" />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/media_photo"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="3dp"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--android:layout_alignTop="@id/profile_image"-->
+        <!--android:layout_toRightOf="@id/profile_image"-->
+        <!--android:clickable="false"-->
+        <!--android:visibility="gone"-->
+        <!--android:focusable="false"-->
+        <!--android:scaleType="centerCrop" />-->
+
+
+    <TextView
+        android:id="@+id/timeline_friend_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="3dip"
+        android:layout_alignTop="@+id/profile_image"
+        android:layout_toRightOf="@+id/profile_image"
+        android:textColor="#9E9E9E"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/timeline_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/profile_image"
+        android:textColor="#9E9E9E"
+        android:textSize="14sp"
+        />
+
+
+    <TextView
+        android:id="@+id/timeline_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip"
+        android:padding="5dp"
+        android:background="#1a1a1a"
+        android:layout_marginRight="10dip"
+        android:layout_below="@id/timeline_date_time"
+        android:layout_toRightOf="@id/profile_image"
+        android:textColor="#9E9E9E"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/timeline_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#656565"/>
+
+
+<RelativeLayout
+    android:layout_below="@id/timeline_entry"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+
+    <ImageButton
+        android:id="@+id/send_tweet_but"
+        android:src="@drawable/ic_action_send_now"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:background="#000"
+        android:textColor="#9E9E9E"
+        />
+
+    <TextView
+        android:id="@+id/char_count_txtbox"
+        android:layout_toLeftOf="@id/send_tweet_but"
+        android:layout_alignParentBottom="true"
+        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:textColor="#C4C2C2"
+        android:textSize="20sp"
+        android:gravity="bottom|center_horizontal"
+        android:background="#000"
+
+        />
+
+    <EditText
+        android:id="@+id/reply_tweet_edittxt"
+        android:layout_toLeftOf="@id/char_count_txtbox"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:textColor="#C4C2C2"
+        android:maxLength="140"
+        android:textSize="18sp"
+        android:layout_width="fill_parent" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

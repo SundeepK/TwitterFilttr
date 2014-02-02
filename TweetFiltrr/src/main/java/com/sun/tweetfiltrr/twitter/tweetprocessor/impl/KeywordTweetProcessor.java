@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.tweetprocessor.impl;
+package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 
 
 import android.util.Log;

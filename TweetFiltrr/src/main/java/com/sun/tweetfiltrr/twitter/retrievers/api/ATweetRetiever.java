@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
 
 import java.util.Collection;
 import java.util.Date;

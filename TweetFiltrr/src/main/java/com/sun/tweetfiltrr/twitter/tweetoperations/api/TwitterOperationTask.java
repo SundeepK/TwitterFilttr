@@ -5,12 +5,12 @@ import android.view.View;
 /**
  * Created by Sundeep on 29/01/14.
  */
-public class TwitterOperationTask implements ITwitterOperationTask<ITwitterOperation> {
+public class TwitterOperationTask implements ITwitterOperationTask<ITweetOperation> {
 
     private final View _viewToUpdate;
-    private final ISubmittable<ITwitterOperation> _submittable;
+    private final ISubmittable<ITweetOperation> _submittable;
 
-    public TwitterOperationTask(View viewToUpdate_, ISubmittable<ITwitterOperation> submittable_){
+    public TwitterOperationTask(View viewToUpdate_, ISubmittable<ITweetOperation> submittable_){
         _viewToUpdate = viewToUpdate_;
         _submittable = submittable_;
     }
@@ -21,7 +21,7 @@ public class TwitterOperationTask implements ITwitterOperationTask<ITwitterOpera
     }
 
     @Override
-    public ISubmittable<ITwitterOperation> getSubmittableTask() {
+    public ISubmittable<ITweetOperation> getSubmittableTask() {
         return _submittable;
     }
 
