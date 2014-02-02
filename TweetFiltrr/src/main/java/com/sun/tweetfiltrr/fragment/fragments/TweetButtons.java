@@ -11,7 +11,7 @@ import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.asyncretriever.retrievers.AsyncAccessTokenRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;

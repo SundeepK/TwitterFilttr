@@ -5,7 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.asyncretriever.retrievers.AsyncAccessTokenRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.concurrent.ExecutionException;

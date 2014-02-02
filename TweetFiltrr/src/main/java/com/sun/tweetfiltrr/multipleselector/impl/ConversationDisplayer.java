@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.dialog.ConversationDialog;
 import com.sun.tweetfiltrr.imageprocessor.IOnImageProcessCallback;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;

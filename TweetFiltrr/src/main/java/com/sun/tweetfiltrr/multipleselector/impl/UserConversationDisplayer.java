@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.multipleselector.impl;
 import android.app.Dialog;
 import android.content.Context;
 
-import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;

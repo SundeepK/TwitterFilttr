@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sun.tweetfiltrr.asyncretriever.api.ITwitterRetriever;
-import com.sun.tweetfiltrr.asyncretriever.api.UsersFollowerRetriever;
-import com.sun.tweetfiltrr.asyncretriever.callables.FollowersRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.api.UsersFollowerRetriever;
+import com.sun.tweetfiltrr.twitter.callables.FollowersRetriever;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.UserFollowersDao;

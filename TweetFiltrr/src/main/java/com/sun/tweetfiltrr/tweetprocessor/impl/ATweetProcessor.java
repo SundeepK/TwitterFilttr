@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.tweetprocessor.impl;
 
 import android.util.Log;
 
-import com.sun.tweetfiltrr.asyncretriever.api.ATweetRetiever;
+import com.sun.tweetfiltrr.twitter.retrievers.api.ATweetRetiever;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.tweetprocessor.api.ITweetProcessor;

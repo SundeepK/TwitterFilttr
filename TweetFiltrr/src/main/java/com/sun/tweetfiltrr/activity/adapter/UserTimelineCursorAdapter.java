@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
-import com.sun.tweetfiltrr.asyncretriever.retrievers.ConversationRetriever;
+import com.sun.tweetfiltrr.twitter.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
