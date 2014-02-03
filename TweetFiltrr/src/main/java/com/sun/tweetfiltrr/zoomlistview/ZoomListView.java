@@ -1,9 +1,7 @@
 package com.sun.tweetfiltrr.zoomlistview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,15 +10,19 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.sun.tweetfiltrr.animation.CyclicFlipAnimation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Sundeep.Kahlon on 30/01/14.
  */
-public class ZoomListView extends ListView implements AdapterView.OnItemLongClickListener {
+public class ZoomListView extends ListView implements AdapterView.OnItemLongClickListener, AbsListView.OnScrollListener {
 
 
     private static final String TAG = ZoomListView.class.getName();
@@ -33,6 +35,41 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private OnItemFocused _onItemFocusedLis;
     private int _expandingViewHeight = 0;
     private int _previousFocusedViewHeight;
+    private OnScrollListener _onScrollListener;
+    private boolean _shouldPerformScrollAnimation;
+    final private Map<Long, Integer> itemIds_ = new HashMap<Long, Integer>();
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        switch (scrollState){
+
+            case SCROLL_STATE_FLING :
+                _shouldPerformScrollAnimation = false;
+                break;
+
+            case SCROLL_STATE_IDLE :
+                _shouldPerformScrollAnimation = true;
+                break;
+
+            case SCROLL_STATE_TOUCH_SCROLL:
+                _shouldPerformScrollAnimation = true;
+                break;
+
+        }
+
+        _onScrollListener.onScrollStateChanged(view,scrollState);
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        if(_shouldPerformScrollAnimation){
+//            View lastView = getChildAt((visibleItemCount-1));
+//            lastView.startAnimation(getZoomAnimation(0.8f, 1f, 0.8f, 1f));
+        }
+        _onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+    }
+
     public interface OnItemFocused {
 
         /**
@@ -58,6 +95,12 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         super(context_, attrs, defStyle);
         init(context_);
 
+    }
+
+    @Override
+    public void setOnScrollListener(OnScrollListener l) {
+        _onScrollListener = l;
+        super.setOnScrollListener(this);
     }
 
     @Override
@@ -88,6 +131,8 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         scaleAllVisibleViews(positionOrg, scale, shouldEnable);
     }
 
+
+
     private void scaleAllVisibleViews(final int clickedItemPosition_, final float scale_, final boolean shouldEnable_) {
         Animation scaleAnimation;
         if(_isZoomed){
@@ -97,8 +142,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         }
         int firstVisiblePosition = getFirstVisiblePosition();
         int count = getChildCount();
+
+
+
+        if (_isZoomed) {
+
         for (int i = 0; i < count; i++) {
-            int pos = i;
+            int pos = i ;
             if (_isZoomed) {
 
                 if (getAdapter().getItemId(clickedItemPosition_) != getAdapter().getItemId(pos)) {
@@ -108,17 +158,44 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 }
 
             } else {
+//                    View view = getChildAt(pos);
+//
+//                    View viewToShow =  _onItemFocusedLis.onItemFocused(view, pos, getAdapter().getItemId(clickedItemPosition_));
+//
+//                    if(viewToShow != null){
+//                        viewToShow.setVisibility(GONE);
+//                    }
+//                    scaleView(pos, scale_, shouldEnable_, scaleAnimation);
+//                    invalidateViews();
+            }
+        }
+        }else{
+            final Animation scaleAnim = scaleAnimation;
+            final ViewTreeObserver observer = getViewTreeObserver();
+            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                public boolean onPreDraw() {
+                    observer.removeOnPreDrawListener(this);
+                    int firstVisiblePosition = getFirstVisiblePosition();
+
+                    for (int i = 0; i < getChildCount(); ++i) {
+                    int pos = i ;
                     View view = getChildAt(pos);
-
                     View viewToShow =  _onItemFocusedLis.onItemFocused(view, pos, getAdapter().getItemId(clickedItemPosition_));
-
+                    itemIds_.remove(getAdapter().getItemId(pos));
                     if(viewToShow != null){
                         viewToShow.setVisibility(GONE);
                     }
-                    scaleView(pos, scale_, shouldEnable_, scaleAnimation);
+                    scaleView(pos, scale_, shouldEnable_, scaleAnim);
+                    }
 
-            }
+                    return true;
+                }
+            });
         }
+
+
+
+
     }
 
     private void displayExpandingView(int position_, int clickedItemPosition_){
@@ -154,8 +231,12 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
     private void scaleView(int position_, float scale_, boolean shouldEnable_, Animation animation_){
         View view = getChildAt(position_);
+        int top = view.getTop();
         if (view != null) {
+
+            itemIds_.put(getAdapter().getItemId(position_),top);
             view.startAnimation(animation_);
+            view.setTop(top);
             if (_onItemFocusedLis != null) {
                 _onItemFocusedLis.onItemOutOfFocus(position_, shouldEnable_);
             }
@@ -195,8 +276,27 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 }
 
                 break;
+
+            case MotionEvent.ACTION_MOVE:
+                if (!_isZoomed) {
+                    animateRemaining();
+                }
+            break;
         }
         return super.onTouchEvent(event);
+    }
+
+    private void animateRemaining(){
+        if(!itemIds_.isEmpty()){
+        for(int i = 0; i < getChildCount(); i++){
+           long id =  getAdapter().getItemId(i);
+           Integer n = itemIds_.get(id);
+            if(n != null){
+                scaleView(i, 0, true, getZoomAnimation(0.8f, 1, 0.8f, 1f));
+                itemIds_.remove(id);
+            }
+        }
+        }
     }
 
 

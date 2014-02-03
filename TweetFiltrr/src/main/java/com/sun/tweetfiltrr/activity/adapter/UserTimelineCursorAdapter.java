@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +41,8 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
     private FriendTimeLineToParcelable _friendTimeLineToParcelable;
     private SparseArray<Boolean> _enabledItems;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
-
+    private int _lastPosition = 0;
+    private final Animation _scaleAnimation;
     public UserTimelineCursorAdapter(Context context, int layout, Cursor c,
                                      String[] from, int[] to, int flags,
                                      FriendTimeLineToParcelable friendTimeLineToParcelable_, UrlImageLoader imageLoader_,
@@ -51,6 +54,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         _imageLoader = imageLoader_;
         _enabledItems = new SparseArray<Boolean>();
         _onTweetOperationLis = onTweetOperationLis_;
+        _scaleAnimation = getZoomAnimation(0.8f,1f,0.8f,1f);
 	}
 
 
@@ -151,8 +155,35 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 			}
 		};
 	}
-	
-	protected ParcelableUser getParcelable(Cursor cursorTimeline_) {
+
+//    @Override
+//    public View getView(int position, View convertView, ViewGroup parent) {
+//        View v = super.getView(position, convertView, parent);
+//
+//        boolean isMeasuringGridViewItem = parent.getHeight() == 0;
+//
+//        if (position >= _lastPosition && !isMeasuringGridViewItem) {
+//           v.startAnimation( getZoomAnimation(0.8f,1f,0.8f,1f));
+//        }
+//
+//        _lastPosition = position;
+//
+//
+//        return v;
+//    }
+
+    private Animation getZoomAnimation(float fromX_, float toX_, float fromY_, float toY_){
+        Animation  scaleAnimation = new ScaleAnimation(
+                fromX_, toX_,
+                fromY_, toY_,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setFillAfter(true);
+        scaleAnimation.setDuration(500);
+        return scaleAnimation;
+    }
+
+    protected ParcelableUser getParcelable(Cursor cursorTimeline_) {
      return _friendTimeLineToParcelable.getParcelable(cursorTimeline_);
 	}
 
