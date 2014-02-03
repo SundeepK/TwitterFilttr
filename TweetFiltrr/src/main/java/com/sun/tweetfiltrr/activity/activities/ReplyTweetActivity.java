@@ -1,5 +1,6 @@
 package com.sun.tweetfiltrr.activity.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +30,7 @@ import twitter4j.TwitterException;
 
 public class ReplyTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.OnTwitterTaskComplete {
 
+    private static final String TAG =ReplyTweetActivity.class.getName() ;
     private IDBDao<ParcelableTweet> _timelineDao;
     private final int _initailCount  = 140;
 
@@ -38,15 +40,17 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
 		setContentView(R.layout.reply_tweet_layout);
 
         UrlImageLoader urlImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
+
         _timelineDao = new TimelineDao(getContentResolver(), new TimelineToParcelable());
 
         ParcelableUser user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
+        boolean shouldQuote =  getIntent().getExtras().getBoolean(TwitterConstants.IS_QUOTE_REPLY);
         ParcelableTweet tweet = user.getUserTimeLine().iterator().next(); //we only expect one tweet to reply too
 
         ImageView profilePic =(ImageView)findViewById(R.id.profile_image);
-//        ImageView mediaPhoto =(ImageView)findViewById(R.id.media_photo);
         String photoUrl = tweet.getPhotoUrl();
 
+//        ImageView mediaPhoto =(ImageView)findViewById(R.id.media_photo);
 //        if(!TextUtils.isEmpty(photoUrl)){
 //            mediaPhoto.setVisibility(View.VISIBLE);
 //            ImageLoaderUtils.attemptLoadImage(mediaPhoto, urlImageLoader, photoUrl,1, null);
@@ -70,12 +74,16 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
         ImageButton postTweetBut =(ImageButton)findViewById(R.id.send_tweet_but);
         EditText tweetEditTxt = (EditText)findViewById(R.id.reply_tweet_edittxt);
 
-        int initailCount = _initailCount - ("@" + user.getScreenName()).length();
+        if(shouldQuote){
+            tweetEditTxt.setText("RT @" + user.getScreenName()+": " + tweet.getTweetText());
+        }else{
+            tweetEditTxt.setText("@" + user.getScreenName());
+        }
+
+        int initailCount = _initailCount -tweetEditTxt.getEditableText().length();
 
         TextView charCountView = (TextView)findViewById(R.id.char_count_txtbox);
         charCountView.setText(Integer.toString(initailCount));
-        tweetEditTxt.setText("@" + user.getScreenName());
-
         tweetEditTxt.addTextChangedListener(getTweetTextLis(charCountView));
 
         postTweetBut.setOnClickListener(getOnClickPostTweet(tweetEditTxt, _timelineDao, this));
@@ -94,6 +102,10 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
             public void afterTextChanged(Editable s) {
                 int length =  _initailCount - s.length();
                 tweetCoundTxtView_.setText(Integer.toString(length));
+
+                if(length < 0){
+                    tweetCoundTxtView_.setTextColor(Color.rgb(222,89,71));
+                }
             }
         };
     }
@@ -105,7 +117,7 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
             public void onClick(View v) {
 
                 // make an empty tweet with only text since we only care about the text
-                // the tweet updatedin the DB will be the one returned from twitter after the post is complete so this is safe
+                // the tweet updated in the DB will be the one returned from twitter after the post is complete so this is safe
                 ParcelableTweet tweet = new ParcelableTweet(editText_.getText().toString(), "",0l,0l,"",0l,0l,"",false,false, false);
 
                 ITweetOperation postTweet = new PostTweet();

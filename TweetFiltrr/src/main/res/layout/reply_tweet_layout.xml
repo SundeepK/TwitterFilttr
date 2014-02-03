@@ -118,7 +118,6 @@
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
         android:textColor="#C4C2C2"
-        android:maxLength="140"
         android:textSize="18sp"
         android:layout_width="fill_parent" />
 

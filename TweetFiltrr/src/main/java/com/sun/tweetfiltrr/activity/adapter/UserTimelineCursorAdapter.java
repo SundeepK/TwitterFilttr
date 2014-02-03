@@ -18,12 +18,12 @@ import android.widget.TextView;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
-import com.sun.tweetfiltrr.twitter.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.retrievers.ConversationRetriever;
 import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
 
 import java.net.URISyntaxException;
@@ -91,6 +91,9 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
         ImageButton replyTweet = (ImageButton) view_.findViewById(R.id.reply_but);
         replyTweet.setOnClickListener(getReplyOnClick(user, _onTweetOperationLis));
+
+        ImageButton quoteTweetBut = (ImageButton) view_.findViewById(R.id.copy_tweet_but);
+        quoteTweetBut.setOnClickListener(getQuoteOnClick(user, _onTweetOperationLis));
 
 	}
 
@@ -185,7 +188,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(v,user_);
+                onTweetOperationLis_.onQuoteTweet(v,user_);
             }
         };
     }

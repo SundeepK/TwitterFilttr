@@ -309,11 +309,15 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     public void onReplyTweet(View view_, ParcelableUser user_) {
         Intent tweetConvo = new Intent(getActivity(), ReplyTweetActivity.class);
         tweetConvo.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, user_);
+        tweetConvo.putExtra(TwitterConstants.IS_QUOTE_REPLY, false);
         getActivity().startActivity(tweetConvo);
     }
 
     @Override
     public void onQuoteTweet(View view_, ParcelableUser user_) {
-
+        Intent tweetConvo = new Intent(getActivity(), ReplyTweetActivity.class);
+        tweetConvo.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, user_);
+        tweetConvo.putExtra(TwitterConstants.IS_QUOTE_REPLY, true);
+        getActivity().startActivity(tweetConvo);
     }
 }
