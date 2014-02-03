@@ -54,7 +54,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 	}
 
 
-	@Override
+    @Override
 	public void bindView(View view_, Context context, Cursor cursor_) {
 		
 		ParcelableUser user = getParcelable(cursor_);

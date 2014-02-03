@@ -1,12 +1,15 @@
 package com.sun.tweetfiltrr.zoomlistview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
@@ -85,53 +88,58 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         scaleAllVisibleViews(positionOrg, scale, shouldEnable);
     }
 
-    private void scaleAllVisibleViews(int clickedItemPosition_, float scale_, boolean shouldEnable_) {
+    private void scaleAllVisibleViews(final int clickedItemPosition_, final float scale_, final boolean shouldEnable_) {
         Animation scaleAnimation;
         if(_isZoomed){
             scaleAnimation = getZoomAnimation(1f, 0.8f, 1f, 0.8f);
         }else{
             scaleAnimation = getZoomAnimation(0.8f, 1f, 0.8f, 1f);
         }
-        for (int i = 0; i <= getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
+        int firstVisiblePosition = getFirstVisiblePosition();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            int pos = i;
             if (_isZoomed) {
-                if (getAdapter().getItemId(clickedItemPosition_) != getAdapter().getItemId(i)) {
-                    scaleView(i, scale_, shouldEnable_, scaleAnimation);
+
+                if (getAdapter().getItemId(clickedItemPosition_) != getAdapter().getItemId(pos)) {
+                    scaleView(pos, scale_, shouldEnable_, scaleAnimation);
                 }else{
-                    View view = getChildAt(i);
-
-                    if(view != null){
-                        Log.v(TAG, "view is valid");
-                        View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
-
-                        viewToShow.setVisibility(VISIBLE);
-                        Animation flip = new CyclicFlipAnimation(50f);
-                        flip.setDuration(500);
-                        viewToShow.startAnimation(flip);
-
-                        if(_expandingViewHeight <= 0){
-                            viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                            _expandingViewHeight = viewToShow.getMeasuredHeight();
-                            Log.v(TAG, "expanding view hieght is + " + _expandingViewHeight);
-                        }
-
-                    }else{
-                        Log.v(TAG, "view is null");
-                    }
+                    displayExpandingView(pos, clickedItemPosition_);
                 }
+
             } else {
-                View view = getChildAt(i);
+                    View view = getChildAt(pos);
 
-                View viewToShow =  _onItemFocusedLis.onItemFocused(view, i, getAdapter().getItemId(clickedItemPosition_));
+                    View viewToShow =  _onItemFocusedLis.onItemFocused(view, pos, getAdapter().getItemId(clickedItemPosition_));
 
-                if(viewToShow != null){
-                    viewToShow.setVisibility(GONE);
-                }
-                scaleView(i, scale_, shouldEnable_, scaleAnimation);
-
+                    if(viewToShow != null){
+                        viewToShow.setVisibility(GONE);
+                    }
+                    scaleView(pos, scale_, shouldEnable_, scaleAnimation);
 
             }
         }
     }
+
+    private void displayExpandingView(int position_, int clickedItemPosition_){
+        View view = getChildAt(position_);
+        if(view != null){
+            Log.v(TAG, "view is valid");
+            View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, getAdapter().getItemId(clickedItemPosition_));
+
+            viewToShow.setVisibility(VISIBLE);
+            Animation flip = new CyclicFlipAnimation(50f);
+            flip.setDuration(500);
+            viewToShow.startAnimation(flip);
+
+            if(_expandingViewHeight <= 0){
+                viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                _expandingViewHeight = viewToShow.getMeasuredHeight();
+                Log.v(TAG, "expanding view hieght is + " + _expandingViewHeight);
+            }
+        }
+    }
+
 
     private Animation getZoomAnimation(float fromX_, float toX_, float fromY_, float toY_){
       Animation  scaleAnimation = new ScaleAnimation(
