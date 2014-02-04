@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.sun.tweetfiltrr.animation.CyclicFlipAnimation;
@@ -37,7 +38,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private int _previousFocusedViewHeight;
     private OnScrollListener _onScrollListener;
     private boolean _shouldPerformScrollAnimation;
-    final private Map<Long, Integer> itemIds_ = new HashMap<Long, Integer>();
+    final private Map<Long, PropertyHolder> _itemIDToProperty = new HashMap<Long, PropertyHolder>();
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -136,9 +137,9 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private void scaleAllVisibleViews(final int clickedItemPosition_, final float scale_, final boolean shouldEnable_) {
         Animation scaleAnimation;
         if(_isZoomed){
-            scaleAnimation = getZoomAnimation(1f, 0.8f, 1f, 0.8f);
+            scaleAnimation = getZoomAnimation(1f, 0.6f, 1f, 0.6f);
         }else{
-            scaleAnimation = getZoomAnimation(0.8f, 1f, 0.8f, 1f);
+            scaleAnimation = getZoomAnimation(0.6f, 1f, 0.6f, 1f);
         }
         int firstVisiblePosition = getFirstVisiblePosition();
         int count = getChildCount();
@@ -168,7 +169,10 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 //                    scaleView(pos, scale_, shouldEnable_, scaleAnimation);
 //                    invalidateViews();
             }
+
         }
+            translateViews();
+
         }else{
             final Animation scaleAnim = scaleAnimation;
             final ViewTreeObserver observer = getViewTreeObserver();
@@ -181,7 +185,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                     int pos = i ;
                     View view = getChildAt(pos);
                     View viewToShow =  _onItemFocusedLis.onItemFocused(view, pos, getAdapter().getItemId(clickedItemPosition_));
-                    itemIds_.remove(getAdapter().getItemId(pos));
+                    _itemIDToProperty.remove(getAdapter().getItemId(pos));
                     if(viewToShow != null){
                         viewToShow.setVisibility(GONE);
                     }
@@ -201,6 +205,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private void displayExpandingView(int position_, int clickedItemPosition_){
         View view = getChildAt(position_);
         if(view != null){
+          //  view.animate().translationYBy(30).setDuration(500).start();
             Log.v(TAG, "view is valid");
             View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, getAdapter().getItemId(clickedItemPosition_));
 
@@ -223,7 +228,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 fromX_, toX_,
                 fromY_, toY_,
                 Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
+                Animation.ABSOLUTE, 0.5f);
         scaleAnimation.setFillAfter(true);
         scaleAnimation.setDuration(500);
         return scaleAnimation;
@@ -231,16 +236,72 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
     private void scaleView(int position_, float scale_, boolean shouldEnable_, Animation animation_){
         View view = getChildAt(position_);
-        int top = view.getTop();
+        ListAdapter adapter = getAdapter();
+        long id = adapter.getItemId(position_);
+        view.startAnimation(animation_);
+
         if (view != null) {
 
-            itemIds_.put(getAdapter().getItemId(position_),top);
-            view.startAnimation(animation_);
-            view.setTop(top);
+            PropertyHolder holder = _itemIDToProperty.get(id);
+
+            if(holder == null){
+                holder = new PropertyHolder(view.getTop(), view.getBottom());
+                _itemIDToProperty.put(id, holder);
+            }
+
+            //view.setTop(top);
             if (_onItemFocusedLis != null) {
                 _onItemFocusedLis.onItemOutOfFocus(position_, shouldEnable_);
             }
         }
+    }
+
+    private void translateViews(){
+
+        for (int i = 0; i < getChildCount(); ++i) {
+            View view = getChildAt(i);
+            ListAdapter adapter = getAdapter();
+            long id = adapter.getItemId(i);
+            PropertyHolder holder = _itemIDToProperty.get(id);
+
+            if (holder != null) {
+
+
+                int prevPos = i - 1 < 0 ? -1 : i - 1;
+
+                if (i - 1 >= 0) {
+                    long idPrev = adapter.getItemId(prevPos);
+                    PropertyHolder prevProp = _itemIDToProperty.get(idPrev);
+
+                    if (prevProp != null) {
+                        int p = (prevProp._bot - holder._top);
+                        if (p >= 200) {
+                            view.animate().translationYBy( p / 2).setDuration(500).start();
+
+                        } else {
+                            if ((holder._bot - holder._top) >= 300) {
+                                view.animate().translationYBy((holder._bot - holder._top) / 2).setDuration(500).start();
+                            }
+                        }
+                    }
+
+                } else {
+                    if (holder != null) {
+                        long idPrev = adapter.getItemId((i+1));
+                        PropertyHolder prevProp = _itemIDToProperty.get(idPrev);
+                        int p = (prevProp._top - holder._bot);
+                        Log.v(TAG, "first view bot " + holder._bot + "with nexttop: " + prevProp._top );
+                        if ((p) >= 200) {
+                            view.animate().translationYBy((p) / 2).setDuration(500).start();
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+
     }
 
 
@@ -287,13 +348,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     }
 
     private void animateRemaining(){
-        if(!itemIds_.isEmpty()){
+        if(!_itemIDToProperty.isEmpty()){
         for(int i = 0; i < getChildCount(); i++){
            long id =  getAdapter().getItemId(i);
-           Integer n = itemIds_.get(id);
+           PropertyHolder n = _itemIDToProperty.get(id);
             if(n != null){
                 scaleView(i, 0, true, getZoomAnimation(0.8f, 1, 0.8f, 1f));
-                itemIds_.remove(id);
+                _itemIDToProperty.remove(id);
             }
         }
         }
@@ -314,5 +375,18 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         }
         return childRect;
     }
+
+    private class PropertyHolder{
+        int _top;
+        int _bot;
+
+        private PropertyHolder(int top_, int bot_){
+            _top = top_;
+            _bot = bot_;
+
+        }
+
+    }
+
 
 }
