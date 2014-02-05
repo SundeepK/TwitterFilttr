@@ -7,14 +7,6 @@
     android:layout_marginTop="10dip"
         android:background="#000"
         >
-    <!--android:background="#000000"-->
-
-    <!--android:background="#00ffffff"-->
-
-
-
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_below="@id/timeline_friend_name"-->
 
 
 
@@ -83,6 +75,11 @@
             android:textColor="#9E9E9E"
             android:textSize="16sp" />
 
+    <View
+        android:id="@+id/overlay_view"
+        android:background="#000"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
     <RelativeLayout
         android:id="@+id/tweet_operation_buttons"
@@ -140,6 +137,10 @@
             android:layout_height="40dp"/>
 
     </RelativeLayout>
+
+
+
+
 
     <!--android:background="#cc000000"-->
 

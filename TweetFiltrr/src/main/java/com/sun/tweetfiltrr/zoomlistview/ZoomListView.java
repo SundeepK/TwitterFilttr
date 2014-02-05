@@ -1,18 +1,14 @@
 package com.sun.tweetfiltrr.zoomlistview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -50,7 +46,8 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
          * This interface can be used to be notified when a particular item should be disabled, or is currently not focused
          * @param position
          */
-        public void onItemOutOfFocus(int position, boolean status_);
+        public void onItemScaleOut(int position, View view, boolean status_);
+        public void onItemRestore(int position, View view, boolean status_);
         public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_);
     }
 
@@ -174,12 +171,14 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         int h = view.getHeight();
         if (_isZoomed) {
             view.animate().translationYBy((h * 0.5f)).setDuration(500).start();
+            if (_onItemFocusedLis != null) {
+                _onItemFocusedLis.onItemScaleOut(position_, view, shouldEnable_);
+            }
         } else {
             view.animate().translationYBy(-(h * 0.5f )).setDuration(500).start();
-        }
-
-        if (_onItemFocusedLis != null) {
-            _onItemFocusedLis.onItemOutOfFocus(position_, shouldEnable_);
+            if (_onItemFocusedLis != null) {
+                _onItemFocusedLis.onItemRestore(position_, view, shouldEnable_);
+            }
         }
 
     }

@@ -112,9 +112,15 @@ public class FriendsCursorAdapter extends SimpleCursorAdapter implements ZoomLis
         return isenabled;
     }
 
+
     @Override
-    public void onItemOutOfFocus(int position, boolean status_) {
-        _enabledItems.put(position, status_);
+    public void onItemScaleOut(int position, View view, boolean status_) {
+
+    }
+
+    @Override
+    public void onItemRestore(int position, View view, boolean status_) {
+
     }
 
     @Override

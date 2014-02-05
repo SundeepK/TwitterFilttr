@@ -103,8 +103,9 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
     @Override
     public boolean isEnabled(int position) {
-        Boolean isenabled = _enabledItems.get(position, true);
-        return isenabled;
+     //   Boolean isenabled = _enabledItems.get(position, true);
+     //   return isenabled;
+        return true;
     }
 
     @Override
@@ -197,8 +198,15 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
 
     @Override
-    public void onItemOutOfFocus(int position, boolean status_) {
+    public void onItemScaleOut(int position, View view, boolean status_) {
+        view.findViewById(R.id.overlay_view);
         _enabledItems.put(position, status_);
+
+    }
+
+    @Override
+    public void onItemRestore(int position, View view, boolean status_) {
+
     }
 
     @Override
