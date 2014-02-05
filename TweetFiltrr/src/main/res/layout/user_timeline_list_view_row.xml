@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginTop="10dip"
-        android:background="#00ffffff"
+        android:background="#000"
         >
     <!--android:background="#000000"-->
 
@@ -103,8 +103,8 @@
             android:padding="0dp"
             android:background="#000"
             android:src="@drawable/reply_32"
-            android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
         <ImageButton
             android:id="@+id/retweet_but"
@@ -114,8 +114,8 @@
             android:scaleType="centerInside"
             android:layout_toRightOf="@+id/reply_but"
             android:src="@drawable/retweet_32"
-            android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
         <ImageButton
             android:id="@+id/favourite_but"
@@ -125,8 +125,8 @@
             android:background="@null"
             android:scaleType="centerInside"
             android:layout_toRightOf="@+id/retweet_but"
-            android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
         <ImageButton
             android:id="@+id/copy_tweet_but"
@@ -136,8 +136,8 @@
             android:background="@null"
             android:src="@drawable/quote_32"
             android:layout_toRightOf="@+id/favourite_but"
-            android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
     </RelativeLayout>
 
