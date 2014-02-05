@@ -1,6 +1,8 @@
 package com.sun.tweetfiltrr.zoomlistview;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -8,12 +10,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.sun.tweetfiltrr.animation.CyclicFlipAnimation;
+import com.sun.tweetfiltrr.animation.FlipAnimation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +33,15 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private int _yPos;
     private int _pointerId;
     private Rect _viewBounds;
+    private Paint _paint;
     private boolean _isZoomed;
-    private OnItemClickListener _listner;
     private OnItemFocused _onItemFocusedLis;
     private int _expandingViewHeight = 0;
-    private int _previousFocusedViewHeight;
-    private OnScrollListener _onScrollListener;
-    private boolean _shouldPerformScrollAnimation;
+    private int _height = 0;
+    private int _width = 0;
     final private Map<Long, PropertyHolder> _itemIDToProperty = new HashMap<Long, PropertyHolder>();
     private long _currentFocusedId;
+    private int colorAlpha = 0 ;
 
 
     public interface OnItemFocused {
@@ -71,6 +75,45 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
     private void init(Context context_){
         setOnItemLongClickListener(this);
+        _paint = new Paint();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        _width = MeasureSpec.getSize(widthMeasureSpec);
+         _height = MeasureSpec.getSize(heightMeasureSpec);
+
+    }
+
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        if(_isZoomed && _viewBounds != null){
+
+            _paint.setColor(colorAlpha);
+
+            canvas.drawRect(0,0, _width,
+                    _viewBounds.top, _paint);
+
+            canvas.drawRect(0, _viewBounds.bottom,_width,
+                    _height, _paint);
+
+            int alpha = colorAlpha >>> 24;
+
+            if (alpha <=  150) {
+                alpha += 20;
+                colorAlpha =  (alpha  << 24) | (0);
+                postInvalidateDelayed(50, 0,0, _width, _height);
+            }
+
+        }else{
+            colorAlpha = 0;
+        }
+
+
     }
 
     public void setOnItemDisableListener(OnItemFocused listener_){
@@ -100,6 +143,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             for (int i = 0; i < count; i++) {
                 applyAnimation(i, adapter, shouldEnable_, scaleAnimation);
             }
+        invalidate();
     }
 
 
@@ -116,7 +160,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 scaleView(position_,  shouldEnable_, animation_);
             }else{
                 View view = getChildAt(position_);
-                View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, getAdapter().getItemId(position_));
+                final View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, getAdapter().getItemId(position_));
 
                 if(viewToShow != null){
                     viewToShow.setVisibility(GONE);
@@ -132,7 +176,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         if(view != null){
             View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, adapter_.getItemId(position_));
             viewToShow.setVisibility(VISIBLE);
-            Animation flip = new CyclicFlipAnimation(60f);
+            Animation flip = new FlipAnimation(60f);
             flip.setDuration(1000);
             viewToShow.startAnimation(flip);
 
