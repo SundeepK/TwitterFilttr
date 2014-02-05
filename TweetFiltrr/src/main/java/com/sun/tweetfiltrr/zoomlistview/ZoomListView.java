@@ -1,7 +1,9 @@
 package com.sun.tweetfiltrr.zoomlistview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -277,10 +279,11 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                         int p = (prevProp._bot - holder._top);
                         if (p >= 200) {
                             view.animate().translationYBy( p / 2).setDuration(500).start();
-
+                            view.setBackground(new ColorDrawable(Color.GREEN));
                         } else {
                             if ((holder._bot - holder._top) >= 300) {
                                 view.animate().translationYBy((holder._bot - holder._top) / 2).setDuration(500).start();
+                                view.setBackground(new ColorDrawable(Color.RED));
                             }
                         }
                     }
@@ -288,11 +291,17 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 } else {
                     if (holder != null) {
                         long idPrev = adapter.getItemId((i+1));
-                        PropertyHolder prevProp = _itemIDToProperty.get(idPrev);
-                        int p = (prevProp._top - holder._bot);
-                        Log.v(TAG, "first view bot " + holder._bot + "with nexttop: " + prevProp._top );
+                        PropertyHolder nextViewProperty = _itemIDToProperty.get(idPrev);
+                        int p = (nextViewProperty._top - holder._bot);
+                        Log.v(TAG, "first view bot " + holder._bot + "with nexttop: " + nextViewProperty._top );
                         if ((p) >= 200) {
                             view.animate().translationYBy((p) / 2).setDuration(500).start();
+                            view.setBackground(new ColorDrawable(Color.BLUE));
+                        }
+
+                        if ((holder._bot - holder._top) >= 300) {
+                            view.animate().translationYBy((holder._bot - holder._top) / 2).setDuration(500).start();
+                            view.setBackground(new ColorDrawable(Color.RED));
                         }
                     }
 
