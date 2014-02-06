@@ -28,9 +28,9 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import twitter4j.TwitterException;
 
-public class ReplyTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.TwitterTaskListener {
+public class PostTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.TwitterTaskListener {
 
-    private static final String TAG =ReplyTweetActivity.class.getName() ;
+    private static final String TAG =PostTweetActivity.class.getName() ;
     private IDBDao<ParcelableTweet> _timelineDao;
     private final int _initailCount  = 140;
 
@@ -41,13 +41,20 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
 
         UrlImageLoader urlImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
 
+        TextView tweetText = (TextView)findViewById(R.id.timeline_entry);
+        TextView friendName=(TextView)findViewById(R.id.timeline_friend_name);
+        TextView dateTime=(TextView)findViewById(R.id.timeline_date_time);
+        TextView charCountView = (TextView)findViewById(R.id.char_count_txtbox);
+        ImageButton postTweetBut =(ImageButton)findViewById(R.id.send_tweet_but);
+        EditText tweetEditTxt = (EditText)findViewById(R.id.reply_tweet_edittxt);
+        ImageView profilePic =(ImageView)findViewById(R.id.profile_image);
+
         _timelineDao = new TimelineDao(getContentResolver(), new TimelineToParcelable());
 
         ParcelableUser user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
         boolean shouldQuote =  getIntent().getExtras().getBoolean(TwitterConstants.IS_QUOTE_REPLY);
         ParcelableTweet tweet = user.getUserTimeLine().iterator().next(); //we only expect one tweet to reply too
 
-        ImageView profilePic =(ImageView)findViewById(R.id.profile_image);
         String photoUrl = tweet.getPhotoUrl();
 
 //        ImageView mediaPhoto =(ImageView)findViewById(R.id.media_photo);
@@ -59,20 +66,9 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
 //        }
 
         ImageLoaderUtils.attemptLoadImage(profilePic, urlImageLoader, user.getProfileImageUrl(),1, null);
-
-        TextView friendName=(TextView)findViewById(R.id.timeline_friend_name);
-
-        TextView dateTime=(TextView)findViewById(R.id.timeline_date_time);
         dateTime.setText(tweet.getTweetDate());
-
         friendName.setText(user.getScreenName());
-
-        TextView tweetText = (TextView)findViewById(R.id.timeline_entry);
         tweetText.setText(tweet.getTweetText());
-
-
-        ImageButton postTweetBut =(ImageButton)findViewById(R.id.send_tweet_but);
-        EditText tweetEditTxt = (EditText)findViewById(R.id.reply_tweet_edittxt);
 
         if(shouldQuote){
             tweetEditTxt.setText("RT @" + user.getScreenName()+": " + tweet.getTweetText());
@@ -82,7 +78,6 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
 
         int initailCount = _initailCount -tweetEditTxt.getEditableText().length();
 
-        TextView charCountView = (TextView)findViewById(R.id.char_count_txtbox);
         charCountView.setText(Integer.toString(initailCount));
         tweetEditTxt.addTextChangedListener(getTweetTextLis(charCountView));
 
@@ -123,7 +118,7 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
                 ITweetOperation postTweet = new PostTweet();
                 TweetOperationTask task = new TweetOperationTask(timelineDao_,tweet, lis_ );
                 task.execute(postTweet);
-                ReplyTweetActivity.this.finish();
+                PostTweetActivity.this.finish();
             }
         };
     }

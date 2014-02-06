@@ -22,7 +22,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Window;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.ReplyTweetActivity;
+import com.sun.tweetfiltrr.activity.activities.PostTweetActivity;
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
@@ -44,14 +44,13 @@ import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
-import com.sun.tweetfiltrr.twitter.tweetoperations.RetweetTweet;
 import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationHandler;
 import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationTask;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
-import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
+import com.sun.tweetfiltrr.customviews.ZoomListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -313,7 +312,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     @Override
     public void onReplyTweet(View view_, ParcelableUser user_) {
-        Intent tweetConvo = new Intent(getActivity(), ReplyTweetActivity.class);
+        Intent tweetConvo = new Intent(getActivity(), PostTweetActivity.class);
         tweetConvo.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, user_);
         tweetConvo.putExtra(TwitterConstants.IS_QUOTE_REPLY, false);
         getActivity().startActivity(tweetConvo);
@@ -321,7 +320,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     @Override
     public void onQuoteTweet(View view_, ParcelableUser user_) {
-        Intent tweetConvo = new Intent(getActivity(), ReplyTweetActivity.class);
+        Intent tweetConvo = new Intent(getActivity(), PostTweetActivity.class);
         tweetConvo.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, user_);
         tweetConvo.putExtra(TwitterConstants.IS_QUOTE_REPLY, true);
         getActivity().startActivity(tweetConvo);

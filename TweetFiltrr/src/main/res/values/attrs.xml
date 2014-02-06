@@ -12,4 +12,17 @@
         <attr name="defaultText" format="string" />
     </declare-styleable>
 
+
+    <!-- Define the values for the attribute -->
+    <attr name="typeface" format="enum">
+        <enum name="robotoThin" value="0"/>
+        <enum name="robotoLight" value="1"/>
+        <enum name="robotoNormal" value="2"/>
+    </attr>
+
+
+    <declare-styleable name="TypeFaceView">
+        <attr name="typeface"/>
+    </declare-styleable>
+
 </resources>

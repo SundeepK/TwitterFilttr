@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -12,6 +13,9 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.ActionBar.TabListener;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.sun.imageloader.core.ImageSettings;
 import com.sun.imageloader.core.UrlImageLoader;
@@ -32,6 +36,29 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
 	private ViewPager _asyncBackgroundViewPager;
 	private TwitterUserHomeTabsAdapter _tabsAdapter;
 	private static final String TAG = TwitterFilttrLoggedInUserHome.class.getName();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i = null;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "Home buttom clicked");
+                return true;
+            case R.id.tweet_action_bar_button:
+                i = new Intent(this, PostTweetActivity.class);
+                startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 	@Override
 	public void onCreate(Bundle arg0) {

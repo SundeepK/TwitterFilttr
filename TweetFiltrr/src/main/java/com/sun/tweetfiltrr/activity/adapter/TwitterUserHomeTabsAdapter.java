@@ -12,12 +12,18 @@ import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 public class TwitterUserHomeTabsAdapter extends FragmentPagerAdapter {
     ParcelableUser _currentUser;
+    private static final String[] titles = { "Filtered timeline", "Mentions" };
 
     public TwitterUserHomeTabsAdapter(FragmentManager fm, ParcelableUser currentUser_) {
         super(fm);
         _currentUser = currentUser_;
     }
 
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
+    }
 
     @Override
     public Fragment getItem(int index) {

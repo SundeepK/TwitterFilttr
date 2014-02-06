@@ -11,11 +11,11 @@
         <!--&lt;!&ndash;<item name="android:windowActionBarOverlay">true</item>&ndash;&gt;-->
     <!--</style>-->
 
-    <style name="Overlay" >
-        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
+    <!--<style name="Overlay" >-->
+        <!--<item name="actionBarStyle">@style/AppTheme.ActionBar</item>-->
+        <!--<item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
+        <!--<item name="android:windowActionBarOverlay">true</item>-->
+    <!--</style>-->
 
 
 </resources>

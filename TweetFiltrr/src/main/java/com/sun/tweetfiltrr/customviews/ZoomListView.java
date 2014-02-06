@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.zoomlistview;
+package com.sun.tweetfiltrr.customviews;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,8 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;

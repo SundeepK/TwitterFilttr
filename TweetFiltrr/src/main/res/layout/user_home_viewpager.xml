@@ -33,10 +33,11 @@
 
         <android.support.v4.view.PagerTitleStrip
             android:id="@+id/pager_title_strip"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_gravity="top"
-            android:background="#00000000"
+            android:paddingBottom="5dp"
+            android:background="#000000"
             android:textColor="#fff" />
     </android.support.v4.view.ViewPager>
 

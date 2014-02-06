@@ -2,6 +2,7 @@
 
 <!-- Layout for individual news entries in a list -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginTop="10dip"
@@ -36,7 +37,7 @@
             android:scaleType="centerCrop" />
 
 
-    <TextView
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
         android:id="@+id/timeline_friend_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,9 +47,11 @@
         android:layout_toRightOf="@+id/profile_image"
         android:textColor="#9E9E9E"
         android:textSize="14sp"
-        />
+        custom:typeface="robotoThin"
 
-    <TextView
+    />
+
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
         android:id="@+id/timeline_date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,10 +61,12 @@
         android:layout_below="@id/media_photo"
         android:textColor="#9E9E9E"
         android:textSize="14sp"
+        custom:typeface="robotoThin"
+
         />
 
 
-    <TextView
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
             android:id="@+id/timeline_entry"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -73,7 +78,9 @@
             android:layout_below="@id/timeline_date_time"
             android:layout_toRightOf="@id/profile_image"
             android:textColor="#9E9E9E"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            custom:typeface="robotoLight"
+        />
 
     <View
         android:id="@+id/overlay_view"

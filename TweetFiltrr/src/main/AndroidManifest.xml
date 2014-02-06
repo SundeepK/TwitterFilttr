@@ -22,7 +22,7 @@
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/MyCustomTheme">
         <activity
             android:name=".activity.activities.MainActivity"
             android:label="@string/app_name"
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/Theme.Sherlock.Light.NoActionBar"
+            android:theme="@style/MyCustomTheme"
             android:name=".activity.activities.TwitterFilttrLoggedInUserHome"
             android:label="@string/app_name"
             >
@@ -115,7 +115,7 @@
         </activity>
 
         <activity
-            android:name=".activity.activities.ReplyTweetActivity"
+            android:name=".activity.activities.PostTweetActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Sherlock.Light.NoActionBar"
             android:configChanges="orientation"

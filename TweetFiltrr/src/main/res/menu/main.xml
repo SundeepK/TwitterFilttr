@@ -11,14 +11,10 @@
 
 
     <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_action_settings"
+            android:id="@+id/tweet_action_bar_button"
+            android:icon="@drawable/twitter_tweet"
             android:showAsAction="ifRoom"
-            android:title="Settings"/>
-    <item
-            android:id="@+id/keywordGroup"
-            android:icon="@drawable/ic_action_add_group"
-            android:showAsAction="ifRoom"
-            android:title="Groups"/>
+            android:title="Tweet"/>
+
 
 </menu>

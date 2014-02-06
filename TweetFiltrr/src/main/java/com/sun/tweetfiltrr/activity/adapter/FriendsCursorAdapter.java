@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.zoomlistview.ZoomListView;
+import com.sun.tweetfiltrr.customviews.ZoomListView;
 
 import java.net.URISyntaxException;
 
