@@ -36,9 +36,15 @@ public  class PostTweet implements ITweetOperation {
         } catch (TwitterException e) {
             e.printStackTrace();
             Log.v(TAG, "Error occured whilst trying to post a tweet");
-            failLister_.onTweetOperationFail(e);
+            failLister_.onTweetOperationFail(e, this);
         }
         return tweet;
+    }
+
+    @Override
+    public TweetOperationType getTweetOperationType() {
+        return TweetOperationType.POSTTWEET;
+
     }
 
 

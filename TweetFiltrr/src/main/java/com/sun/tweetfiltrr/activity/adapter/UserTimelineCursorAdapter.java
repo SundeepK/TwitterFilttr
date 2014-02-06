@@ -2,6 +2,7 @@ package com.sun.tweetfiltrr.activity.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
@@ -62,11 +63,11 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 	public void bindView(View view_, Context context, Cursor cursor_) {
 		
 		ParcelableUser user = getParcelable(cursor_);
-        ParcelableTweet firstTweet = user.getUserTimeLine().get(0);
+        ParcelableTweet tweet = user.getUserTimeLine().get(0);
         ImageView profilePic =(ImageView)view_.findViewById(R.id.profile_image);
         ImageView mediaPhoto =(ImageView)view_.findViewById(R.id.media_photo);
 
-        String photoUrl = firstTweet.getPhotoUrl();
+        String photoUrl = tweet.getPhotoUrl();
 
         if(!TextUtils.isEmpty(photoUrl)){
             mediaPhoto.setVisibility(View.VISIBLE);
@@ -81,17 +82,26 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         TextView friendName=(TextView)view_.findViewById(R.id.timeline_friend_name);
 		
 		TextView dateTime=(TextView)view_.findViewById(R.id.timeline_date_time);
-		dateTime.setText(firstTweet.getTweetDate());
+		dateTime.setText(tweet.getTweetDate());
 		friendName.setText(user.getScreenName());
 
         TextView tweetTextView =(TextView)view_.findViewById(R.id.timeline_entry);
-        tweetTextView.setText(firstTweet.getTweetText());
+        tweetTextView.setText(tweet.getTweetText());
 
         ImageButton favBut = (ImageButton) view_.findViewById(R.id.favourite_but);
         favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
+        if(tweet.isFavourite()){
+            favBut.setBackgroundColor(Color.rgb(71, 71, 71));
+        }
 
         ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
-        reTweetBut.setOnClickListener(getReTweetOnClick(user, _onTweetOperationLis));
+
+        if(tweet.isRetweeted()){
+            reTweetBut.setEnabled(false);
+            reTweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
+        }else{
+            reTweetBut.setOnClickListener(getReTweetOnClick(user, _onTweetOperationLis));
+        }
 
         ImageButton replyTweet = (ImageButton) view_.findViewById(R.id.reply_but);
         replyTweet.setOnClickListener(getReplyOnClick(user, _onTweetOperationLis));

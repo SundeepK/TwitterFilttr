@@ -43,11 +43,16 @@ public  class FavouriteTweet implements ITweetOperation {
         } catch (TwitterException e) {
             e.printStackTrace();
             Log.v(TAG, "Error occured whilst trying to fav tweet");
-            failLister_.onTweetOperationFail(e);
+            failLister_.onTweetOperationFail(e, this);
         }
 
         return newTweet;
 
+    }
+
+    @Override
+    public TweetOperationType getTweetOperationType() {
+        return TweetOperationType.FAVOURITE;
     }
 
 

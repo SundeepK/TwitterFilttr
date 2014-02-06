@@ -23,7 +23,7 @@ import twitter4j.TwitterException;
 /**
  * Created by Sundeep.Kahlon on 29/01/14.
  */
-public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperation, TweetOperationTask.OnTwitterTaskComplete {
+public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperation, TweetOperationTask.TwitterTaskListener {
 
     private static final String TAG = TweetOperationHandler.class.getName();
     private final IProgress _progressBar;
@@ -31,11 +31,17 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
     private final IDBDao<ParcelableTweet> _tweetDao;
     private final ITweetOperation _favouriteTweet = new FavouriteTweet();
     private final ITweetOperation _retweet = new RetweetTweet();
+    private final TweetOperationTask.TwitterTaskListener _listener;
 
     public TweetOperationHandler(IProgress progressBar_, IDBDao<ParcelableTweet> tweetDao_){
+            this(progressBar_, tweetDao_, null);
+    }
+
+    public TweetOperationHandler(IProgress progressBar_, IDBDao<ParcelableTweet> tweetDao_,  TweetOperationTask.TwitterTaskListener listener_){
         _progressBar = progressBar_;
         _twitterOperationsMap = new ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITweetOperation>>>();
         _tweetDao = tweetDao_;
+        _listener = listener_;
     }
 
 
@@ -107,7 +113,7 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
 
 
     @Override
-    public void onSuccessfulComplete(ParcelableTweet tweet_) {
+    public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
         Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweet_);
 
         if (!operations.isEmpty()) {
@@ -125,10 +131,13 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
             _twitterOperationsMap.remove(tweet_);
         }
 
+        if(_listener != null){
+            _listener.onTaskSuccessfulComplete(tweet_);
+        }
     }
 
     @Override
-    public void onTaskFail(ParcelableTweet tweetThatFailed_,TwitterException exception_) {
+    public void onTaskFail(ParcelableTweet tweetThatFailed_,TwitterException exception_, ITweetOperation operation_) {
         Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweetThatFailed_);
         Log.v(TAG, "on task failed");
 
@@ -152,6 +161,11 @@ public class TweetOperationHandler implements SingleTweetAdapter.OnTweetOperatio
         } else {
             _twitterOperationsMap.remove(tweetThatFailed_);
         }
+
+        if(_listener != null){
+            _listener.onTaskFail(tweetThatFailed_, exception_,operation_ );
+        }
+
     }
 
 }

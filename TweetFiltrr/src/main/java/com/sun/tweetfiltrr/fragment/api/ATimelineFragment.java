@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.TabListener;
@@ -43,7 +44,10 @@ import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
+import com.sun.tweetfiltrr.twitter.tweetoperations.RetweetTweet;
 import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationHandler;
+import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationTask;
+import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
@@ -57,13 +61,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import twitter4j.TwitterException;
+
 import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 public abstract class ATimelineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>, TabListener,
         IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
-        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation {
+        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation, TweetOperationTask.TwitterTaskListener {
 
     private static final String TAG = ATimelineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
@@ -158,7 +164,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             _dataAdapter = timelineCursorAdapter;
             ZoomListView.OnItemFocused listener = timelineCursorAdapter;
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener);
-            _onTweetOperationLis = new TweetOperationHandler(_pullToRefreshHandler, _timelineDao);
+            _onTweetOperationLis = new TweetOperationHandler(_pullToRefreshHandler, _timelineDao, this);
 
     }
 
@@ -320,4 +326,28 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         tweetConvo.putExtra(TwitterConstants.IS_QUOTE_REPLY, true);
         getActivity().startActivity(tweetConvo);
     }
+
+    @Override
+    public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
+        String message  = "Tweet successful";
+
+
+        Toast.makeText(getActivity(), message, 2).show();
+    }
+
+    @Override
+    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITweetOperation operation_) {
+        String message ;
+        if(operation_.getTweetOperationType() == ITweetOperation.TweetOperationType.RETWEET){
+            message = "Retweet failed";
+        }else if(operation_.getTweetOperationType() == ITweetOperation.TweetOperationType.FAVOURITE) {
+            message = "Favourite tweet failed";
+        }else{
+            message = "Tweet failed";
+        }
+        
+        Toast.makeText(getActivity(), message, 2).show();
+    }
+
+
 }

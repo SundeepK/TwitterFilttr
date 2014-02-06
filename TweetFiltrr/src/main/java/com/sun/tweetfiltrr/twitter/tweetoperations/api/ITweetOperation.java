@@ -7,7 +7,13 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
  */
 public interface ITweetOperation {
 
-    public ParcelableTweet performTwitterOperation(ParcelableTweet tweet_, IOnTweetOperationFail failLister_);
+    public enum TweetOperationType {
+        RETWEET,
+        POSTTWEET,
+        FAVOURITE;
+    }
 
+    public ParcelableTweet performTwitterOperation(ParcelableTweet tweet_, IOnTweetOperationFail failLister_);
+    public TweetOperationType getTweetOperationType();
 
 }

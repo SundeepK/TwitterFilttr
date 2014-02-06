@@ -28,7 +28,7 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import twitter4j.TwitterException;
 
-public class ReplyTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.OnTwitterTaskComplete {
+public class ReplyTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.TwitterTaskListener {
 
     private static final String TAG =ReplyTweetActivity.class.getName() ;
     private IDBDao<ParcelableTweet> _timelineDao;
@@ -111,7 +111,7 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
     }
 
     private View.OnClickListener getOnClickPostTweet(final EditText editText_,
-            final IDBDao<ParcelableTweet> timelineDao_, final TweetOperationTask.OnTwitterTaskComplete lis_ ) {
+            final IDBDao<ParcelableTweet> timelineDao_, final TweetOperationTask.TwitterTaskListener lis_ ) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,12 +135,12 @@ public class ReplyTweetActivity extends SherlockFragmentActivity implements Twee
 	};
 
     @Override
-    public void onSuccessfulComplete(ParcelableTweet tweet_) {
+    public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
         Toast.makeText(this, "Tweet posted", 2).show();
     }
 
     @Override
-    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_) {
+    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITweetOperation operation_) {
         Toast.makeText(this, "Tweet failed", 2).show();
     }
 

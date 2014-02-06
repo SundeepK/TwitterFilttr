@@ -7,6 +7,6 @@ import twitter4j.TwitterException;
  */
 public interface IOnTweetOperationFail {
 
-    public void onTweetOperationFail(TwitterException exception_);
+    public void onTweetOperationFail(TwitterException exception_, ITweetOperation tweetOperation_);
 
 }

@@ -31,15 +31,20 @@ public  class RetweetTweet implements ITweetOperation {
 
         try {
             twitter4j.Status status = twitter.retweetStatus(tweets_.getTweetID());
-            tweets_.setIsRetweeted(status.isRetweeted());
             tweet = new ParcelableTweet(status, format.format(status.getCreatedAt()), status.getUser().getId());
+            tweet.setIsRetweeted(status.isRetweeted());
         } catch (TwitterException e) {
             e.printStackTrace();
             Log.v(TAG, "Error occured whilst trying to re-tweet");
-            failLister_.onTweetOperationFail(e);
+            failLister_.onTweetOperationFail(e, this);
         }
 
         return tweet;
+    }
+
+    @Override
+    public TweetOperationType getTweetOperationType() {
+        return TweetOperationType.RETWEET;
     }
 
 
