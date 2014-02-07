@@ -6,9 +6,16 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
+import com.sun.tweetfiltrr.database.dao.FriendDao;
+import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
@@ -19,9 +26,10 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 	private static final String TAG = AsyncAccessTokenRetriever.class.getName();
 
 	private Context _context;
-	
+	IDBDao<ParcelableUser> _userDao;
 	public AsyncAccessTokenRetriever(Context context_){
 		_context = context_;
+        _userDao = new FriendDao(context_.getContentResolver(), new FriendToParcelable());
 	}
 	
 	@Override
@@ -64,9 +72,23 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 				AccessToken accessToken = new AccessToken(accessTokenString,
 						accessTokenSecret);
 				TwitterUtil.getInstance().setTwitterFactories(accessToken);
-				user = new ParcelableUser(TwitterUtil.getInstance()
-						.getTwitter().showUser(accessToken.getUserId()));
 
+                long userId = sharedPreferences.getLong(
+                        TwitterConstants.AUTH_USER_ID, -1l);
+                Collection<ParcelableUser> users = new ArrayList<ParcelableUser>(1);
+                if(userId > -1){
+                    users.addAll(_userDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()  + " = ? ", new String[]{Long.toString(userId)}, null));
+                }
+
+                //we only expect one user since userid is alwats unique
+                if(users.size() == 1){
+                    Log.v(TAG, "Found user from DB");
+                    user = users.iterator().next();
+                }else{
+                    user = new ParcelableUser(TwitterUtil.getInstance()
+                            .getTwitter().showUser(accessToken.getUserId()));
+                }
+                TwitterUtil.getInstance().setCurrentUser(user);
 				return user;
 
 			}

@@ -26,6 +26,8 @@ import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
+import java.util.Collection;
+
 import twitter4j.TwitterException;
 
 public class PostTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.TwitterTaskListener {
@@ -52,10 +54,24 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
         _timelineDao = new TimelineDao(getContentResolver(), new TimelineToParcelable());
 
         ParcelableUser user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
-        boolean shouldQuote =  getIntent().getExtras().getBoolean(TwitterConstants.IS_QUOTE_REPLY);
-        ParcelableTweet tweet = user.getUserTimeLine().iterator().next(); //we only expect one tweet to reply too
 
-        String photoUrl = tweet.getPhotoUrl();
+        if(user != null){
+            boolean shouldQuote =  getIntent().getExtras().getBoolean(TwitterConstants.IS_QUOTE_REPLY);
+            Collection<ParcelableTweet> tweets = user.getUserTimeLine();
+            friendName.setText("@" + user.getScreenName());
+
+            if(!tweets.isEmpty()){
+                ParcelableTweet tweet =  tweets.iterator().next();//we only expect one tweet to reply too
+                dateTime.setText(tweet.getTweetDate());
+                tweetText.setText(tweet.getTweetText());
+                String photoUrl = tweet.getPhotoUrl();
+
+                if(shouldQuote){
+                    tweetEditTxt.setText("RT @" + user.getScreenName()+": " + tweet.getTweetText());
+                }else{
+                    tweetEditTxt.setText("@" + user.getScreenName());
+                }
+            }
 
 //        ImageView mediaPhoto =(ImageView)findViewById(R.id.media_photo);
 //        if(!TextUtils.isEmpty(photoUrl)){
@@ -65,19 +81,12 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
 //            mediaPhoto.setVisibility(View.GONE);
 //        }
 
-        ImageLoaderUtils.attemptLoadImage(profilePic, urlImageLoader, user.getProfileImageUrl(),1, null);
-        dateTime.setText(tweet.getTweetDate());
-        friendName.setText(user.getScreenName());
-        tweetText.setText(tweet.getTweetText());
+            ImageLoaderUtils.attemptLoadImage(profilePic, urlImageLoader, user.getProfileImageUrl(),1, null);
 
-        if(shouldQuote){
-            tweetEditTxt.setText("RT @" + user.getScreenName()+": " + tweet.getTweetText());
-        }else{
-            tweetEditTxt.setText("@" + user.getScreenName());
+
         }
 
         int initailCount = _initailCount -tweetEditTxt.getEditableText().length();
-
         charCountView.setText(Integer.toString(initailCount));
         tweetEditTxt.addTextChangedListener(getTweetTextLis(charCountView));
 

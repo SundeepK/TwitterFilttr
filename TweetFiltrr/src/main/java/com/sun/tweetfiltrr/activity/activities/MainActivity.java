@@ -36,7 +36,8 @@ import twitter4j.auth.RequestToken;
 
 public class MainActivity extends SherlockFragmentActivity {
 
-	Button _signInButton;
+    private static final String TAG = MainActivity.class.getName();
+    Button _signInButton;
 	ImageView _bGImage;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +127,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 finish();
 
 		} else {
-
+             Log.v(TAG, "User has logged in before so not authenticating");
 		     Intent intent = new Intent(MainActivity.this, TwitterFilttrLoggedInUserHome.class);
              startActivity(intent);
 			 this.finish();

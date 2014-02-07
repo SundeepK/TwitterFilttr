@@ -25,13 +25,13 @@ public class UserRetrieverUtils {
         ParcelableUser loggedInUser = getUserFromBundle(context_);
 
         if(loggedInUser == null){
+            loggedInUser =  TwitterUtil.getInstance().getCurrentUser();
 
+            if(loggedInUser == null){
                 try {
                     loggedInUser = getCurrentUser(context_);
-
                     if (loggedInUser == null) {
                         Uri uri = context_.getIntent().getData();
-
                         loggedInUser = getCurrentUserFromURI(uri, context_);
                     }
                 } catch (ExecutionException e1) {
@@ -41,12 +41,13 @@ public class UserRetrieverUtils {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
         }
 
         return loggedInUser;
     }
 
-    private static ParcelableUser getUserFromBundle(Activity context_){
+    public static ParcelableUser getUserFromBundle(Activity context_){
         return context_.getIntent().getParcelableExtra(TwitterConstants.FRIENDS_BUNDLE);
     }
 

@@ -1,16 +1,20 @@
 package com.sun.tweetfiltrr.activity.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.ActionBar.TabListener;
 import com.actionbarsherlock.view.Menu;
@@ -26,9 +30,11 @@ import com.sun.tweetfiltrr.activity.adapter.TwitterUserHomeTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.fragment.fragments.SettingsScreen;
 import com.sun.tweetfiltrr.fragment.fragments.SlidingMenuFragment;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements TabListener,
         ListView.OnItemClickListener, ImageTaskListener {
@@ -36,7 +42,7 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
 	private ViewPager _asyncBackgroundViewPager;
 	private TwitterUserHomeTabsAdapter _tabsAdapter;
 	private static final String TAG = TwitterFilttrLoggedInUserHome.class.getName();
-
+    private ParcelableUser _currentUser;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
@@ -53,6 +59,8 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
                 return true;
             case R.id.tweet_action_bar_button:
                 i = new Intent(this, PostTweetActivity.class);
+                i.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, _currentUser);
+                i.putExtra(TwitterConstants.IS_QUOTE_REPLY, false);
                 startActivity(i);
                 return true;
             default:
@@ -63,7 +71,22 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
 	@Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		setContentView(R.layout.user_home_viewpager);
+        setContentView(R.layout.user_home_viewpager);
+
+        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+
+        ActionBar actionBar =  getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        LayoutInflater inflator = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.action_bar_title, null);
+        TextView title = (TextView) v.findViewById(R.id.action_bar_title);
+        title.setText("@" + _currentUser.getScreenName());
+        actionBar.setCustomView(v);
+
+
+
         SlidingMenu menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.LEFT);
@@ -79,9 +102,9 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
 
 //        _slidingMenuListView.setOnItemClickListener(this);
 
-        UrlImageLoader loader = TwitterUtil.getInstance().getGlobalImageLoader(this);
-        ImageView slidingMenuBackground = (ImageView) findViewById(R.id.sliding_menu_background);
-        ImageLoaderUtils.attemptLoadImage(slidingMenuBackground, loader, getCurrentUser().getProfileBackgroundImageUrl(), 2, this);
+//        UrlImageLoader loader = TwitterUtil.getInstance().getGlobalImageLoader(this);
+//        ImageView slidingMenuBackground = (ImageView) findViewById(R.id.sliding_menu_background);
+//        ImageLoaderUtils.attemptLoadImage(slidingMenuBackground, loader, getCurrentUser().getProfileBackgroundImageUrl(), 2, this);
 
         _asyncBackgroundViewPager = (ViewPager) findViewById(R.id.user_view_pager);
 		_tabsAdapter = new TwitterUserHomeTabsAdapter(getSupportFragmentManager(), getCurrentUser());

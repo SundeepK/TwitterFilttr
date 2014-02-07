@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/action_bar_title_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent" >
+
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
+        android:id="@+id/action_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="#9E9E9E"
+        custom:typeface="robotoLight"
+        android:layout_centerVertical="true"
+        />
+
+</RelativeLayout>

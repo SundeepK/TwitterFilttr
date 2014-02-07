@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#ffffffff"
@@ -23,6 +24,15 @@
             <!--android:background="#00000000"-->
             <!--android:textColor="#fff" />-->
     <!--</com.sun.parallaxviewpage.core.AsyncBackgroundViewPager>-->
+
+    <!--<com.sun.tweetfiltrr.customviews.TypeFaceView-->
+        <!--android:id="@+id/action_bar_title"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#9E9E9E"-->
+        <!--android:textSize="20sp"-->
+        <!--custom:typeface="robotoLight"-->
+        <!--/>-->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/user_view_pager"
@@ -51,11 +61,11 @@
 
     </ListView>
 
-    <ImageView
-        android:id="@+id/sliding_menu_background"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        />
+    <!--<ImageView-->
+        <!--android:id="@+id/sliding_menu_background"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--/>-->
 
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.imageloader.core.UrlImageLoaderConfiguration;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,7 +36,7 @@ public final class TwitterUtil {
     private ThreadPoolExecutor _threadPoolExecutor;
     private UrlImageLoaderConfiguration _imageloaderConfigs;
     private static TwitterUtil instance = new TwitterUtil();
-
+    private ParcelableUser _currentUser;
     private TwitterUtil() {
     	ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
     	configurationBuilder.setDebugEnabled(true);
@@ -63,6 +64,13 @@ public final class TwitterUtil {
 
     };
 
+    public synchronized void setCurrentUser(ParcelableUser user_){
+        _currentUser = user_;
+    }
+
+    public synchronized ParcelableUser getCurrentUser(){
+       return  _currentUser;
+    }
 
     public UrlImageLoader getGlobalImageLoader(Context context_){
 
