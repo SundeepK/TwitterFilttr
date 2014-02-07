@@ -12,9 +12,7 @@ import com.sun.tweetfiltrr.utils.FontUtils;
  * Created by Sundeep on 06/02/14.
  */
 public class TypeFaceView extends TextView{
-    private final static int ROBOTO_THIN = 0;
-    private final static int ROBOTO_LIGHT = 1;
-    private final static int ROBOTO_NORMAL = 2;
+
 
 
     public TypeFaceView(Context context) {
@@ -35,20 +33,6 @@ public class TypeFaceView extends TextView{
         TypedArray values = context.obtainStyledAttributes(attrs, R.styleable.TypeFaceView);
 
         int typeface = values.getInt(R.styleable.TypeFaceView_typeface, 0);
-
-        switch(typeface) {
-            case ROBOTO_THIN: default:
-
-                setTypeface(FontUtils.thinTypeFace(context.getAssets()));
-                break;
-            case ROBOTO_LIGHT:
-                setTypeface(FontUtils.lightTypeFace(context.getAssets()));
-
-                break;
-            case ROBOTO_NORMAL:
-                setTypeface(FontUtils.normalTypeFace(context.getAssets()));
-
-                break;
-        }
+        setTypeface(FontUtils.getTypeFace(typeface, context));
     }
 }

@@ -90,10 +90,12 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
         // create an adapter from the SimpleCursorAdapter
         _groupAdapter = new EditKeywordGroupAdapter(this, R.layout.listview_for_twitter,
                 null,columns, to, 0, cursorToParcelable, imageLoader, group, _friendDao);
-//        _groupAdapter = new FriendsCursorAdapter(getActivity(), R.layout.listview_for_twitter,
-//                null, columns, to, 0, imageLoader);
 
+        listView.setFastScrollEnabled(true);
+        listView.setScrollingCacheEnabled(true);
         listView.setAdapter(_groupAdapter);
+
+
         this.getSupportLoaderManager().initLoader(TUTORIAL_LIST_LOADER, null, this);
 
 
@@ -109,7 +111,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
         CursorLoader cursorLoader = new CursorLoader(this,
                 TweetFiltrrProvider.CONTENT_URI_FRIENDS_LEFT_GROUP, pro,
                 FriendTable.FriendColumn.IS_FRIEND.a() + " = ? ",
-                new String[]{"1"}, FriendTable.FriendColumn._ID.s() + " ASC " );
+                new String[]{"1"}, FriendTable.FriendColumn.FRIEND_NAME.a() + " ASC " );
         return cursorLoader;
 
 

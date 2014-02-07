@@ -7,7 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.sun.tweetfiltrr.R;
@@ -16,7 +17,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
 
-public class KeywordGroupAdapter extends SimpleCursorAdapter  {
+public class KeywordGroupAdapter extends SimpleCursorAdapter implements SectionIndexer {
 
 
     private static final String TAG = KeywordGroupAdapter.class.getName();
@@ -24,11 +25,12 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
 
 
-	public KeywordGroupAdapter(Context context, int layout, Cursor c,
+    public KeywordGroupAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags, IDBDao<ParcelableKeywordGroup> keywordGroupDao_) {
 		super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
         _keywordGroupDao = keywordGroupDao_;
+
 	}
 
 
@@ -46,7 +48,7 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
 		builder.append("\n");
 		builder.append(keywords);
 		friendName.setText(builder.toString());
-		Button deleteBut = (Button) view_.findViewById(R.id.delete_group);
+		ImageButton deleteBut = (ImageButton) view_.findViewById(R.id.delete_group);
 		deleteBut.setOnClickListener(getDeleteButtonLis(_keywordGroupDao, rowId));
 
 	}
@@ -67,5 +69,19 @@ public class KeywordGroupAdapter extends SimpleCursorAdapter  {
         return view;
 	}
 
+    @Override
+    public Object[] getSections() {
+        return new Object[0];
+    }
+
+    @Override
+    public int getPositionForSection(int sectionIndex) {
+        return 0;
+    }
+
+    @Override
+    public int getSectionForPosition(int position) {
+        return 0;
+    }
 }
 

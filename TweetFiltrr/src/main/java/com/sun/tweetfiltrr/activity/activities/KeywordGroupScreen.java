@@ -2,6 +2,7 @@ package com.sun.tweetfiltrr.activity.activities;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -23,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.KeywordGroupAdapter;
@@ -60,6 +63,17 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_listview);
 
+
+        ActionBar actionBar =  getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        LayoutInflater inflator = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.action_bar_title, null);
+        TextView title = (TextView) v.findViewById(R.id.action_bar_title);
+        title.setText("Keyword filters");
+        actionBar.setCustomView(v);
 
         Activity activity = this;
         ContentResolver resolver = activity.getContentResolver();

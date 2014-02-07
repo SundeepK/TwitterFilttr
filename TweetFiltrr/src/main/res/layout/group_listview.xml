@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusable="true"
+    android:background="#000"
     android:focusableInTouchMode="true"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <LinearLayout
+
+    <com.sun.tweetfiltrr.customviews.TypeFaceEditText
+        android:id="@+id/group_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
-        android:orientation="vertical" >
+        android:layout_margin="10dp"
+        android:textColor="#9E9E9E"
+        android:hint="Group name"
+        custom:typeface="robotoLight"
+        android:padding="5dp" />
 
-        <EditText
-            android:id="@+id/group_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#212121"
-            android:background="#1e1d1d"
-            android:layout_margin="10dp"
-            android:hint="Group name"
-            android:padding="5dp" />
+    <com.sun.tweetfiltrr.customviews.TypeFaceEditText
+        android:id="@+id/group_keyword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#9E9E9E"
+        android:layout_margin="10dp"
+        android:hint="Keywords"
+        custom:typeface="robotoLight"
+        android:padding="5dp" />
 
-        <EditText
-            android:id="@+id/group_keyword"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="#1e1d1d"
-            android:hint="Keywords"
-            android:padding="5dp" />
-
-        <Button
-            android:id="@+id/add_new_group"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textColor="#212121"
-            android:padding="5dp"
-            android:text="Save group"
-            android:textSize="12dp" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/add_new_group"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="#9E9E9E"
+        android:padding="5dp"
+        android:text="Save group"
+        android:textSize="12dp" />
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#000000"
-        android:divider="@null"
-        android:dividerHeight="5dp" />
+        android:dividerHeight="2dp"
+        android:divider="@drawable/list_row_divider"
+        />
 
 </LinearLayout>

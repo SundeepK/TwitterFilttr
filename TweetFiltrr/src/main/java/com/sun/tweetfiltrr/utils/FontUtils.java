@@ -1,5 +1,6 @@
 package com.sun.tweetfiltrr.utils;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 
@@ -8,6 +9,9 @@ import android.graphics.Typeface;
  */
 public class FontUtils {
 
+    private final static int ROBOTO_THIN = 0;
+    private final static int ROBOTO_LIGHT = 1;
+    private final static int ROBOTO_NORMAL = 2;
     private static Typeface _normal;
     private static Typeface _thin;
     private static Typeface _light;
@@ -34,6 +38,17 @@ public class FontUtils {
             _normal = Typeface.createFromAsset(assetsManager, "fonts/Roboto-Regular.ttf");
         }
         return _normal;
+    }
+
+    public static Typeface getTypeFace(int typeface, Context context_){
+        switch(typeface) {
+            case ROBOTO_THIN: default:
+                return FontUtils.thinTypeFace(context_.getAssets());
+            case ROBOTO_LIGHT:
+               return FontUtils.lightTypeFace(context_.getAssets());
+            case ROBOTO_NORMAL:
+                return (FontUtils.normalTypeFace(context_.getAssets()));
+        }
     }
 
 

@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#000000"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
     android:orientation="vertical">
 
@@ -17,31 +18,34 @@
      android:scaleType="fitCenter"
      />
 
+
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/profile_image"
+        android:textColor="#757575"
+        custom:typeface="robotoLight"
+        android:textSize="16sp" />
+
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="group name"
+        android:textSize="14sp"
+        custom:typeface="robotoThin"
+        android:textColor="#757575"
+        android:layout_below="@+id/user_name"
+        android:layout_toRightOf="@+id/profile_image" />
+
     <CheckBox
         android:id="@+id/is_part_of_group_checkbox"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
         />
-
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/profile_image"
-        android:textColor="#757575"
-        android:text="dawdawwadawdw"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/group_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="group name"
-        android:textSize="14sp"
-        android:textColor="#757575"
-        android:layout_below="@+id/user_name"
-        android:layout_toRightOf="@+id/profile_image" />
 
 </RelativeLayout>

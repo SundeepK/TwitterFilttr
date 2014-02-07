@@ -8,8 +8,10 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AlphabetIndexer;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
@@ -25,7 +27,7 @@ import java.util.Collection;
 
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
-public class EditKeywordGroupAdapter extends SimpleCursorAdapter  {
+public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements SectionIndexer {
 
 
     private static final String TAG = EditKeywordGroupAdapter.class.getName();
@@ -35,6 +37,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter  {
     private SparseBooleanArray _listItemStatus;
     private ParcelableKeywordGroup _group;
     private IDBDao<ParcelableUser> _friendDao;
+    private AlphabetIndexer _alphabetIndexer;
 
     public EditKeywordGroupAdapter(Context context, int layout, Cursor c,
                                    String[] from, int[] to, int flags,
@@ -47,10 +50,20 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter  {
         _listItemStatus = new SparseBooleanArray();
         _group = group_;
         _friendDao = friendDao_;
+
     }
 
+    @Override
+    public Cursor swapCursor(Cursor c) {
+        if(_alphabetIndexer == null && c != null){
+            _alphabetIndexer = new AlphabetIndexer(c,
+                    c.getColumnIndex(FriendColumn.FRIEND_NAME.a()),
+                    " ABCDEFGHIJKLMNOPQRTSUVWXYZ");
+        }
+        return super.swapCursor(c);
+    }
 
-	@Override
+    @Override
 	public void bindView(View view_, Context context, Cursor cursor_) {
 
         final ParcelableUser user = getUser(cursor_);
@@ -120,5 +133,19 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter  {
         return view;
 	}
 
+    @Override
+    public Object[] getSections() {
+        return _alphabetIndexer.getSections();
+    }
+
+    @Override
+    public int getPositionForSection(int sectionIndex) {
+        return _alphabetIndexer.getPositionForSection(sectionIndex);
+    }
+
+    @Override
+    public int getSectionForPosition(int position) {
+        return _alphabetIndexer.getSectionForPosition(position);
+    }
 }
 

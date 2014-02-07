@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#1e1d1d"
+    android:background="#000"
     android:descendantFocusability="blocksDescendants"
     android:padding="8dp"
     >
 
-    <TextView
+    <com.sun.tweetfiltrr.customviews.TypeFaceView
         android:id="@+id/user_name"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -16,21 +17,23 @@
         android:layout_gravity="center"
         android:gravity="center|left"
         android:layout_margin="5dp"
-        android:textColor="#8f8f8f"
-        android:text="dawdaqwd"
-        android:textSize="18dp" />
+        android:textColor="#9E9E9E"
+        custom:typeface="robotoLight"
+        android:textSize="18sp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/delete_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentRight="true"
         android:focusable="false"
         android:layout_margin="5dp"
         android:focusableInTouchMode="false"
-        android:text="Delete"
+        android:src="@drawable/delete"
+        android:background="#000"
+        android:scaleType="centerCrop"
         android:layout_marginRight="5dp"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
 
 </RelativeLayout>
