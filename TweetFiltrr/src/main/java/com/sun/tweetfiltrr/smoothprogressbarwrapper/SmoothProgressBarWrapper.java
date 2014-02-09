@@ -45,12 +45,12 @@ public class SmoothProgressBarWrapper implements IProgress {
     }
 
     @Override
-    public void startRefresh() {
+    public void startRefreshAnimation() {
         start();
     }
 
     @Override
-    public void setRefreshFinish() {
+    public void setRefreshAnimationFinish() {
         stop();
     }
 }

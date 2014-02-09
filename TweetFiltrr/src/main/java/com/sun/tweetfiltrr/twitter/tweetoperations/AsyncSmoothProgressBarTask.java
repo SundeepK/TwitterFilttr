@@ -23,7 +23,7 @@ public abstract class AsyncSmoothProgressBarTask<V, T, E>  extends AsyncTask<V, 
     @Override
     protected void onPostExecute(E status) {
         if(_progressBar != null){
-        _progressBar.setRefreshFinish();
+        _progressBar.setRefreshAnimationFinish();
         }
 
         super.onPostExecute(status);
@@ -33,7 +33,7 @@ public abstract class AsyncSmoothProgressBarTask<V, T, E>  extends AsyncTask<V, 
     @Override
     protected void onPreExecute() {
         if(_progressBar != null){
-            _progressBar.startRefresh();
+            _progressBar.startRefreshAnimation();
         }
         super.onPreExecute();
     }

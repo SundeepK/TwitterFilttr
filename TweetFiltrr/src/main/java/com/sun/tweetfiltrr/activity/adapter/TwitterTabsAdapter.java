@@ -4,105 +4,115 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTabA;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class TwitterTabsAdapter  extends FragmentPagerAdapter {
+
+public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionBar.TabListener, ViewPager.OnPageChangeListener{
     private static final String TAG = TwitterTabsAdapter.class.getName();
+    private ActionBar _actionBar;
+    private FragmentManager _fragmentManager;
     private ParcelableUser _currentUser;
-    private OnFragmentChange _onFragmentChangeLis;
-    private FragmentManager _fragManager;
-    private Fragment _first;
-    private Fragment _currentFragment;
+    private static final String[] titles = { "Tweets", "Friends" };
 
-    public TwitterTabsAdapter(FragmentManager fm, ParcelableUser currentUser_, OnFragmentChange onFragmentChangeLis_) {
+
+   private final List<Fragment> fragments = new ArrayList<Fragment>();
+
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+    }
+
+    static final class TabInfo {
+        private final Class<?> clss;
+        private final Bundle args;
+
+        TabInfo(Class<?> _class, Bundle _args) {
+            clss = _class;
+            args = _args;
+        }
+    }
+
+    public TwitterTabsAdapter(FragmentManager fm, ParcelableUser currentUser_, ActionBar actionBar_) {
 		super(fm);
-        _fragManager = fm;
-		_currentUser = currentUser_;
-        _onFragmentChangeLis = onFragmentChangeLis_;
-		// TODO Auto-generated constructor stub
+        _currentUser = currentUser_;
+        _actionBar = actionBar_;
+//        _fragmentManager=fm;
 	}
 
 
-
-    public void onSwitchToNextFragment(int index) {
-        _fragManager.beginTransaction().remove(_currentFragment)
-                .commitAllowingStateLoss();
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
-        Fragment frag = null;
-        if(index == 3){
-            Log.v(TAG, "Current tab number" + index);
-
-            frag =  new Fragment();
-
-        }else{
-
-            frag = new FriendsTabA();
-            frag.setArguments(bundle);
-        }
-        _currentFragment = frag;
-        notifyDataSetChanged();
-
-    }
-
-
-    public interface OnFragmentChange{
-        public Fragment getFragment(int index);
-    }
-
 	@Override
 	    public Fragment getItem(int index) {
+
+//         return _fragmentManager.findFragmentById(R.id.tweets_container);
 
 	    Bundle bundle = new Bundle();
 	    bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
 	    Fragment frag = null;
 
 	        switch (index) {
-	        case 0:
-
-                if(_first == null){
-                    _first =  new UserDetailsTimelineTab();
-                    _first.setArguments(bundle);
-                }
-
-                return _first;
+            case 0:
+                   frag =  new UserDetailsTimelineTab();
+                   frag.setArguments(bundle);
+                 frag.setUserVisibleHint(true);
+                   return frag;
 	        case 1:
-
-                if(_currentFragment==null){
-                    _currentFragment = new FriendsTabA();
-                Log.v(TAG, "current tab name" + _currentFragment.toString());
-                }
-
-                return _currentFragment;
-
+                Log.v(TAG, "tab is switched to second");
+                frag =  new FriendsTabA();
+                frag.setArguments(bundle);
+                return frag;
 	        case 2:
 
 	        }
-	 
+
 	        return null;
 	    }
-	 
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
+    }
+
+
 	    @Override
 	    public int getCount() {
 	        // get item count - equal to number of tabs
 	        return 2;
 	    }
-
-    @Override
-    public int getItemPosition(Object object)
-    {
-        if (object instanceof UserDetailsTimelineTab)
-            return POSITION_UNCHANGED;
-
-        return POSITION_NONE;
-    }
 
     @Override
     public float getPageWidth(int position) {

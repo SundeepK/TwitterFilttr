@@ -5,7 +5,7 @@ package com.sun.tweetfiltrr.fragment.pulltorefresh;
  */
 public interface IProgress {
 
-    public void startRefresh();
-    public void setRefreshFinish();
+    public void startRefreshAnimation();
+    public void setRefreshAnimationFinish();
 
 }

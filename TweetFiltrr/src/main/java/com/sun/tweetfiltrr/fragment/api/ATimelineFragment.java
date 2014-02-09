@@ -85,6 +85,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private ParcelableUser _currentUser ;
     private Collection<IDatabaseUpdater> _userDaoUpdaters;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
+    private boolean _tabHasBeenSelected = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -172,9 +173,10 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     }
 
     @Override
-    public boolean shouldLoad(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         int rowCount = _currentUser.getTotalTweetCount() - _currentLimitCount;
         Log.v(TAG, "current rowcount " + rowCount + " current user tweets " + _currentUser.getTotalTweetCount() + "with current rowlimit" + _currentLimitCount);
+
 
         if(rowCount > 0){
             Log.v(TAG, "increasing limit because we have enough tweets with total: " + _currentUser.getTotalTweetCount() + " and current limit: " +_currentLimitCount );
@@ -182,13 +184,13 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             restartCursor();
             return false;
         }else if(_isFinishedLoading){
-
             Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
             return false;
         }else{
             Log.v(TAG, "looking for tweets now with row count: " + _currentLimitCount);
             return true; //TODO need to make sure we only search when we need to, maybe prevent too much searching
         }
+
     }
 
 
@@ -268,7 +270,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
         Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);
 
-        _isFinishedLoading = totalNewTweets <= 1;
+        _isFinishedLoading = (totalNewTweets <= 1 && !_tabHasBeenSelected);
         _currentLimitCount += totalNewTweets;
         restartCursor();
     }
@@ -280,7 +282,10 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        Log.v(TAG, "Tab has been selected");
+        Log.v(TAG, "TimeLine tab has been selected");
+        if(!_tabHasBeenSelected){
+            _tabHasBeenSelected = true; //the tab has been selected, so lets allow network calls
+        }
     }
 
     @Override

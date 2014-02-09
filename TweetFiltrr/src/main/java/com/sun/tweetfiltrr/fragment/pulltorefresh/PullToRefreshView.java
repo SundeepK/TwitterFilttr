@@ -150,8 +150,8 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         return rootView;
     }
 
-    @Override
-    public void onRefreshStarted(View view) {
+
+    public void startRefresh(){
         Log.v(TAG, "We are looking for friends tweets because pull to refresh was done");
         Log.v(TAG, "is friend : " + _currentUser.isFriend());
         final   Collection<Future<T>> futures = new ArrayList<Future<T>>();
@@ -159,17 +159,27 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         for(Callable<T> callabe : callables){
             futures.add(_threadExecutor.submit(callabe));
         }
-         AsyncUserDBUpdateTask< Integer> _updaterTask;
-        _updaterTask = new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,_updaters, this);
 
-        _updaterTask.execute(futures.toArray(new Future[futures.size()]));
+        if(!futures.isEmpty()){
+            AsyncUserDBUpdateTask< Integer> _updaterTask;
+            _updaterTask = new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,_updaters, this);
+
+            _updaterTask.execute(futures.toArray(new Future[futures.size()]));
+        }
+
+
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        startRefresh();
     }
 
 
 
     @Override
     public void onPreExecute() {
-        startRefresh();
+        startRefreshAnimation();
     }
 
     @Override
@@ -190,12 +200,12 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     }
 
     @Override
-    public void startRefresh() {
+    public void startRefreshAnimation() {
         _pullToRefreshView.setRefreshing(true);
     }
 
     @Override
-    public void setRefreshFinish() {
+    public void setRefreshAnimationFinish() {
         _pullToRefreshView.setRefreshComplete();
 
     }

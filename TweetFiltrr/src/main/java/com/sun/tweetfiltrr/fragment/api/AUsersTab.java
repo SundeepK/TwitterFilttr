@@ -18,7 +18,7 @@ import android.widget.AdapterView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.TwitterFilttrUserHome;
+import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.api.UsersFriendRetriever;
@@ -68,6 +68,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading;
     private Collection<IDatabaseUpdater> _updaters = new ArrayList<IDatabaseUpdater>();
+    private boolean _tabHasBeenSelected = false;
 
 
 
@@ -76,6 +77,28 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
         super.onCreate(savedInstanceState);
         initControl();
         initAdapter();
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible()) {
+            // If we are becoming invisible, then...
+            if (!isVisibleToUser) {
+                Log.d(TAG, "Not visible anymore");
+            }else{
+                Log.d(TAG, "Visible now!");
+
+                if(!_tabHasBeenSelected){
+                    _pullToRefreshHandler.startRefresh();
+                }
+               _tabHasBeenSelected = true;
+            }
+        }
+
     }
 
     @Override
@@ -217,21 +240,32 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     }
 
     @Override
-    public boolean shouldLoad(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        if (_currentLimitCount < getCurrentUser().getCurrentFriendCount()) {
-            Log.v(TAG, "_currentLimitCount: " + _currentLimitCount + " current friend acount " +  getCurrentUser().getCurrentFriendCount());
-            _currentLimitCount += 50;
-            restartCursor();
-            return false;
-        } else if (_isFinishedLoading){
-            Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
-            return false;
-        }
-        else {
+        if(_tabHasBeenSelected){
+
+            if (_currentLimitCount < getCurrentUser().getCurrentFriendCount()) {
+                Log.v(TAG, "_currentLimitCount: " + _currentLimitCount + " current friend acount " +  getCurrentUser().getCurrentFriendCount());
+                _currentLimitCount += 50;
+                restartCursor();
+                return false;
+            } else if (_isFinishedLoading){
+                Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
+                return false;
+            }
             Log.v(TAG, "going to load more friends for:" + getCurrentUser());
             return true;
-        }
+        }else{
+            Log.v(TAG, "_tabHasBeenSelected is false");
+        return false;
+     }
+
+
+    }
+
+
+    private boolean getIsVis(){
+        return _tabHasBeenSelected;
     }
 
 
@@ -251,7 +285,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
             break;
         }
 
-        Intent i = new Intent(getActivity(), TwitterFilttrUserHome.class);
+        Intent i = new Intent(getActivity(), TwitterUserProfileHome.class);
         i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
         startActivity(i);
 
@@ -267,7 +301,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
         int totalNewTweets = twitterParcelable.size();
         Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);
 
-        _isFinishedLoading = totalNewTweets <= 1;
+        _isFinishedLoading = (totalNewTweets <= 1);
         _currentLimitCount += totalNewTweets;
         restartCursor();
 

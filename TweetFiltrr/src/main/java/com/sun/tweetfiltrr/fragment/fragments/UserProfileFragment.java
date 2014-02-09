@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.TwitterFilttrUserHome;
+import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.UserTwitterDetails;
 import com.sun.tweetfiltrr.animation.ExpandingAnimation;
 import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
@@ -123,7 +123,7 @@ public class UserProfileFragment extends ATwitterFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.v(TAG, "on item is clicked on the user twitter home");
-                Intent intent = new Intent(getActivity(), TwitterFilttrUserHome.class);
+                Intent intent = new Intent(getActivity(), TwitterUserProfileHome.class);
                 startActivity(intent);
             }
         };

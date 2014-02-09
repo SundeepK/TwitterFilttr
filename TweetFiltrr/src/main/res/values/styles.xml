@@ -17,7 +17,7 @@
         <!--&lt;!&ndash; All customizations that are NOT specific to a particular API-level can go here. &ndash;&gt;-->
     <!--</style>-->
 
-    <style name="MyCustomTheme" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <style name="AppActionBarTheme" parent="@style/Theme.Sherlock.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/MyActionBarTheme</item>
     </style>
 
