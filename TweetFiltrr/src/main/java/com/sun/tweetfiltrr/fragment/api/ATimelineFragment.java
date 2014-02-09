@@ -266,7 +266,8 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                 Log.v(TAG, "current user switch to  " + _currentUser.toString());
 
             }
-            totalNewTweets = user.getUserTimeLine().size();
+            Log.v(TAG, "size of timeline " + user.getUserTimeLine().size() + " for user " + user.getScreenName());
+            totalNewTweets = totalNewTweets + user.getUserTimeLine().size();
         }
 
         Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);

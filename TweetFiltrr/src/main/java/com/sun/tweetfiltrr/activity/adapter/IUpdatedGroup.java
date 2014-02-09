@@ -1,5 +1,8 @@
 package com.sun.tweetfiltrr.activity.adapter;
 
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -7,5 +10,5 @@ import java.util.Set;
  */
 public interface IUpdatedGroup {
 
-    public Set<Long> getChangedUserIdsForGroup(long groupId_);
+    public Collection<ParcelableUser> getChangedGroupIdsForUsers(long groupId_);
 }

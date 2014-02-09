@@ -115,7 +115,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
         if (getCurrentUser().getUserId() == _currentLoggedInUserId) {
             return new UsersFriendRetriever( true);
         } else {
-            return new UsersFriendRetriever(true);
+            return new UsersFriendRetriever(false);
         }
     }
 

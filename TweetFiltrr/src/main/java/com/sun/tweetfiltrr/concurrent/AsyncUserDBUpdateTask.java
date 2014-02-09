@@ -1,5 +1,6 @@
 package com.sun.tweetfiltrr.concurrent;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
@@ -10,18 +11,23 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-    /**
+/**
      * Created by Sundeep on 06/01/14.
      */
- public  class AsyncUserDBUpdateTask<V> extends AsyncFutureTaskWrapper<Collection<ParcelableUser>, V> {
+
+ public  class AsyncUserDBUpdateTask<V> extends AsyncTask<Future<Collection<ParcelableUser>>, V, Collection<ParcelableUser>> {
 
         private final static String TAG = AsyncUserDBUpdateTask.class.getName();
         private IDBUpdater<ParcelableTweet> _databaseUpdater;
         private Collection<IDatabaseUpdater> _userUpdaters;
         private OnAsyncTaskPostExecute _postExecuteLis;
+          private final long _timeout;
+         private final TimeUnit _timeUnit;
         /**
          *
          * {@link android.os.AsyncTask} which wraps around a {@link AsyncFutureTaskWrapper} and waits for the computation to complete.
@@ -33,7 +39,8 @@ import java.util.concurrent.TimeUnit;
         public AsyncUserDBUpdateTask(long timeout_, TimeUnit timeUnit_,
                                      Collection<IDatabaseUpdater> daosToUpdate_,
                                      OnAsyncTaskPostExecute postExecuteLis_) {
-            super(timeout_, timeUnit_);
+            _timeout = timeout_;
+            _timeUnit = timeUnit_;
             _userUpdaters = daosToUpdate_;
             _postExecuteLis = postExecuteLis_;
         }
@@ -45,10 +52,23 @@ import java.util.concurrent.TimeUnit;
 
         @Override
         protected Collection<ParcelableUser> doInBackground(Future<Collection<ParcelableUser>>... params) {
-            Collection<ParcelableUser> futureResults = super.doInBackground(params);
+            Collection<ParcelableUser> futureResults  = new ArrayList<ParcelableUser>();
 
-            if(futureResults == null){
-                futureResults = new ArrayList<ParcelableUser>();
+            //TODO add exception handling
+            for(Future<Collection<ParcelableUser>> future : params){
+                try {
+                    Collection<ParcelableUser> user = future.get(_timeout,_timeUnit);
+
+                    if(user != null){
+                        futureResults.addAll(user);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
             }
 
             Log.v(TAG, "trying to update tiomeline size" + futureResults.size() + " for user + " + futureResults.toString());

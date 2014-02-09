@@ -77,11 +77,11 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
         }
 
         boolean isPassedItemThreshold =  totalItemCount - visibleItemCount   < _itemThresHoldBeforeLoadingMore  + firstVisibleItem;
-        Log.v(TAG, "is passedthreshold is:" + isPassedItemThreshold);
+      //  Log.v(TAG, "is passedthreshold is:" + isPassedItemThreshold);
 
         if (isPassedItemThreshold) {
             if (_loadMoreLitener.shouldLoadMoreOnScroll(view, firstVisibleItem, visibleItemCount, totalItemCount)) {
-                Log.v(TAG, "executiong task size is:" + _executingTasks.size());
+              //  Log.v(TAG, "executiong task size is:" + _executingTasks.size());
                 if (_executingTasks.size() < 1) {
 //                    Log.v(TAG, "Attemting to load more items for listview");
                     Collection<Future<T>> future = executeCallables();
@@ -89,7 +89,7 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
                     _loadMoreLitener.onLoad(future);
                 }
             }else{
-                Log.v(TAG, "not loading more on scroll" );
+             //   Log.v(TAG, "not loading more on scroll" );
             }
         }
     }

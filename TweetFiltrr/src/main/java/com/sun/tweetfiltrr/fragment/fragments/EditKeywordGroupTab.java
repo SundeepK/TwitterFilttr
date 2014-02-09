@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.imageloader.core.UrlImageLoader;
@@ -30,23 +30,25 @@ import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
+import java.util.Collection;
+
 
 public class EditKeywordGroupTab extends SherlockFragmentActivity implements
 						LoaderManager.LoaderCallbacks<Cursor>{
 	
-	private CursorAdapter _groupAdapter;
+	private EditKeywordGroupAdapter _groupAdapter;
 	private static final int TUTORIAL_LIST_LOADER = 0x07;
 	private static final String TAG = EditKeywordGroupTab.class.getName();
 	private IDBDao<ParcelableUser> _friendDao;
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
     private ParcelableUser _currentUser;
-
+    private ParcelableKeywordGroup _group;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_keyworrd_group_layout);
-        ParcelableKeywordGroup group = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE);
-        Log.v(TAG, "keyword group from bundle "  + group.getGroupName());
+        _group = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE);
+        Log.v(TAG, "keyword group from bundle "  + _group.getGroupName());
 
 
         ListView listView = (ListView) findViewById(android.R.id.list);
@@ -89,7 +91,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
 
         // create an adapter from the SimpleCursorAdapter
         _groupAdapter = new EditKeywordGroupAdapter(this, R.layout.listview_for_twitter,
-                null,columns, to, 0, cursorToParcelable, imageLoader, group, _friendDao);
+                null,columns, to, 0, cursorToParcelable, imageLoader, _group, _friendDao);
 
         listView.setFastScrollEnabled(true);
         listView.setScrollingCacheEnabled(true);
@@ -102,7 +104,18 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
     }
 
 
-	@Override
+    @Override
+    public void finish() {
+        Collection<ParcelableUser> users = _groupAdapter.getChangedGroupIdsForUsers(_group.getGroupId());
+//        _groupAdapter = null;
+        _friendDao.insertOrUpdate(users ,
+                               new String[]{FriendTable.FriendColumn.FRIEND_ID.s(), FriendTable.FriendColumn.COLUMN_GROUP_ID.s()});
+        Toast.makeText(this,"Updated " + users.size() + " friends ", 2).show();
+        super.finish();
+    }
+
+
+    @Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 	
 		//String[] projection = KeywordGroupDao.FULLY_QUALIFIED_PROJECTIONS;
@@ -119,7 +132,9 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> arg, Cursor cursor) {
-		_groupAdapter.swapCursor(cursor);
+        if(cursor != null){
+            _groupAdapter.swapCursor(cursor);
+        }
 	}
 
 	@Override

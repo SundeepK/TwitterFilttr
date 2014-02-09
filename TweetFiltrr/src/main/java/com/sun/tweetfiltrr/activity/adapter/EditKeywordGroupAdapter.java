@@ -18,16 +18,15 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-
-import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
 public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements SectionIndexer, IUpdatedGroup {
 
@@ -40,7 +39,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
     private ParcelableKeywordGroup _group;
     private IDBDao<ParcelableUser> _friendDao;
     private AlphabetIndexer _alphabetIndexer;
-    private Map<Long, Boolean> _isChecked;
+    private final Map<ParcelableUser, Boolean> _isChecked;
     public EditKeywordGroupAdapter(Context context, int layout, Cursor c,
                                    String[] from, int[] to, int flags,
                                    CursorToParcelable<ParcelableUser> keywordUserToParcelable_, UrlImageLoader imageLoader_,
@@ -52,17 +51,25 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
         _listItemStatus = new SparseBooleanArray();
         _group = group_;
         _friendDao = friendDao_;
-        _isChecked = new HashMap<Long, Boolean>();
+        _isChecked = new HashMap<ParcelableUser, Boolean>();
     }
 
     @Override
     public Cursor swapCursor(Cursor c) {
-        if(_alphabetIndexer == null && c != null){
+
+
+        if( c != null){
             _alphabetIndexer = new AlphabetIndexer(c,
-                    c.getColumnIndex(FriendColumn.FRIEND_NAME.a()),
-                    " ABCDEFGHIJKLMNOPQRTSUVWXYZ");
+                    c.getColumnIndex(FriendTable.FriendColumn.FRIEND_NAME.a()),
+                    "ABCDEFGHIJKLMNOPQRTSUVWXYZ");
         }
-        return super.swapCursor(c);
+
+        Cursor cur = super.swapCursor(c);
+
+
+
+
+        return cur;
     }
 
     @Override
@@ -77,7 +84,6 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 		userName.setText(user.getUserName());
         CheckBox isPartOfGroupCheckBox = (CheckBox) view_.findViewById(R.id.is_part_of_group_checkbox);
         ParcelableKeywordGroup usersGroup = user.getKeywordGroup();
-        groupName.setText(usersGroup.getGroupName());
 
         isPartOfGroupCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,8 +91,8 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 
                 CheckBox checkBox = (CheckBox) v;
                 boolean status = checkBox.isChecked();
-                _isChecked.put(user.getUserId(), status);
-                checkBox.setChecked(status);
+                _isChecked.put(user, new Boolean(status));
+                //checkBox.setChecked(status);
 
                 Log.v(TAG, "user to update is " + user.getScreenName());
                 Log.v(TAG, "setting group update to  " + _group.getGroupName());
@@ -101,34 +107,28 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
                     }else{
                         groupName.setText(user.getKeywordGroup().getGroupName());
                     }
-                    _isChecked.remove(user.getUserId());
+                    _isChecked.remove(user);
                 }
 //                        EditKeywordGroupAdapter.this._friendDao.insertOrUpdate(users ,
-//                                new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.COLUMN_GROUP_ID.s()});
+//                                new String[]{FriendTable.FriendColumn.FRIEND_ID.s(), FriendTable.FriendColumn.COLUMN_GROUP_ID.s()});
             }
         });
-        Boolean status  = _isChecked.get(user.getUserId());
+        Boolean status  = _isChecked.get(user);
         if(status == null){
             if(_group.getGroupId() == user.getGroupId()){
-                status = true;
+                status = Boolean.TRUE;
             }else{
-                status = false;
+                status = Boolean.FALSE;
             }
         }
-        isPartOfGroupCheckBox.setChecked(status);
 
-//        if(usersGroup != null){
-//            Log.v(TAG, "user group not null " +  usersGroup.getGroupName());
-//
-//            if(_group != null){
-//                Log.v(TAG, "passed in group name " +  _group.getGroupName());
-//
-//                if(usersGroup.getGroupId() == _group.getGroupId()){
-//                isPartOfGroupCheckBox.setChecked(true);
-//            }
-//            }
-//        }
+        if(status){
+            groupName.setText(_group.getGroupName());
+        }else{
+            groupName.setText(usersGroup.getGroupName());
+        }
 
+        isPartOfGroupCheckBox.setChecked(status.booleanValue());
 	}
 
 
@@ -167,20 +167,43 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 
     @Override
     public int getPositionForSection(int sectionIndex) {
-        return _alphabetIndexer.getPositionForSection(sectionIndex);
+
+        if(!getCursor().isClosed()){
+            return _alphabetIndexer.getPositionForSection(sectionIndex);
+        }
+
+        return 0;
+
+
     }
 
     @Override
     public int getSectionForPosition(int position) {
-        return _alphabetIndexer.getSectionForPosition(position);
+
+       if(!getCursor().isClosed()){
+            return _alphabetIndexer.getSectionForPosition(position);
+        }
+
+        return 0;
+
     }
 
     @Override
-    public Set<Long> getChangedUserIdsForGroup(long groupId_) {
+    public Collection<ParcelableUser> getChangedGroupIdsForUsers(long groupId_) {
+        Collection<ParcelableUser> users ;
+
         if(groupId_ == _group.getGroupId()){
-            return _isChecked.keySet();
+             users=  _isChecked.keySet();
+
+            for(ParcelableUser user : users){
+                Log.v(TAG, "user to new group " + user.toString());
+                 user.setGroupId(_group.getGroupId());
+            }
+
+        }else{
+            users = new ArrayList<ParcelableUser>();
         }
-        return new HashSet<Long>();
+        return users;
     }
 }
 

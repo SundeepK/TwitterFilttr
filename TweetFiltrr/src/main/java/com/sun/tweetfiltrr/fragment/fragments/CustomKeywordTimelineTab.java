@@ -54,7 +54,7 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
         return _keywordFriendDao.getEntries(null,null,
                 FriendTable.FriendColumn.COLUMN_MAXID.p() + " DESC, " +
                         FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.p() + " ASC " +
-                        " LIMIT " + remainingSearchLimit_ );
+                        " LIMIT " + Integer.toString(remainingSearchLimit_) );
     }
 
 

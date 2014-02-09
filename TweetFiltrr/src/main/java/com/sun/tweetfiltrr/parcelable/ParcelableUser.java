@@ -544,7 +544,99 @@ public class ParcelableUser implements IParcelableTwitter {
 		return builder.toString();
 	}
 
-	public long getUserId() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParcelableUser that = (ParcelableUser) o;
+
+        if (_createdAt != that._createdAt) return false;
+        if (_currentFollowerCount != that._currentFollowerCount) return false;
+        if (_currentFriendTotal != that._currentFriendTotal) return false;
+        if (_groupID != that._groupID) return false;
+        if (_hasLoadedAllTweetsForToday != that._hasLoadedAllTweetsForToday) return false;
+        if (_isFriend != that._isFriend) return false;
+        if (_isProtected != that._isProtected) return false;
+        if (_lastFollowerIndex != that._lastFollowerIndex) return false;
+        if (_lastFollowerPageNumber != that._lastFollowerPageNumber) return false;
+        if (_lastFriendIndex != that._lastFriendIndex) return false;
+        if (_lastFriendPageNumber != that._lastFriendPageNumber) return false;
+        if (_lastFriendSyncTime != that._lastFriendSyncTime) return false;
+        if (_lastTimelinePageNumber != that._lastTimelinePageNumber) return false;
+        if (_maxId != that._maxId) return false;
+        if (_maxIdForMentions != that._maxIdForMentions) return false;
+        if (_newTweetCount != that._newTweetCount) return false;
+        if (_rowId != that._rowId) return false;
+        if (_sinceId != that._sinceId) return false;
+        if (_sinceIdForMentions != that._sinceIdForMentions) return false;
+        if (_totalFollowerCount != that._totalFollowerCount) return false;
+        if (_totalFriendCount != that._totalFriendCount) return false;
+        if (_totalTweetCount != that._totalTweetCount) return false;
+        if (_userId != that._userId) return false;
+        if (_description != null ? !_description.equals(that._description) : that._description != null)
+            return false;
+        if (!Arrays.equals(_followerIDs, that._followerIDs)) return false;
+        if (!Arrays.equals(_friendIDs, that._friendIDs)) return false;
+        if (_lastUpadateDate != null ? !_lastUpadateDate.equals(that._lastUpadateDate) : that._lastUpadateDate != null)
+            return false;
+        if (_location != null ? !_location.equals(that._location) : that._location != null)
+            return false;
+        if (_name != null ? !_name.equals(that._name) : that._name != null) return false;
+        if (_profileBackgroundImageUrl != null ? !_profileBackgroundImageUrl.equals(that._profileBackgroundImageUrl) : that._profileBackgroundImageUrl != null)
+            return false;
+        if (_profileBannerImageUrl != null ? !_profileBannerImageUrl.equals(that._profileBannerImageUrl) : that._profileBannerImageUrl != null)
+            return false;
+        if (_profileImageUrl != null ? !_profileImageUrl.equals(that._profileImageUrl) : that._profileImageUrl != null)
+            return false;
+        if (_screenName != null ? !_screenName.equals(that._screenName) : that._screenName != null)
+            return false;
+        if (_timeline != null ? !_timeline.equals(that._timeline) : that._timeline != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (_userId ^ (_userId >>> 32));
+        result = 31 * result + (int) (_createdAt ^ (_createdAt >>> 32));
+        result = 31 * result + (_isFriend ? 1 : 0);
+        result = 31 * result + (_isProtected ? 1 : 0);
+        result = 31 * result + (_hasLoadedAllTweetsForToday ? 1 : 0);
+        result = 31 * result + (_description != null ? _description.hashCode() : 0);
+        result = 31 * result + (_screenName != null ? _screenName.hashCode() : 0);
+        result = 31 * result + (_location != null ? _location.hashCode() : 0);
+        result = 31 * result + (_lastUpadateDate != null ? _lastUpadateDate.hashCode() : 0);
+        result = 31 * result + (_name != null ? _name.hashCode() : 0);
+        result = 31 * result + (_profileBackgroundImageUrl != null ? _profileBackgroundImageUrl.hashCode() : 0);
+        result = 31 * result + (_profileBannerImageUrl != null ? _profileBannerImageUrl.hashCode() : 0);
+        result = 31 * result + (_profileImageUrl != null ? _profileImageUrl.hashCode() : 0);
+        result = 31 * result + (int) (_maxId ^ (_maxId >>> 32));
+        result = 31 * result + (int) (_sinceId ^ (_sinceId >>> 32));
+        result = 31 * result + (int) (_maxIdForMentions ^ (_maxIdForMentions >>> 32));
+        result = 31 * result + (int) (_sinceIdForMentions ^ (_sinceIdForMentions >>> 32));
+        result = 31 * result + (int) (_lastFriendPageNumber ^ (_lastFriendPageNumber >>> 32));
+        result = 31 * result + _lastTimelinePageNumber;
+        result = 31 * result + (_timeline != null ? _timeline.hashCode() : 0);
+        result = 31 * result + (int) (_groupID ^ (_groupID >>> 32));
+        result = 31 * result + _totalFriendCount;
+        result = 31 * result + (int) (_rowId ^ (_rowId >>> 32));
+        result = 31 * result + _newTweetCount;
+        result = 31 * result + (_friendIDs != null ? Arrays.hashCode(_friendIDs) : 0);
+        result = 31 * result + (_followerIDs != null ? Arrays.hashCode(_followerIDs) : 0);
+        result = 31 * result + _lastFriendIndex;
+        result = 31 * result + (int) (_lastFriendSyncTime ^ (_lastFriendSyncTime >>> 32));
+        result = 31 * result + _currentFriendTotal;
+        result = 31 * result + _totalTweetCount;
+        result = 31 * result + _totalFollowerCount;
+        result = 31 * result + _lastFollowerIndex;
+        result = 31 * result + _currentFollowerCount;
+        result = 31 * result + (int) (_lastFollowerPageNumber ^ (_lastFollowerPageNumber >>> 32));
+        return result;
+    }
+
+    public long getUserId() {
 		return _userId;
 	}
 

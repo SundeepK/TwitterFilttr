@@ -1,5 +1,7 @@
 package com.sun.tweetfiltrr.twitter.retrievers.api;
 
+import android.util.Log;
+
 import com.sun.tweetfiltrr.twitter.callables.MentionsRetrieverCallable;
 import com.sun.tweetfiltrr.twitter.callables.TimelineRetrieverCallable;
 import com.sun.tweetfiltrr.twitter.retrievers.KeywordTweetRetriever;
@@ -78,7 +80,7 @@ public class TweetRetrieverWrapper {
         for (ParcelableUser user : friendsWithKeywords_) {
             Callable<Collection<ParcelableUser>> r =
                     new TimelineRetrieverCallable(user, retriever);
-
+            Log.v(TAG, "creating callable for tweet keyword search for user " + user.toString());
             callables.add(r);
 
         }
