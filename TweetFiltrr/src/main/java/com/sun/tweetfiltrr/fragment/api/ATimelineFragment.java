@@ -272,7 +272,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
         Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);
 
-        _isFinishedLoading = (totalNewTweets <= 1 && !_tabHasBeenSelected);
+        _isFinishedLoading = (totalNewTweets <= twitterParcelable.size());
         _currentLimitCount += totalNewTweets;
         restartCursor();
     }
