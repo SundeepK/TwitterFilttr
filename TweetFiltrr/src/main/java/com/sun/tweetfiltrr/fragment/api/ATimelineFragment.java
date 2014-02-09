@@ -163,13 +163,14 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                     null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader, this);
             _dataAdapter = timelineCursorAdapter;
             ZoomListView.OnItemFocused listener = timelineCursorAdapter;
-            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener);
+            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener, _userDaoUpdaters);
             _onTweetOperationLis = new TweetOperationHandler(_pullToRefreshHandler, _timelineDao, this);
 
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemFocused listener_){
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_ );
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
+                                                     ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> userDaoUpdaters_){
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_, userDaoUpdaters_ );
     }
 
     @Override

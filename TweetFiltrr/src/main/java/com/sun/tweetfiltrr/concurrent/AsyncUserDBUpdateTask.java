@@ -53,8 +53,11 @@ import java.util.concurrent.TimeUnit;
 
             Log.v(TAG, "trying to update tiomeline size" + futureResults.size() + " for user + " + futureResults.toString());
 
-            for(IDatabaseUpdater updater : _userUpdaters){
-                updater.updateUsersToDB(futureResults);
+
+            if(!futureResults.isEmpty() && futureResults.size() > 0){
+                for(IDatabaseUpdater updater : _userUpdaters){
+                    updater.updateUsersToDB(futureResults);
+                }
             }
 
             return futureResults;

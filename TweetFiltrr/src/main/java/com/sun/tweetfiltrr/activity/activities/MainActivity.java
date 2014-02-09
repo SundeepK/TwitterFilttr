@@ -140,7 +140,7 @@ public class MainActivity extends SherlockFragmentActivity {
 //		try
 //		{
 //		  fis=new FileInputStream(f);
-//		  fos=new FileOutputStream("/storage/extSdCard/db_dump_new5.db");
+//		  fos=new FileOutputStream("/storage/extSdCard/db_dump_new6.db");
 //		  while(true)
 //		  {
 //		    int i=fis.read();

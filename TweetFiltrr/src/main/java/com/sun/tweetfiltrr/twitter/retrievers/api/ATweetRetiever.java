@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
 
 import java.util.Collection;
@@ -31,7 +32,7 @@ public abstract class ATweetRetiever<V> implements Callable<V> {
 
 
 
-	protected Collection<ParcelableUser> processTimeLine(Iterator<twitter4j.Status> iterator_, ParcelableUser friend_, Date today_){
+	protected Collection<ParcelableUser> processTimeLine(Iterator<twitter4j.Status> iterator_, ICachedUser friend_, Date today_){
         return _tweetProcessor.processTimeLine(iterator_,friend_, today_);
 	}
 	

@@ -15,19 +15,18 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
+import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.api.IFragmentCallback;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,9 +76,10 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_){
+                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_,
+                             int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_, Collection<IDatabaseUpdater> dbUpdaters_){
        this(activity_, currentUser_,onItemClick_, cursorAdapter_,  pullToRefreshLis_,
-               loadMoreLis_, itemDisabledLis_);
+               loadMoreLis_, itemDisabledLis_, dbUpdaters_);
         _headerLayout =headerLayout_;
 
     }
@@ -88,7 +88,8 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              AdapterView.OnItemClickListener onItemClick_,
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemFocused itemDisabledLis_){
+                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemFocused itemDisabledLis_,
+                             Collection<IDatabaseUpdater> dbUpdaters_){
         _activity = activity_;
         _currentUser = currentUser_;
         _onItemClick = onItemClick_;
@@ -105,8 +106,9 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
         _pullToRefreshLis, loadMoreLis_, 5);
-        _updaters  = new ArrayList<IDatabaseUpdater>();
-        _updaters.add(new TimelineDatabaseUpdater(_timelineDao));
+        _updaters = dbUpdaters_;
+//        _updaters  = new ArrayList<IDatabaseUpdater>();
+//        _updaters.add(new TimelineDatabaseUpdater(_timelineDao));
         _itemDisabledLis =  itemDisabledLis_;
         Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
     }

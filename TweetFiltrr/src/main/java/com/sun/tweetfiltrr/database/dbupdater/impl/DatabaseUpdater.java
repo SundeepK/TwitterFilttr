@@ -1,9 +1,12 @@
 package com.sun.tweetfiltrr.database.dbupdater.impl;
 
+import android.util.Log;
+
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -11,6 +14,7 @@ import java.util.Collection;
  */
 public class DatabaseUpdater implements IDatabaseUpdater {
 
+    private static final String TAG = DatabaseUpdater.class.getName();
     private IDBDao<ParcelableUser> _userDao;
     private String[] _columns;
 
@@ -27,9 +31,12 @@ public class DatabaseUpdater implements IDatabaseUpdater {
     @Override
     public void updateUsersToDB(Collection<ParcelableUser> users_) {
         if(_columns!=null){
+            Log.v(TAG, "updating users" + Arrays.toString(users_.toArray()) );
             _userDao.insertOrUpdate(users_, _columns);
         }else{
+            Log.v(TAG, "updating users" + Arrays.toString(users_.toArray()) );
             _userDao.insertOrUpdate(users_);
+
         }
     }
 }

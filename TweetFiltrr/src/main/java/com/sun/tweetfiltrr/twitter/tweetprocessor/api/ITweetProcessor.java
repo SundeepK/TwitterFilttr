@@ -2,6 +2,7 @@ package com.sun.tweetfiltrr.twitter.tweetprocessor.api;
 
 
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 
 import java.util.Collection;
 import java.util.Date;
@@ -26,7 +27,7 @@ public interface ITweetProcessor {
      * @return {@link java.util.Collection<com.sun.tweetfiltrr.parcelable.ParcelableUser>}} of users with updated timelines.
      *
      */
-     public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_);
+     public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ICachedUser friend_, Date today_);
 
 
     }

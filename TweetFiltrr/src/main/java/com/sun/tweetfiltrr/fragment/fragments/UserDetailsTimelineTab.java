@@ -15,6 +15,7 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
@@ -51,8 +52,9 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
     }
 
     @Override
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,  ZoomListView.OnItemFocused listener_) {
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment, listener_);
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
+                                                     ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> updaters_) {
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment, listener_,updaters_);
     }
 
     @Override

@@ -93,9 +93,9 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
                 Log.d(TAG, "Visible now!");
 
                 if(!_tabHasBeenSelected){
+                    _tabHasBeenSelected = true;
                     _pullToRefreshHandler.startRefresh();
                 }
-               _tabHasBeenSelected = true;
             }
         }
 
@@ -115,7 +115,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
         if (getCurrentUser().getUserId() == _currentLoggedInUserId) {
             return new UsersFriendRetriever( true);
         } else {
-            return new UsersFriendRetriever( true);
+            return new UsersFriendRetriever(true);
         }
     }
 
@@ -189,14 +189,16 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
 
         _dataAdapter = friendsCursorAdapter;
         ZoomListView.OnItemFocused listener = friendsCursorAdapter;
-        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser(), listener);
+        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser(), listener, _updaters);
 
 
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_, ZoomListView.OnItemFocused listener){
+    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_,
+                                                     ParcelableUser currentUser_,
+                                                     ZoomListView.OnItemFocused listener,Collection<IDatabaseUpdater> updaters_ ){
         return new PullToRefreshView<Collection<ParcelableUser>>
-                (getActivity(), currentUser_, this, adapter_ ,this, this, listener);
+                (getActivity(), currentUser_, this, adapter_ ,this, this, listener, updaters_);
     }
 
 
@@ -252,9 +254,11 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
             } else if (_isFinishedLoading){
                 Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
                 return false;
+            }else{
+                Log.v(TAG, "going to load more friends for:" + getCurrentUser());
+                return true;
             }
-            Log.v(TAG, "going to load more friends for:" + getCurrentUser());
-            return true;
+
         }else{
             Log.v(TAG, "_tabHasBeenSelected is false");
         return false;

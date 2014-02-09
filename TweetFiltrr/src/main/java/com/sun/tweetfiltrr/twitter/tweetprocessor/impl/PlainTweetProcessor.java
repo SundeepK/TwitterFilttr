@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -59,7 +60,7 @@ public class PlainTweetProcessor extends ATweetProcessor {
      * @return
      */
     @Override
-    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
+    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ICachedUser friend_, Date today_){
         return super.processTimeLine(iterator_,friend_,null);
     }
 

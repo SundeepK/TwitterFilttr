@@ -74,7 +74,7 @@ public abstract class ATimeLineRetriever<T> implements ITwitterRetriever<Collect
                 return new ArrayList<ParcelableUser>();
             }
 
-            usersWithTweets.addAll(_tweetProcessor.processTimeLine(timeLine.getTwitterResult(), currentUser, previousDate));
+            usersWithTweets.addAll(_tweetProcessor.processTimeLine(timeLine.getTwitterResult(), user_, previousDate));
 
             if(_shouldRunOnce){
                 break;

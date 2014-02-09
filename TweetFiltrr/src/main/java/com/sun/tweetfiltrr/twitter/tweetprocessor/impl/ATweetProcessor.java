@@ -2,9 +2,10 @@ package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 
 import android.util.Log;
 
-import com.sun.tweetfiltrr.twitter.retrievers.api.ATweetRetiever;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
+import com.sun.tweetfiltrr.twitter.retrievers.api.ATweetRetiever;
 import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
 
@@ -46,20 +47,24 @@ public abstract class ATweetProcessor implements ITweetProcessor {
 
 
     @Override
-    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ParcelableUser friend_, Date today_){
+    public Collection<ParcelableUser> processTimeLine(Iterator<Status> iterator_, ICachedUser cachedUser_, Date today_){
            final  SimpleDateFormat dateFormat = _simpleDateFormatThreadLocal.get();
            final Map<User, Collection<ParcelableTweet>> userToTimeline = new HashMap<User, Collection<ParcelableTweet>>();
-
+           final ParcelableUser user = cachedUser_.getUser();
+           final long sinceId = cachedUser_.getSinceId();
+           final long maxId = cachedUser_.getMaxId();
             while (iterator_.hasNext()) {
                 Status tweet = iterator_.next();
-                if(!processTweet(tweet,today_, dateFormat, userToTimeline)){
-                    friend_.setLastUpadateDate(dateFormat.format(DateUtils.getCurrentDate()));
+                if(!processTweet(tweet,today_,sinceId , maxId, dateFormat, userToTimeline)){
                     break;
                 }
             }
         Log.v(TAG, "I'm done with processTimeline with ");
         //might as well the lastUpdateTime while were at it
-        friend_.setLastUpadateDate(dateFormat.format(DateUtils.getCurrentDate()));
+        if(today_ == null){
+           today_ = DateUtils.getCurrentDate();
+        }
+        user.setLastUpadateDate(dateFormat.format(today_));
         return flattenMap(userToTimeline);
     }
 
@@ -112,11 +117,12 @@ public abstract class ATweetProcessor implements ITweetProcessor {
      * @param dateFormat_ {@link java.text.SimpleDateFormat} used to format the date to a readable format
      * @return true if the tweet {@link java.util.Date} is newer than the one specified in the parameter
      */
-    private boolean processTweet(Status tweet_, Date today_,SimpleDateFormat dateFormat_,  Map<User, Collection<ParcelableTweet>> usersKeyToTimline_){
+    private boolean processTweet(Status tweet_, Date today_, long sinceID_, long maxID_,
+                                 SimpleDateFormat dateFormat_,  Map<User, Collection<ParcelableTweet>> usersKeyToTimline_){
         final Date tweetCreateAt = tweet_.getCreatedAt();
         final User user = tweet_.getUser();
 
-        if(today_ != null){
+        if(today_ != null &&  sinceID_ > 1 && maxID_ > 1 ){
             if (tweetCreateAt.before(today_)) // have this configurable, so that user can check however old he wants
                 return false;
         }
@@ -125,7 +131,6 @@ public abstract class ATweetProcessor implements ITweetProcessor {
         Log.v(TAG, tweet_.getText());
         Log.v(TAG, "" + tweet_.getInReplyToScreenName());
         Log.v(TAG, "Tweet date: " + tweetCreateAt.toString());
-        final Date now = DateUtils.getCurrentDate();
         final ParcelableTweet parcelableTweet = getTimeLineEntry(tweet_, user, dateFormat_, tweetCreateAt );
         processTweet(parcelableTweet);
         addToMap(usersKeyToTimline_, user, parcelableTweet);

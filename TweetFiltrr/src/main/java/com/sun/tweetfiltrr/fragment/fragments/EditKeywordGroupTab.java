@@ -111,7 +111,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
         CursorLoader cursorLoader = new CursorLoader(this,
                 TweetFiltrrProvider.CONTENT_URI_FRIENDS_LEFT_GROUP, pro,
                 FriendTable.FriendColumn.IS_FRIEND.a() + " = ? ",
-                new String[]{"1"}, FriendTable.FriendColumn.FRIEND_NAME.a() + " ASC " );
+                new String[]{Integer.toString(1)}, FriendTable.FriendColumn.FRIEND_NAME.a() + " ASC " );
         return cursorLoader;
 
 
