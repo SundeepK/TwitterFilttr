@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="SicImageLoader">
+  <library name="SICimageloader">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/TweetFiltrr/libs/SICimageloader.jar!/" />
     </CLASSES>

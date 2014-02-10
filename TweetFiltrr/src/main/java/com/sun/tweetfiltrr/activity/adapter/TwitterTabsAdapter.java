@@ -22,7 +22,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
     private static final String TAG = TwitterTabsAdapter.class.getName();
     private ActionBar _actionBar;
     private FragmentManager _fragmentManager;
-    private ParcelableUser _currentUser;
+    private ArrayList<ParcelableUser> _users;
     private static final String[] titles = { "Tweets", "Friends" };
 
 
@@ -68,9 +68,9 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
         }
     }
 
-    public TwitterTabsAdapter(FragmentManager fm, ParcelableUser currentUser_, ActionBar actionBar_) {
+    public TwitterTabsAdapter(FragmentManager fm, ArrayList<ParcelableUser> currentUser_, ActionBar actionBar_) {
 		super(fm);
-        _currentUser = currentUser_;
+        _users = currentUser_;
         _actionBar = actionBar_;
 //        _fragmentManager=fm;
 	}
@@ -82,8 +82,10 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
 //         return _fragmentManager.findFragmentById(R.id.tweets_container);
 
 	    Bundle bundle = new Bundle();
-	    bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
-	    Fragment frag = null;
+//	    bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _users);
+        bundle.putParcelableArrayList(TwitterConstants.PARCELABLE_USER_QUEUE, _users);
+
+        Fragment frag = null;
 
 	        switch (index) {
             case 0:

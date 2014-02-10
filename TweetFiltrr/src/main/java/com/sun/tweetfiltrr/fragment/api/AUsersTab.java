@@ -35,6 +35,7 @@ import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.customviews.ZoomListView;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import twitter4j.User;
 
 import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
@@ -69,8 +72,8 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     private boolean _isFinishedLoading;
     private Collection<IDatabaseUpdater> _updaters = new ArrayList<IDatabaseUpdater>();
     private boolean _tabHasBeenSelected = false;
-
-
+    private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
+    private ParcelableUser _currentUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     }
 
     private ITwitterRetriever<Collection<ParcelableUser>> getRetriever(){
-        if (getCurrentUser().getUserId() == _currentLoggedInUserId) {
+        if (_currentUser.getUserId() == _currentLoggedInUserId) {
             return new UsersFriendRetriever( true);
         } else {
             return new UsersFriendRetriever(false);
@@ -148,23 +151,33 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     protected void initControl() {
         _currentLoggedInUserId = TwitterUtil.getInstance().getCurrentLoggedInUserId(getActivity());
 
+        _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
+
+        if(_userQueue.isEmpty()){
+            Log.v(TAG, "user queue is empty");
+            _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(getActivity());
+        }else{
+            _currentUser = _userQueue.get(_userQueue.size()-1);
+            Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
+        }
+
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
 
-        Log.v(TAG, "Current user is :" + getCurrentUser().toString());
+
+        Log.v(TAG, "Current user is :" + _currentUser);
 
         _usersToFriendDao = (IDBDao<ParcelableUser>)
-                flyWeight.getDao(DaoFactory.USERS_FRIEND_DAO, getCurrentUser());
+                flyWeight.getDao(DaoFactory.USERS_FRIEND_DAO, _currentUser);
         _friendDao = (IDBDao<ParcelableUser>)
-                flyWeight.getDao(DaoFactory.FRIEND_DAO, getCurrentUser());
+                flyWeight.getDao(DaoFactory.FRIEND_DAO, _currentUser);
 
         _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();
 
         _updaters.add(new DatabaseUpdater(_friendDao ));
         _updaters.add(new DatabaseUpdater(_usersToFriendDao));
-
 
     }
 
@@ -189,7 +202,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
 
         _dataAdapter = friendsCursorAdapter;
         ZoomListView.OnItemFocused listener = friendsCursorAdapter;
-        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, getCurrentUser(), listener, _updaters);
+        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser, listener, _updaters);
 
 
     }
@@ -246,8 +259,8 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
 
         if(_tabHasBeenSelected){
 
-            if (_currentLimitCount < getCurrentUser().getCurrentFriendCount()) {
-                Log.v(TAG, "_currentLimitCount: " + _currentLimitCount + " current friend acount " +  getCurrentUser().getCurrentFriendCount());
+            if (_currentLimitCount < _currentUser.getCurrentFriendCount()) {
+                Log.v(TAG, "_currentLimitCount: " + _currentLimitCount + " current friend acount " +  _currentUser.getCurrentFriendCount());
                 _currentLimitCount += 50;
                 restartCursor();
                 return false;
@@ -255,7 +268,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
                 Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
                 return false;
             }else{
-                Log.v(TAG, "going to load more friends for:" + getCurrentUser());
+                Log.v(TAG, "going to load more friends for:" + _currentUser);
                 return true;
             }
 
@@ -291,10 +304,15 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
 
         Intent i = new Intent(getActivity(), TwitterUserProfileHome.class);
         i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
+        _userQueue.add(_currentUser);
+        _userQueue.add(newFriend);
+        i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);
         startActivity(i);
-
+        getActivity().finish();
         //broadcastNewUser(getCurrentUser(), rowId);
     }
+
+
 
 
     @Override
@@ -314,7 +332,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
     @Override
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        callables.add(new FriendsRetriever(getCurrentUser(), _userRetriever));
+        callables.add(new FriendsRetriever(_currentUser, _userRetriever));
         return callables;
     }
 

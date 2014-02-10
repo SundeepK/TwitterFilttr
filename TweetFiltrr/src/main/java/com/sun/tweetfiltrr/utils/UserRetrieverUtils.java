@@ -8,6 +8,8 @@ import android.util.Log;
 import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
+import java.util.ArrayList;
+import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -45,6 +47,14 @@ public class UserRetrieverUtils {
         }
 
         return loggedInUser;
+    }
+
+    public static ArrayList<ParcelableUser> getUserQueue(Activity context_){
+        ArrayList<ParcelableUser> users = context_.getIntent().getParcelableArrayListExtra(TwitterConstants.PARCELABLE_USER_QUEUE);
+        if(users == null){
+            users = new ArrayList<ParcelableUser>();
+        }
+        return users;
     }
 
     public static ParcelableUser getUserFromBundle(Activity context_){

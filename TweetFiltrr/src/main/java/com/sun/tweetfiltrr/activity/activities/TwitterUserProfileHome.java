@@ -1,7 +1,9 @@
 package com.sun.tweetfiltrr.activity.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.ActionBar.TabListener;
@@ -9,22 +11,33 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
+
+import java.util.ArrayList;
 
 public class TwitterUserProfileHome extends ATwitterActivity implements TabListener{
     private static final String TAG = TwitterUserProfileHome.class.getName();
     private ViewPager _viewPager;
     private TwitterTabsAdapter _mAdapter;
     private ParcelableUser _currentUser;
+    private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.twitter_filttr_home);
-        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+
+        _userQueue = UserRetrieverUtils.getUserQueue(this);
+
+        if(_userQueue.isEmpty()){
+            _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+        }else{
+            _currentUser = _userQueue.get(_userQueue.size() - 1);
+        }
 
         _viewPager = (ViewPager) findViewById(R.id.user_view_pager);
-        _mAdapter = new TwitterTabsAdapter(getSupportFragmentManager(), _currentUser, getSupportActionBar());
+        _mAdapter = new TwitterTabsAdapter(getSupportFragmentManager(), _userQueue, getSupportActionBar());
         _viewPager.setAdapter(_mAdapter);
 
     }
@@ -85,7 +98,21 @@ public class TwitterUserProfileHome extends ATwitterActivity implements TabListe
 
     }
 
-//    @Override
+    @Override
+    public void onBackPressed() {
+
+        if(!_userQueue.isEmpty()){
+            ParcelableUser user = _userQueue.remove(_userQueue.size()-1);
+            Log.v(TAG, "_userQueue is not empty, removing user " + user.getScreenName());
+            Intent i = new Intent(this, TwitterUserProfileHome.class);
+            i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);
+            startActivity(i);
+            finish();
+        }
+
+        super.onBackPressed();
+    }
+    //    @Override
 //    protected ActionBar loadActionBar() {
 //        ActionBar bar = super.loadActionBar();
 //        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
