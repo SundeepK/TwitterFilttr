@@ -63,7 +63,7 @@ public class NewKeywordTweetsTab extends SherlockFragment implements LoaderManag
 //	        .build();
 //	        UrlImageLoader.getInstance().init(configs);
 	        
-		   _sicImageLoader = UrlImageLoader.getInstance();	
+		   _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
 
 	}
 

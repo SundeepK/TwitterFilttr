@@ -24,7 +24,7 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
     private final int _itemThresHoldBeforeLoadingMore;
     private PullToRefreshView.OnNewTweetRefreshListener _refreshLis;
     private final static String TAG = LoadMoreOnScrollListener.class.getName();
-
+    private AbsListView.OnScrollListener _scrollListener;
     public interface LoadMoreListener<T> {
 
         public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
@@ -41,6 +41,13 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
     }
 
     public LoadMoreOnScrollListener(ExecutorService executorService_,PullToRefreshView.OnNewTweetRefreshListener refreshLis_ ,
+                                    LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_, AbsListView.OnScrollListener scrollListener_ ){
+
+        this(executorService_, refreshLis_, loadMoreLitener_, itemThresHoldBeforeLoadingMore_);
+        _scrollListener = scrollListener_;
+    }
+
+    public LoadMoreOnScrollListener(ExecutorService executorService_,PullToRefreshView.OnNewTweetRefreshListener refreshLis_ ,
                                     LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_ ){
         _executorService = executorService_;
         _loadMoreLitener = loadMoreLitener_;
@@ -52,7 +59,9 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+        if(_scrollListener != null){
+            _scrollListener.onScrollStateChanged(view,scrollState);
+        }
     }
 
     @Override
@@ -60,6 +69,9 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
 //
 //        Log.v(TAG, "Scrollin details, firstVisibleItem: " + firstVisibleItem +
 //                " visibleItemCount "  + visibleItemCount + " totalItemCount " + totalItemCount);
+        if(_scrollListener != null){
+            _scrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        }
 
         if (_executingTasks.size() > 0) {
             Iterator<Future<T>> itr = _executingTasks.iterator();

@@ -76,8 +76,8 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
             mediaPhoto.setVisibility(View.GONE);
         }
 
-        loadImage(profilePic, user.getProfileImageUrl());
-        loadImage(mediaPhoto, photoUrl);
+        loadImage(profilePic, user.getProfileImageUrl(), 1);
+        loadImage(mediaPhoto, photoUrl, 1);
 
         TextView friendName=(TextView)view_.findViewById(R.id.timeline_friend_name);
 		
@@ -132,10 +132,10 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         return true;
     }
 
-    private void loadImage(ImageView view_,String url_){
+    private void loadImage(ImageView view_,String url_, int size){
         if (!TextUtils.isEmpty(url_)) {
             try {
-                _imageLoader.displayImage(url_, view_, 1);
+                _imageLoader.displayImage(url_, view_, size);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }

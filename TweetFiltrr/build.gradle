@@ -27,7 +27,8 @@ dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.android.support:support-v4:18.0.0'
     compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
-    compile files('libs/sicImageLoaderv3.jar')
+    compile files('libs/SicImageLoader.jar')
+    compile files('libs/concurrentlinkedhashmap-lru-1.4.jar')
     compile files('libs/sacklist-1.0.0.jar')
     compile files('libs/twitter4j-async-3.0.5.jar')
     compile files('libs/twitter4j-core-3.0.5.jar')

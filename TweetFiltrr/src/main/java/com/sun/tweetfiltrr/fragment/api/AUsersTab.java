@@ -198,7 +198,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
                                                      ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener,Collection<IDatabaseUpdater> updaters_ ){
         return new PullToRefreshView<Collection<ParcelableUser>>
-                (getActivity(), currentUser_, this, adapter_ ,this, this, listener, updaters_);
+                (getActivity(), currentUser_, this, adapter_ ,this, this, listener, updaters_, _sicImageLoader);
     }
 
 

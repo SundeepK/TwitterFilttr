@@ -11,6 +11,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
@@ -65,7 +66,6 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     private ZoomListView.OnItemFocused _itemDisabledLis;
 
 
-
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
         public Collection<Callable<T>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
@@ -77,9 +77,10 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
                              LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_,
-                             int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_, Collection<IDatabaseUpdater> dbUpdaters_){
+                             int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_,
+                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_ ){
        this(activity_, currentUser_,onItemClick_, cursorAdapter_,  pullToRefreshLis_,
-               loadMoreLis_, itemDisabledLis_, dbUpdaters_);
+               loadMoreLis_, itemDisabledLis_, dbUpdaters_, scrollListener_);
         _headerLayout =headerLayout_;
 
     }
@@ -89,7 +90,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
                              LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemFocused itemDisabledLis_,
-                             Collection<IDatabaseUpdater> dbUpdaters_){
+                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_ ){
         _activity = activity_;
         _currentUser = currentUser_;
         _onItemClick = onItemClick_;
@@ -105,7 +106,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
-        _pullToRefreshLis, loadMoreLis_, 5);
+        _pullToRefreshLis, loadMoreLis_, 5, scrollListener_);
         _updaters = dbUpdaters_;
 //        _updaters  = new ArrayList<IDatabaseUpdater>();
 //        _updaters.add(new TimelineDatabaseUpdater(_timelineDao));

@@ -170,7 +170,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> userDaoUpdaters_){
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_, userDaoUpdaters_ );
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_, userDaoUpdaters_, _sicImageLoader );
     }
 
     @Override

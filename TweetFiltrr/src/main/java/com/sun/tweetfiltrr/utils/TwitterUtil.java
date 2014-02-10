@@ -4,6 +4,8 @@ package com.sun.tweetfiltrr.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -34,9 +36,9 @@ public final class TwitterUtil {
     private TwitterFactory _twitterFactory = null;
     private Twitter _twitter;
     private ThreadPoolExecutor _threadPoolExecutor;
-    private UrlImageLoaderConfiguration _imageloaderConfigs;
     private static TwitterUtil instance = new TwitterUtil();
     private ParcelableUser _currentUser;
+    private UrlImageLoader _imageloader;
     private TwitterUtil() {
     	ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
     	configurationBuilder.setDebugEnabled(true);
@@ -74,21 +76,22 @@ public final class TwitterUtil {
 
     public UrlImageLoader getGlobalImageLoader(Context context_){
 
-        if(_imageloaderConfigs == null){
-            _imageloaderConfigs = new UrlImageLoaderConfiguration.Builder()
+        if(_imageloader == null){
+            UrlImageLoaderConfiguration   imageloaderConfigs = new UrlImageLoaderConfiguration.Builder()
                     .setMaxCacheMemorySize(10)
                     .setDirectoryName(TwitterConstants.SIC_SAVE_DIRECTORY)
                     .setImageQuality(100)
                     .setThreadExecutor(TwitterUtil.getInstance().getGlobalExecutor())
                     .setImageType(Bitmap.CompressFormat.JPEG)
-                    .setImageConfig(Bitmap.Config.ARGB_8888)
                     .useExternalStorage(true)
+                  //  .setMaxDeleteTime(1, TimeUnit.DAYS).setTimeOut(5, 10000, 10000)
                     .build(context_);
 
-            UrlImageLoader.getInstance().init(_imageloaderConfigs);
+
+            _imageloader = new UrlImageLoader(imageloaderConfigs);
         }
 
-        return UrlImageLoader.getInstance();
+        return _imageloader;
 
     }
 

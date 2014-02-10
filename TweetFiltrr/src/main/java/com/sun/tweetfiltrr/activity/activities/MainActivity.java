@@ -72,18 +72,18 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			   
 				if (!TextUtils.isEmpty(profileUrl)) {
-					 UrlImageLoaderConfiguration configs = new UrlImageLoaderConfiguration.Builder()
-				        .setMaxCacheMemorySize(1) 
-				        .setDirectoryName("/storage/sdcard0/Pictures/twitterFiltrr") 
-				        .setImageQuality(100)
-				         .setThreadExecutor(_threadExecutor)
-				        .setImageType(CompressFormat.JPEG) 
-				        .setImageConfig(Bitmap.Config.ARGB_8888) 
-				        .useExternalStorage(true)
-				        .build(this);
-				        UrlImageLoader.getInstance().init(configs);
-				        
-					   UrlImageLoader  _sicImageLoader = UrlImageLoader.getInstance();					
+//					 UrlImageLoaderConfiguration configs = new UrlImageLoaderConfiguration.Builder()
+//				        .setMaxCacheMemorySize(1)
+//				        .setDirectoryName("/storage/sdcard0/Pictures/twitterFiltrr")
+//				        .setImageQuality(100)
+//				         .setThreadExecutor(_threadExecutor)
+//				        .setImageType(CompressFormat.JPEG)
+//				        .setImageConfig(Bitmap.Config.ARGB_8888)
+//				        .useExternalStorage(true)
+//				        .build(this);
+//				        UrlImageLoader.getInstance().init(configs);
+//
+					   UrlImageLoader  _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
 					try {
 						
 						if(!TextUtils.isEmpty(url)){
@@ -118,7 +118,6 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		   UrlImageLoader.getInstance().invalidate();
 
 		   if (!sharedPreferences.getBoolean(
 				TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, false)) {

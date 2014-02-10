@@ -96,7 +96,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
 
-        _sicImageLoader = UrlImageLoader.getInstance();
+        _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
 
         _blurredBackground = (ImageView) findViewById(R.id.blurred_user_background_image);
         _backgroundImage = (ImageView) findViewById(R.id.user_background_image);
