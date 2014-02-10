@@ -327,7 +327,10 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
 
         _isFinishedLoading = (totalNewTweets <= 1);
         _currentLimitCount += totalNewTweets;
-        restartCursor();
+
+        if(this.getActivity() != null){
+            restartCursor();
+        }
 
     }
 

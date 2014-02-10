@@ -288,7 +288,10 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
         _isFinishedLoading = (totalNewTweets <= twitterParcelable.size());
         _currentLimitCount += totalNewTweets;
-        restartCursor();
+
+        if(this.getActivity() != null){
+            restartCursor();
+        }
     }
 
     protected int getTimeLineCount(){
