@@ -43,12 +43,14 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         Bundle bundle = new Bundle();
         bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, getCurrentUser());
+        Log.v(TAG, "current user is " + getCurrentUser().getScreenName());
+
         Fragment frag = new UserProfileFragment();
         frag.setArguments(bundle);
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.user_details_fragment, frag)
-                .commit();
+                .replace(R.id.user_details_fragment, frag, getCurrentUser().getScreenName())
+        .commit();
         return rootView;
     }
 

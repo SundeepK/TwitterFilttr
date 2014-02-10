@@ -37,7 +37,7 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
 		super.onCreate(arg0);
         setContentView(R.layout.user_home_viewpager);
 
-        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
         _asyncBackgroundViewPager = (ViewPager) findViewById(R.id.user_view_pager);
         _tabsAdapter = new TwitterUserHomeTabsAdapter(getSupportFragmentManager(), _currentUser );
 		_asyncBackgroundViewPager.setAdapter(_tabsAdapter);

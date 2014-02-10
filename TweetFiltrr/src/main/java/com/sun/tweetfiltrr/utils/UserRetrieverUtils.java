@@ -5,11 +5,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
 
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -22,7 +21,7 @@ public class UserRetrieverUtils {
 
 
 
-    public static ParcelableUser getCurrentLoggedInUser(Activity context_){
+    public static ParcelableUser getCurrentFocusedUser(Activity context_){
 
         ParcelableUser loggedInUser = getUserFromBundle(context_);
 

@@ -17,7 +17,7 @@ public abstract class ATwitterFragment extends SherlockFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(getActivity());
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
 
      }
 

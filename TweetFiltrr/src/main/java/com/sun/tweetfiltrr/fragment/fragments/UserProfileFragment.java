@@ -16,12 +16,12 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.UserTwitterDetails;
 import com.sun.tweetfiltrr.animation.ExpandingAnimation;
-import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -30,7 +30,7 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserProfileFragment extends ATwitterFragment {
+public class UserProfileFragment extends SherlockFragment {
 
 	private UrlImageLoader  _sicImageLoader;
 	private TextView _userName;
@@ -39,13 +39,17 @@ public class UserProfileFragment extends ATwitterFragment {
 	private TextView _location;
 	private ListView _tweetsListView;
     private static final String TAG = UserProfileFragment.class.getName();
+    private ParcelableUser  _currentUser;
 
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		_sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
+      //  _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
+        _currentUser = getArguments().getParcelable(TwitterConstants.FRIENDS_BUNDLE);
 
+        Log.v(TAG, " profile user is " + _currentUser.getScreenName());
 	}
 
 	@Override
@@ -86,7 +90,7 @@ public class UserProfileFragment extends ATwitterFragment {
         _description = (TextView) rootView.findViewById(R.id.user_desc_textview);
 //        _location = (TextView) rootView.findViewById(R.id.user_location_textview);
 
-        initUserDetailTextView(getCurrentUser());
+        initUserDetailTextView(_currentUser);
 
 //        List<UserTwitterDetails> userTwitterDetails = getUserTwitterDetails();
 //        _tweetsListView = (ListView) rootView.findViewById(R.id.list);
@@ -94,8 +98,8 @@ public class UserProfileFragment extends ATwitterFragment {
 //        _tweetsListView.setAdapter(adapter);
 //        _tweetsListView.setOnItemClickListener(getOnClickForTwitterHome());
 
-        ImageLoaderUtils.attemptLoadImage(profileImage, _sicImageLoader, getCurrentUser().getProfileImageUrl(), 1, null );
-        ImageLoaderUtils.attemptLoadImage(backgroundImage, _sicImageLoader, getCurrentUser().getProfileBackgroundImageUrl(), 2, null );
+        ImageLoaderUtils.attemptLoadImage(profileImage, _sicImageLoader, _currentUser.getProfileImageUrl(), 1, null );
+        ImageLoaderUtils.attemptLoadImage(backgroundImage, _sicImageLoader, _currentUser.getProfileBackgroundImageUrl(), 2, null );
 
 
 
@@ -140,7 +144,7 @@ public class UserProfileFragment extends ATwitterFragment {
 
 
         details.add(new UserTwitterDetails("Tweets", 100));
-		details.add(new UserTwitterDetails("Friends", getCurrentUser().getTotalFriendCount()));
+		details.add(new UserTwitterDetails("Friends", _currentUser.getTotalFriendCount()));
 		details.add(new UserTwitterDetails("Followers", 100));
 		return details;
 	}

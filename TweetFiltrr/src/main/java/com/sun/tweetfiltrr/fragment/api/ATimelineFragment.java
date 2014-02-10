@@ -26,31 +26,31 @@ import com.sun.tweetfiltrr.activity.activities.PostTweetActivity;
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
-import com.sun.tweetfiltrr.twitter.retrievers.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
+import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
+import com.sun.tweetfiltrr.twitter.retrievers.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationHandler;
 import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationTask;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,6 +86,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private Collection<IDatabaseUpdater> _userDaoUpdaters;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
     private boolean _tabHasBeenSelected = false;
+    private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,9 +108,22 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     }
 
     protected void initControl() {
+
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
                 .getInstance(getActivity().getContentResolver());
-        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(getActivity());
+
+      //  _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
+
+
+        _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
+
+        if(_userQueue.isEmpty()){
+            Log.v(TAG, "user queue is empty");
+            _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
+        }else{
+            _currentUser = _userQueue.get(_userQueue.size()-1);
+            Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
+        }
 
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
@@ -301,6 +315,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         // TODO Auto-generated method stub
 
     }
+
 
     protected ParcelableUser getCurrentUser(){
         return _currentUser;

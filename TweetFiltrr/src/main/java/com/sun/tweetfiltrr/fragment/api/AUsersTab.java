@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
@@ -44,13 +45,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import twitter4j.User;
-
 import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
 
-public abstract class AUsersTab extends ATwitterFragment implements LoaderManager.LoaderCallbacks<Cursor>,
+public abstract class AUsersTab extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         TabListener,  AdapterView.OnItemClickListener,
         PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
@@ -80,6 +79,11 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
         super.onCreate(savedInstanceState);
         initControl();
         initAdapter();
+    }
+
+    protected ParcelableUser getCurrentUser()
+    {
+        return _currentUser;
     }
 
 
@@ -155,7 +159,7 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
 
         if(_userQueue.isEmpty()){
             Log.v(TAG, "user queue is empty");
-            _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(getActivity());
+            _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
         }else{
             _currentUser = _userQueue.get(_userQueue.size()-1);
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
@@ -304,12 +308,10 @@ public abstract class AUsersTab extends ATwitterFragment implements LoaderManage
 
         Intent i = new Intent(getActivity(), TwitterUserProfileHome.class);
         i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
-        _userQueue.add(_currentUser);
         _userQueue.add(newFriend);
         i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);
-        startActivity(i);
+        getActivity().startActivity(i);
         getActivity().finish();
-        //broadcastNewUser(getCurrentUser(), rowId);
     }
 
 

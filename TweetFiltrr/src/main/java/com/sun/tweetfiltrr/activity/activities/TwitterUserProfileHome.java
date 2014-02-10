@@ -31,9 +31,11 @@ public class TwitterUserProfileHome extends ATwitterActivity implements TabListe
         _userQueue = UserRetrieverUtils.getUserQueue(this);
 
         if(_userQueue.isEmpty()){
-            _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+            Log.v(TAG, "queue is empty");
+            _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
         }else{
             _currentUser = _userQueue.get(_userQueue.size() - 1);
+            Log.v(TAG, "queue is not empty with user " + _currentUser);
         }
 
         _viewPager = (ViewPager) findViewById(R.id.user_view_pager);
@@ -102,15 +104,19 @@ public class TwitterUserProfileHome extends ATwitterActivity implements TabListe
     public void onBackPressed() {
 
         if(!_userQueue.isEmpty()){
+
             ParcelableUser user = _userQueue.remove(_userQueue.size()-1);
             Log.v(TAG, "_userQueue is not empty, removing user " + user.getScreenName());
-            Intent i = new Intent(this, TwitterUserProfileHome.class);
-            i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);
-            startActivity(i);
-            finish();
+            Intent i = new Intent(TwitterUserProfileHome.this, TwitterUserProfileHome.class);
+            ArrayList<ParcelableUser> users = new ArrayList<ParcelableUser>();
+            users.addAll(_userQueue);
+            i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, users);
+            this.startActivity(i);
         }
 
         super.onBackPressed();
+        this.finish();
+
     }
     //    @Override
 //    protected ActionBar loadActionBar() {

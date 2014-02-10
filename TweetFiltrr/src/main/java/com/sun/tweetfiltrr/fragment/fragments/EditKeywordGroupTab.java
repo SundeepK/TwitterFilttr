@@ -55,7 +55,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
 
         ContentResolver resolver = this.getContentResolver();
         UrlImageLoader imageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
-        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
 
         CursorToParcelable<ParcelableUser> friendCursorToParcelable =  new FriendToParcelable();
         CursorToParcelable<ParcelableKeywordGroup> keywordToParcelable = new KeywordToParcelable();

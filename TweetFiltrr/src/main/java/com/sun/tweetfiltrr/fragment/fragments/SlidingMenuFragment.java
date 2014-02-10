@@ -39,7 +39,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.sliding_menu_layout, container, false);
-        ParcelableUser _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(getActivity());
+        ParcelableUser _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
 
         ImageView profileImage = (ImageView) rootView.findViewById(R.id.profile_image);
         TextView userNameView = (TextView) rootView.findViewById(R.id.user_name);
@@ -72,6 +72,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
             case 0:
                 i = new Intent(getActivity(), TwitterUserProfileHome.class);
                 i.putExtra(TwitterConstants.FRIENDS_BUNDLE, getCurrentUser());
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(i);
                 break;
             case 1:

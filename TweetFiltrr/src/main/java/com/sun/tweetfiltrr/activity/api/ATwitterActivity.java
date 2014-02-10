@@ -57,7 +57,7 @@ public class ATwitterActivity extends SherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        _currentUser = UserRetrieverUtils.getCurrentLoggedInUser(this);
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
         loadActionBar();
 
 
