@@ -12,7 +12,7 @@ import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
-import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
+import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;
@@ -21,8 +21,7 @@ import java.util.concurrent.Callable;
 
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public class CustomKeywordTimelineTab extends ATimelineFragment  {
-
+public class CustomKeywordTimeLineTab extends ATimeLineFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
@@ -66,5 +65,6 @@ public class CustomKeywordTimelineTab extends ATimelineFragment  {
 
         return callables;
     }
+
 
 }

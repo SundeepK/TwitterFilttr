@@ -66,11 +66,12 @@ import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFacto
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public abstract class ATimelineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>, TabListener,
+public abstract class ATimeLineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>, TabListener,
         IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
-        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation, TweetOperationTask.TwitterTaskListener {
+        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation,
+        TweetOperationTask.TwitterTaskListener {
 
-    private static final String TAG = ATimelineFragment.class.getName();
+    private static final String TAG = ATimeLineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
     private static final int TUTORIAL_LIST_LOADER = 0x04;
     private int _currentLimitCount = 50;
@@ -87,6 +88,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
     private boolean _tabHasBeenSelected = false;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
+    private boolean _isCursorReady;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +127,8 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
 
+
+
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
 
@@ -149,6 +153,13 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                 FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.DESCRIPTION.s()};
         _userDaoUpdaters.add(new DatabaseUpdater(_friendDao,cols ));
 
+        Collection<ParcelableUser> users = UserRetrieverUtils.getUserFromDB(_friendDao, _currentUser);
+
+        if(!users.isEmpty()){
+            _currentUser = users.iterator().next();
+            _currentLimitCount = _currentUser.getTotalTweetCount() > 0 ? _currentUser.getTotalTweetCount(): 50;
+            Log.v(TAG, "user queried from db" + _currentUser);
+        }
 
     }
 
@@ -192,8 +203,10 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         int rowCount = _currentUser.getTotalTweetCount() - _currentLimitCount;
         Log.v(TAG, "current rowcount " + rowCount + " current user tweets " + _currentUser.getTotalTweetCount() + "with current rowlimit" + _currentLimitCount);
 
-
-        if(rowCount > 0){
+        if(!_isCursorReady){
+            //make sure to check if our cursor is actually loaded
+            return false;
+        }else if(rowCount >= 0){
             Log.v(TAG, "increasing limit because we have enough tweets with total: " + _currentUser.getTotalTweetCount() + " and current limit: " +_currentLimitCount );
             _currentLimitCount += 50;
             restartCursor();
@@ -202,8 +215,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
             return false;
         }else{
-            Log.v(TAG, "looking for tweets now with row count: " + _currentLimitCount);
-            return true; //TODO need to make sure we only search when we need to, maybe prevent too much searching
+          return true; //TODO need to make sure we only search when we need to, maybe prevent too much searching
         }
 
     }
@@ -227,6 +239,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     public void onLoadFinished(Loader<Cursor> arg, Cursor cursor) {
         Log.v(TAG, "loadfinished" + cursor.getCount());
         _dataAdapter.swapCursor(cursor);
+        _isCursorReady = true;
 
     }
 
@@ -278,10 +291,9 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                 Log.v(TAG, "user passed for switch  " + user.toString());
 
                 Log.v(TAG, "current user switch to  " + _currentUser.toString());
-
+                totalNewTweets = totalNewTweets + user.getUserTimeLine().size();
             }
             Log.v(TAG, "size of timeline " + user.getUserTimeLine().size() + " for user " + user.getScreenName());
-            totalNewTweets = totalNewTweets + user.getUserTimeLine().size();
         }
 
         Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);
@@ -292,6 +304,8 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         if(this.getActivity() != null){
             restartCursor();
         }
+
+
     }
 
     protected int getTimeLineCount(){

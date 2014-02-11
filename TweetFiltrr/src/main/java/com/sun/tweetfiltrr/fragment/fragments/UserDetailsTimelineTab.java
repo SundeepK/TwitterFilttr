@@ -17,7 +17,7 @@ import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
+import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -31,11 +31,10 @@ import java.util.concurrent.Callable;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public class UserDetailsTimelineTab extends ATimelineFragment {
+public class UserDetailsTimeLineTab extends ATimeLineFragment {
 
 
-    private static final String TAG = UserDetailsTimelineTab.class.getName();
-
+    private static final String TAG = UserDetailsTimeLineTab.class.getName();
 
 
     @Override
@@ -67,7 +66,6 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection, FriendColumn.FRIEND_ID.a() + " = ? ",
                 new String[]{getCurrentUser().getUserId() + ""}, TimelineColumn.TWEET_ID.a() + " DESC " + " LIMIT " + getTimeLineCount());
-
         return cursorLoader;
     }
 
@@ -78,6 +76,7 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
         callables.add(getTweetRetriver().getTimeLineRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
         return callables;
     }
+
 
 
 }

@@ -10,7 +10,7 @@ import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
+import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public class MentionsTab extends ATimelineFragment {
+public class MentionsTab extends ATimeLineFragment {
 
     private static String TAG = MentionsTab.class.getName();
 
@@ -40,4 +40,5 @@ public class MentionsTab extends ATimelineFragment {
         callables.add(getTweetRetriver().getMentionsRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
         return callables;
     }
+
 }

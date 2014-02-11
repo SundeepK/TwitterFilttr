@@ -22,7 +22,6 @@ public class PlainTweetProcessor extends ATweetProcessor {
     private static final String TAG = PlainTweetProcessor.class.getName();
 
     /**
-     * Threadsafe class
      * <p/>
      * Base class for runnable's which need to retrieve tweets from twitter. It provides default functionality to convert
      * tweets to {@link com.sun.tweetfiltrr.parcelable.ParcelableTweet} and add them to the current {@link com.sun.tweetfiltrr.parcelable.ParcelableUser} so that they can later
@@ -49,6 +48,7 @@ public class PlainTweetProcessor extends ATweetProcessor {
         }
         //update the total tweets recieved
         user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
+        Log.v(TAG, "Setting new tweet total to  " + user_.getTotalTweetCount()+ " for user " + user_.getScreenName());
     }
     /**
      *

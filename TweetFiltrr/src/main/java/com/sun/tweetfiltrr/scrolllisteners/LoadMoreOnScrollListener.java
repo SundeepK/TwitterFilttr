@@ -88,8 +88,11 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
             }
         }
 
+
         boolean isPassedItemThreshold =  totalItemCount - visibleItemCount   < _itemThresHoldBeforeLoadingMore  + firstVisibleItem;
-      //  Log.v(TAG, "is passedthreshold is:" + isPassedItemThreshold);
+//        Log.v(TAG, " visibleItemCount " + visibleItemCount);
+//        Log.v(TAG, " firstVisibleItem " + firstVisibleItem);
+//        Log.v(TAG, " firstVisibleItem " + totalItemCount);
 
         if (isPassedItemThreshold) {
             if (_loadMoreLitener.shouldLoadMoreOnScroll(view, firstVisibleItem, visibleItemCount, totalItemCount)) {

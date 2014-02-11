@@ -165,6 +165,7 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
 
+
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
@@ -179,9 +180,20 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
 
         _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();
-
-        _updaters.add(new DatabaseUpdater(_friendDao ));
+        String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
+                FriendColumn.FRIEND_COUNT.s(), FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(),
+                FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(), FriendColumn.LAST_FRIEND_PAGE_NO.s(),
+                FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
+                FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
+                FriendColumn.DESCRIPTION.s()};
+        _updaters.add(new DatabaseUpdater(_friendDao,cols));
         _updaters.add(new DatabaseUpdater(_usersToFriendDao));
+
+//        Collection<ParcelableUser> users = UserRetrieverUtils.getUserFromDB(_friendDao, _currentUser);
+//
+//        if(!users.isEmpty()){
+//            _currentUser = users.iterator().next();
+//        }
 
     }
 

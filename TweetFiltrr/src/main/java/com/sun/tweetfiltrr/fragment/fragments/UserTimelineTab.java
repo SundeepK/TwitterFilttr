@@ -9,7 +9,7 @@ import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
+import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public class UserTimelineTab extends ATimelineFragment {
+public class UserTimeLineTab extends ATimeLineFragment {
 
 
     @Override
@@ -37,6 +37,5 @@ public class UserTimelineTab extends ATimelineFragment {
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         return null;
     }
-
 
 }

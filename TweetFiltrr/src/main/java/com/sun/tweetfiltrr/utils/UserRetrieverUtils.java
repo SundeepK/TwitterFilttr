@@ -5,10 +5,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -46,6 +49,18 @@ public class UserRetrieverUtils {
         }
 
         return loggedInUser;
+    }
+
+    /**
+     * get most uptodate user from DB, is exsits
+     * @param userIDBDao_
+     * @param user_
+     * @return
+     */
+    public  static Collection<ParcelableUser>   getUserFromDB(IDBDao<ParcelableUser> userIDBDao_, ParcelableUser user_){
+       return
+                userIDBDao_.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()  + " = ? ",
+                        new String[]{Long.toString(user_.getUserId())}, null);
     }
 
     public static ArrayList<ParcelableUser> getUserQueue(Activity context_){

@@ -99,13 +99,13 @@ public abstract class ATimeLineRetriever<T> implements ITwitterRetriever<Collect
      * @param timeLineEntries_
      */
     protected void setUpdateUserDetails(final ICachedUser friend_, final List<ParcelableTweet> timeLineEntries_){
-        if (!timeLineEntries_.isEmpty()) {
-            ParcelableTweet timelineFirst = timeLineEntries_.get(timeLineEntries_.size() - 1);
-            ParcelableTweet timelineLast = timeLineEntries_.get(0);
-            Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
-            friend_.setSinceId(timelineLast.getTweetID());
-            friend_.setMaxId( timelineFirst.getTweetID());
-        }
+//        if (!timeLineEntries_.isEmpty()) {
+//            ParcelableTweet timelineFirst = timeLineEntries_.get(timeLineEntries_.size() - 1);
+//            ParcelableTweet timelineLast = timeLineEntries_.get(0);
+//            Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
+//            friend_.setSinceId(timelineLast.getTweetID());
+//            friend_.setMaxId( timelineFirst.getTweetID());
+//        }
         //update the total tweets recieved
         friend_.setTotalCount(friend_.getTotalCount()+timeLineEntries_.size());
     }
