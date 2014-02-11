@@ -35,6 +35,8 @@ dependencies {
     compile files('libs/universal-image-loader-1.8.6.jar')
     compile files('libs/asyncBackgroundViewPager.jar')
     compile project(':non-gradle-libs:library')
+    compile 'com.squareup.dagger:dagger-compiler:1.1.0'
+    compile 'com.squareup.dagger:dagger:1.1.0'
 
 
 }

@@ -69,19 +69,23 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="twitter4j-async-3.0.5" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
+    <orderEntry type="library" exported="" name="javawriter-2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="concurrentlinkedhashmap-lru-1.4" level="project" />
+    <orderEntry type="library" exported="" name="twitter4j-core-3.0.5" level="project" />
+    <orderEntry type="library" exported="" name="ComGithubChrisbanesActionbarpulltorefreshLibrary093.aar" level="project" />
+    <orderEntry type="library" exported="" name="dagger-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="ComGithubChrisbanesActionbarpulltorefreshExtraAbs093.aar" level="project" />
     <orderEntry type="library" exported="" name="sacklist-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.8.6" level="project" />
-    <orderEntry type="library" exported="" name="twitter4j-async-3.0.5" level="project" />
+    <orderEntry type="library" exported="" name="dagger-compiler-1.1.0" level="project" />
     <orderEntry type="module" module-name="library" exported="" />
+    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="ComActionbarsherlockActionbarsherlock440.aar" level="project" />
     <orderEntry type="library" exported="" name="SICimageloader" level="project" />
     <orderEntry type="library" exported="" name="ComGithubCastorflexSmoothprogressbarLibrary020.aar" level="project" />
     <orderEntry type="library" exported="" name="asyncBackgroundViewPager" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
-    <orderEntry type="library" exported="" name="twitter4j-core-3.0.5" level="project" />
-    <orderEntry type="library" exported="" name="concurrentlinkedhashmap-lru-1.4" level="project" />
-    <orderEntry type="library" exported="" name="ComGithubChrisbanesActionbarpulltorefreshLibrary093.aar" level="project" />
   </component>
 </module>
 

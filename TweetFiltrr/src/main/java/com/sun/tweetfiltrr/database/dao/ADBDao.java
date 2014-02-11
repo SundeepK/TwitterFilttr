@@ -30,6 +30,7 @@ public abstract class ADBDao<T extends IParcelableTwitter> implements IDBDao<T> 
 	 * 				{@link CursorToParcelable} used to convert the data from the {@link android.database.Cursor} to a {@link android.os.Parcelable} object
 	 * 				that can be used later
 	 */
+
 	protected ADBDao (ContentResolver contentResolver_, CursorToParcelable<T> cursorToParcelable_){
 		_contentResolver = contentResolver_;
 		_cursorToParcelable = cursorToParcelable_;

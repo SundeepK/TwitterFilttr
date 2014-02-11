@@ -10,11 +10,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import twitter4j.Status;
 
 /**
  * Created by Sundeep on 17/12/13.
  */
+@Singleton
 public class DateBasedTweetProcessor extends PlainTweetProcessor {
     private static final String  TAG  = DateBasedTweetProcessor.class.getName();
 
@@ -30,6 +34,7 @@ public class DateBasedTweetProcessor extends PlainTweetProcessor {
      *
      * @param dateFormat_    The {@link java.text.SimpleDateFormat} that is used to manipulate {@link java.util.Date}
      */
+    @Inject
     public DateBasedTweetProcessor(ThreadLocal<SimpleDateFormat> dateFormat_) {
         super(dateFormat_);
     }

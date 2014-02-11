@@ -31,6 +31,7 @@ public class TweetRetrieverWrapper {
 	private static final String TAG = TweetRetrieverWrapper.class.getName();
 	private ExecutorService _executor;
     private ThreadLocal<SimpleDateFormat> _daterFormat;
+
 	public TweetRetrieverWrapper(ExecutorService executor_,ThreadLocal<SimpleDateFormat> daterFormat_){
 		_executor = executor_;
         _daterFormat = daterFormat_;
