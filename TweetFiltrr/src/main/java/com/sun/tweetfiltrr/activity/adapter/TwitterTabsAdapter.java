@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.sun.tweetfiltrr.fragment.fragments.FriendsTabA;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimeLineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -95,7 +95,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
                    return frag;
 	        case 1:
                 Log.v(TAG, "tab is switched to second");
-                frag =  new FriendsTabA();
+                frag =  new FriendsFragment();
                 frag.setArguments(bundle);
                 return frag;
 	        case 2:

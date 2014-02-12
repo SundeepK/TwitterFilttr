@@ -44,7 +44,6 @@ public class SlidingMenuFragment extends ATwitterFragment implements
         ImageView profileImage = (ImageView) rootView.findViewById(R.id.profile_image);
         TextView userNameView = (TextView) rootView.findViewById(R.id.user_name);
 
-
         String[] names = new String[]{"Profile", "Filter", "Settings"};
         ListAdapter navAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, names);
         _slidingMenuListView = (ListView) rootView.findViewById(R.id.sliding_menu_listview);

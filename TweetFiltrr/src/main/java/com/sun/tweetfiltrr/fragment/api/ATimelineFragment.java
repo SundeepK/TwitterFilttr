@@ -32,7 +32,6 @@ import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.ZoomListView;
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
@@ -50,10 +49,8 @@ import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationHandler;
 import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationTask;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,7 +64,7 @@ import twitter4j.TwitterException;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public abstract class ATimeLineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>, TabListener,
+public abstract class ATimeLineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation,
         TweetOperationTask.TwitterTaskListener {
@@ -76,8 +73,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     private SimpleCursorAdapter _dataAdapter;
     private static final int TUTORIAL_LIST_LOADER = 0x04;
     private int _currentLimitCount = 50;
-    private IDBUpdater<ParcelableTweet> _timelineBufferedDBUpdater;
-    private UrlImageLoader _sicImageLoader;
+    private IDBUpdater<ParcelableTweet> _timeLineDBUpdater;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
@@ -90,7 +86,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     @Inject TweetRetrieverWrapper _tweetRetriver;
     @Inject FriendDao _friendDao;
     @Inject TimelineDao _timelineDao;
-
+    @Inject UrlImageLoader _sicImageLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,10 +108,6 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     }
 
     protected void initControl() {
-
-        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
-                .getInstance(getActivity().getContentResolver());
-
       //  _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
 
         ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
@@ -130,11 +122,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
 
-        _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
-
-        ThreadLocal<SimpleDateFormat> simpleDateFormatLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
-
-        _timelineBufferedDBUpdater =
+        _timeLineDBUpdater =
                 new SimpleDBUpdater<ParcelableTweet>();
 
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
@@ -304,28 +292,6 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     protected int getTimeLineCount(){
         return _currentLimitCount;
     }
-
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        Log.v(TAG, "TimeLine tab has been selected");
-        if(!_tabHasBeenSelected){
-            _tabHasBeenSelected = true; //the tab has been selected, so lets allow network calls
-        }
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        // TODO Auto-generated method stub
-
-    }
-
 
     protected ParcelableUser getCurrentUser(){
         return _currentUser;

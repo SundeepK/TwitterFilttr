@@ -20,7 +20,6 @@ import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 public class UserTimeLineTab extends ATimeLineFragment {
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
@@ -30,8 +29,6 @@ public class UserTimeLineTab extends ATimeLineFragment {
 
         return cursorLoader;
     }
-
-
 
     @Override
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {

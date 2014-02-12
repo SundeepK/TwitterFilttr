@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.api.UsersFollowerRetriever;
 import com.sun.tweetfiltrr.twitter.callables.FollowersRetriever;
@@ -16,7 +17,6 @@ import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.UserFollowersDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
-import com.sun.tweetfiltrr.fragment.api.AUsersTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.UsersToFollowersTable.UsersToFollowersColumn;
 
 
-public class FollowersTabA extends AUsersTab {
-    private static final String TAG = FollowersTabA.class.getName();
+public class FollowersFragment extends AUsersFragment {
+    private static final String TAG = FollowersFragment.class.getName();
 
 
     @Override

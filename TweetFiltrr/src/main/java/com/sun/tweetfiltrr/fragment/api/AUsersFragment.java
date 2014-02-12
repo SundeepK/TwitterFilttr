@@ -1,8 +1,5 @@
 package com.sun.tweetfiltrr.fragment.api;
 
-import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -53,19 +50,16 @@ import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFacto
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
 
-public abstract class AUsersTab extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        TabListener,  AdapterView.OnItemClickListener,
+public abstract class AUsersFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        AdapterView.OnItemClickListener,
         PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
 
     private int _currentLimitCount = 50;
 
-    private static final String TAG = AUsersTab.class.getName();
+    private static final String TAG = AUsersFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
     private static final int LIST_LOADER = 0x05;
-
-    private UrlImageLoader _sicImageLoader;
-    private ThreadPoolExecutor _threadExecutor;
     private long _currentLoggedInUserId;
     private boolean _isCurrentFriendDisplayed = true;
     private SimpleDBUpdater<ParcelableUser> _userUpdater;
@@ -76,9 +70,11 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
     private boolean _tabHasBeenSelected = false;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private ParcelableUser _currentUser;
+    private IDBDao<ParcelableUser> _usersToFriendDao;
 
     @Inject FriendDao _friendDao;
-    private IDBDao<ParcelableUser> _usersToFriendDao;
+    @Inject UrlImageLoader _sicImageLoader;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -162,7 +158,6 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
         ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
 
         _currentLoggedInUserId = TwitterUtil.getInstance().getCurrentLoggedInUserId(getActivity());
-
         _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
 
         if(_userQueue.isEmpty()){
@@ -173,18 +168,11 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
 
-
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
-        _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
-        _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
-
-
         Log.v(TAG, "Current user is :" + _currentUser);
 
         _usersToFriendDao = (IDBDao<ParcelableUser>)
                 flyWeight.getDao(DaoFactory.USERS_FRIEND_DAO, _currentUser);
-
-
 
         _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();
@@ -261,24 +249,6 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
     }
 
     @Override
-    public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onTabSelected(Tab arg0, FragmentTransaction arg1) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
         if(_tabHasBeenSelected){
@@ -304,12 +274,6 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
 
     }
 
-
-    private boolean getIsVis(){
-        return _tabHasBeenSelected;
-    }
-
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Get the cursor, positioned to the corresponding row in the result set
@@ -333,9 +297,6 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
         getActivity().startActivity(i);
         getActivity().finish();
     }
-
-
-
 
     @Override
     public void OnRefreshComplete(Collection<ParcelableUser> twitterParcelable) {

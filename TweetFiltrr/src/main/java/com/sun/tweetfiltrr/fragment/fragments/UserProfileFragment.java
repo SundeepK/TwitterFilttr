@@ -22,6 +22,7 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.UserTwitterDetails;
 import com.sun.tweetfiltrr.animation.ExpandingAnimation;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -30,25 +31,23 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class UserProfileFragment extends SherlockFragment {
 
-	private UrlImageLoader  _sicImageLoader;
 	private TextView _userName;
-	private TextView _twitterName;
 	private TextView _description;
-	private TextView _location;
-	private ListView _tweetsListView;
     private static final String TAG = UserProfileFragment.class.getName();
     private ParcelableUser  _currentUser;
 
+    @Inject  UrlImageLoader _sicImageLoader;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		_sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
       //  _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
+        ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
         _currentUser = getArguments().getParcelable(TwitterConstants.FRIENDS_BUNDLE);
-
         Log.v(TAG, " profile user is " + _currentUser.getScreenName());
 	}
 
@@ -137,12 +136,8 @@ public class UserProfileFragment extends SherlockFragment {
 		List<UserTwitterDetails> details = new ArrayList<UserTwitterDetails>();
 		details.add(new UserTwitterDetails("New Tweets", 100));
         details.add(new UserTwitterDetails("New Tweets", 100));
-
         details.add(new UserTwitterDetails("New Tweets", 100));
-
         details.add(new UserTwitterDetails("New Tweets", 100));
-
-
         details.add(new UserTwitterDetails("Tweets", 100));
 		details.add(new UserTwitterDetails("Friends", _currentUser.getTotalFriendCount()));
 		details.add(new UserTwitterDetails("Followers", 100));

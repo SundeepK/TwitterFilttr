@@ -31,43 +31,25 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+import javax.inject.Inject;
+
 public class NewKeywordTweetsTab extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private ParcelableUser _currentUser;
-	private UrlImageLoader  _sicImageLoader;
 	private ListView _tweetsListView;
     private static final String TAG = NewKeywordTweetsTab.class.getName();
     private CursorAdapter _dataAdapter;
     private static final int LIST_LOADER = 0x01;
 
+    @Inject UrlImageLoader  _sicImageLoader;
+
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		Bundle bundle = this.getArguments();
-
-			_currentUser = bundle.getParcelable(TwitterConstants.FRIENDS_BUNDLE);
-			
-		
-		ThreadPoolExecutor _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
-
-//		 UrlImageLoaderConfiguration configs = new UrlImageLoaderConfiguration.Builder(getActivity())
-//	        .setMaxCacheMemorySize(1)
-//	        .setDirectoryName("/storage/sdcard0/Pictures/twitterFiltrr")
-//	        .setImageQuality(100)
-//	        .setThreadExecutor(_threadExecutor)
-//	        .setImageType(CompressFormat.JPEG)
-//	        .setImageConfig(Bitmap.Config.ARGB_8888)
-//	        .useExternalStorage(true)
-//	        .build();
-//	        UrlImageLoader.getInstance().init(configs);
-	        
-		   _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
-
+		_currentUser = bundle.getParcelable(TwitterConstants.FRIENDS_BUNDLE);
 	}
-
-
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,7 +77,6 @@ public class NewKeywordTweetsTab extends SherlockFragment implements LoaderManag
         _tweetsListView.setAdapter(_dataAdapter);
 
         getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null,  this);
-
         return rootView;
     }
 

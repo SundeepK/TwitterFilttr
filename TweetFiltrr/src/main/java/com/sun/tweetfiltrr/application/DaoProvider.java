@@ -12,10 +12,10 @@ import com.sun.tweetfiltrr.database.dao.FriendKeywordDao;
 import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
-import com.sun.tweetfiltrr.fragment.api.AUsersTab;
+import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimeLineTab;
-import com.sun.tweetfiltrr.fragment.fragments.FollowersTabA;
-import com.sun.tweetfiltrr.fragment.fragments.FriendsTabA;
+import com.sun.tweetfiltrr.fragment.fragments.FollowersFragment;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
 import com.sun.tweetfiltrr.fragment.fragments.TimeLineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimeLineTab;
@@ -39,9 +39,9 @@ import dagger.Provides;
                 TimeLineTab.class,
                 UserTimeLineTab.class,
                 UserDetailsTimeLineTab.class,
-                AUsersTab.class,
-                FriendsTabA.class,
-                FollowersTabA.class,
+                AUsersFragment.class,
+                FriendsFragment.class,
+                FollowersFragment.class,
                 FriendDao.class,
                 TimelineDao.class,
                 FriendKeywordDao.class,

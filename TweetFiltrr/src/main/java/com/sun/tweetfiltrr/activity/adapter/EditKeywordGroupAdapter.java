@@ -35,40 +35,29 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 	private final LayoutInflater _inflater;
     private CursorToParcelable<ParcelableUser> _keywordUserToParcelable;
     private UrlImageLoader _imageLoader;
-    private SparseBooleanArray _listItemStatus;
     private ParcelableKeywordGroup _group;
-    private IDBDao<ParcelableUser> _friendDao;
     private AlphabetIndexer _alphabetIndexer;
     private final Map<ParcelableUser, Boolean> _isChecked;
     public EditKeywordGroupAdapter(Context context, int layout, Cursor c,
                                    String[] from, int[] to, int flags,
                                    CursorToParcelable<ParcelableUser> keywordUserToParcelable_, UrlImageLoader imageLoader_,
-                                   ParcelableKeywordGroup group_, IDBDao<ParcelableUser> friendDao_) {
+                                   ParcelableKeywordGroup group_) {
 		super(context, layout, c, from, to, flags);
         _inflater = LayoutInflater.from(context);
         _keywordUserToParcelable = keywordUserToParcelable_;
         _imageLoader = imageLoader_;
-        _listItemStatus = new SparseBooleanArray();
         _group = group_;
-        _friendDao = friendDao_;
         _isChecked = new HashMap<ParcelableUser, Boolean>();
     }
 
     @Override
     public Cursor swapCursor(Cursor c) {
-
-
-        if( c != null){
+        if (c != null) {
             _alphabetIndexer = new AlphabetIndexer(c,
                     c.getColumnIndex(FriendTable.FriendColumn.FRIEND_NAME.a()),
                     "ABCDEFGHIJKLMNOPQRTSUVWXYZ");
         }
-
         Cursor cur = super.swapCursor(c);
-
-
-
-
         return cur;
     }
 
