@@ -5,11 +5,18 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
 
+@Singleton
 public class KeywordToParcelable implements CursorToParcelable<ParcelableKeywordGroup> {
 
 	private static final String TAG = KeywordToParcelable.class.getName();
+
+    @Inject
+    public KeywordToParcelable(){};
 
 	@Override
 	public ParcelableKeywordGroup getParcelable(Cursor cursorKeywordGroup_) {

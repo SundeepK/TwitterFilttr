@@ -1,6 +1,8 @@
 package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 
 
+import android.util.Log;
+
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
@@ -59,6 +61,10 @@ public class DateBasedTweetProcessor extends PlainTweetProcessor {
     @Override
     protected void processTweet(ParcelableTweet tweetToProcess_) {
         
+    }
+
+    public void injectionWorks(){
+        Log.v(TAG, "Injection work!!!!!!!!!!!!!!!!!!");
     }
 
 }

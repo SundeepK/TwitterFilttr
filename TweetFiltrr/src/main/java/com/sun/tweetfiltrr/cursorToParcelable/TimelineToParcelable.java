@@ -6,12 +6,18 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-
+@Singleton
 public class TimelineToParcelable implements CursorToParcelable<ParcelableTweet>{
 
     private static final String TAG = TimelineToParcelable.class.getName();
+
+    @Inject
+    public TimelineToParcelable(){};
 
     @Override
 	public ParcelableTweet getParcelable(Cursor cursorTimeline_) {

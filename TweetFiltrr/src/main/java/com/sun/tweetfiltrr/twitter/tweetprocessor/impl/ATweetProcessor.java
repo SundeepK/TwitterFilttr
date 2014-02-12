@@ -8,6 +8,7 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import com.sun.tweetfiltrr.twitter.retrievers.api.ATweetRetiever;
 import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
 import com.sun.tweetfiltrr.utils.DateUtils;
+import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,9 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -28,12 +26,9 @@ import twitter4j.User;
  * Created by Sundeep on 16/12/13.
  * ThreadSafe
  */
-@Singleton
 public abstract class ATweetProcessor implements ITweetProcessor {
 
     private static final String TAG = ATweetRetiever.class.getName();
-    @Singleton
-    @Inject
     private ThreadLocal<SimpleDateFormat> _simpleDateFormatThreadLocal;
 
 
@@ -47,9 +42,13 @@ public abstract class ATweetProcessor implements ITweetProcessor {
      * @param dateFormat_
      *          The {@link java.text.SimpleDateFormat} that is used to manipulate {@link java.util.Date}
      */
-    @Inject
     public ATweetProcessor(final ThreadLocal<SimpleDateFormat> dateFormat_) {
         _simpleDateFormatThreadLocal = dateFormat_;   //  new SimpleDateFormat(TwitterConstants.SIMPLE_DATE_FORMATE);
+    }
+
+
+    public ThreadLocal<SimpleDateFormat> provideThreadLocal(){
+        return TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
     }
 
 

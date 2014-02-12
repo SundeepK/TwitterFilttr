@@ -5,12 +5,16 @@ import android.database.Cursor;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class KeywordFriendToParcelable implements CursorToParcelable<ParcelableUser> {
 
 	CursorToParcelable<ParcelableKeywordGroup> _cursorToKeywordGroup;
 	CursorToParcelable<ParcelableUser> _cursorToFriend;
-	
+
+    @Inject
 	public KeywordFriendToParcelable(CursorToParcelable<ParcelableUser> cursorToFriend_,
 			CursorToParcelable<ParcelableKeywordGroup> cursorToKeywordGroupDao_){
 		_cursorToFriend = cursorToFriend_;

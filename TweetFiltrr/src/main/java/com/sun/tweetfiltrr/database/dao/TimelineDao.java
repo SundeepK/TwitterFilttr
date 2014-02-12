@@ -7,15 +7,18 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
+import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
 import java.util.Collection;
 
-import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
+@Singleton
 public class TimelineDao extends ADBDao<ParcelableTweet> {
 
 	private static final String TAG = TimelineDao.class.getName();
@@ -24,8 +27,8 @@ public class TimelineDao extends ADBDao<ParcelableTweet> {
 	public static final String[] FULLY_QUALIFIED_PROJECTIONS = DBUtils.getFullyQualifiedProjections(TimelineColumn.values());
 	
 	Uri _timelineUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_TIMELINE + "/" + 110);
-	
-	public TimelineDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableTweet> cursorToParcelable_) {
+	@Inject
+	public TimelineDao(ContentResolver contentResolver_, TimelineToParcelable cursorToParcelable_) {
 		super(contentResolver_, cursorToParcelable_);
 		
 	}

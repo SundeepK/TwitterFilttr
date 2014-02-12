@@ -9,9 +9,13 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by Sundeep on 17/12/13.
  */
+@Singleton
 public class MentionsTweetProcessor extends PlainTweetProcessor {
     private static final String TAG = MentionsTweetProcessor.class.getName();
 
@@ -27,6 +31,7 @@ public class MentionsTweetProcessor extends PlainTweetProcessor {
      *
      * @param dateFormat_    The {@link java.text.SimpleDateFormat} that is used to manipulate {@link java.util.Date}
      */
+    @Inject
     public MentionsTweetProcessor(ThreadLocal<SimpleDateFormat> dateFormat_) {
         super(dateFormat_);
     }

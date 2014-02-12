@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
+import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.database.tables.FriendKeywordColumn;
@@ -14,6 +14,10 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class FriendKeywordDao extends ADBDao<ParcelableUser> {
 
 	private static final String TAG = FriendKeywordDao.class.getName();
@@ -42,7 +46,8 @@ public class FriendKeywordDao extends ADBDao<ParcelableUser> {
 	 * This DAO object is only used for query purposes and (atm) cannot be used to update users and groups (update methods are no-ops)
 	 * 
 	 */
-	public FriendKeywordDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableUser> cursorToKeywordUser_) {
+    @Inject
+	public FriendKeywordDao(ContentResolver contentResolver_, KeywordFriendToParcelable cursorToKeywordUser_) {
 		super(contentResolver_, cursorToKeywordUser_);
 	}
 

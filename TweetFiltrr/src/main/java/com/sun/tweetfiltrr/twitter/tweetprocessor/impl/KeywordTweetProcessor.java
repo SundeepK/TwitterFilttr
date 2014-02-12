@@ -7,9 +7,13 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
 import java.text.SimpleDateFormat;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by Sundeep on 17/12/13.
  */
+@Singleton
 public class KeywordTweetProcessor extends DateBasedTweetProcessor {
     private static final String TAG = KeywordTweetProcessor.class.getName();
 
@@ -25,6 +29,7 @@ public class KeywordTweetProcessor extends DateBasedTweetProcessor {
      *
      * @param dateFormat_    The {@link java.text.SimpleDateFormat} that is used to manipulate {@link java.util.Date}
      */
+    @Inject
     public KeywordTweetProcessor(ThreadLocal<SimpleDateFormat> dateFormat_) {
         super(dateFormat_);
     }

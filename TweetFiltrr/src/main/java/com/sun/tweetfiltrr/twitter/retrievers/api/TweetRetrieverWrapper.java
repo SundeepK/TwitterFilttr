@@ -2,6 +2,7 @@ package com.sun.tweetfiltrr.twitter.retrievers.api;
 
 import android.util.Log;
 
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.callables.MentionsRetrieverCallable;
 import com.sun.tweetfiltrr.twitter.callables.TimelineRetrieverCallable;
 import com.sun.tweetfiltrr.twitter.retrievers.KeywordTweetRetriever;
@@ -9,9 +10,6 @@ import com.sun.tweetfiltrr.twitter.retrievers.MentionsRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.TimeLineRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.twitterparameter.TwitterPageParameter;
 import com.sun.tweetfiltrr.twitter.retrievers.twitterparameter.TwitterQueryParameter;
-import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.twitter.tweetprocessor.api.ITweetProcessor;
-import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.DateBasedTweetProcessor;
 import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.KeywordTweetProcessor;
 import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.MentionsTweetProcessor;
 import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.PlainTweetProcessor;
@@ -23,21 +21,33 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import twitter4j.Paging;
 import twitter4j.Query;
 
+@Singleton
 public class TweetRetrieverWrapper {
 
 	private static final String TAG = TweetRetrieverWrapper.class.getName();
 	private ExecutorService _executor;
-    private ThreadLocal<SimpleDateFormat> _daterFormat;
+    @Inject MentionsTweetProcessor _mentionsTweetProcessor;
+    @Inject KeywordTweetProcessor _keywordTweetProcessor;
+    @Inject PlainTweetProcessor _plainTweetProcessor;
 
-	public TweetRetrieverWrapper(ExecutorService executor_,ThreadLocal<SimpleDateFormat> daterFormat_){
+    @Inject
+	public TweetRetrieverWrapper(ExecutorService executor_){
+        Log.v(TAG,"im creating wrapper");
 		_executor = executor_;
-        _daterFormat = daterFormat_;
 	}
 
-	/**
+    public TweetRetrieverWrapper(ExecutorService executor_,ThreadLocal<SimpleDateFormat> daterFormat_){
+        _executor = executor_;
+    }
+
+
+    /**
 	 * Fires an asynchronous thread to retrieve tweets in the background, and returns the last {@link ParcelableUser}
 	 * that was processed. {@link ParcelableUser} can be null if {@link java.util.Collection} passed in is null;
 	 * 
@@ -72,10 +82,8 @@ public class TweetRetrieverWrapper {
                                                                          boolean shouldRunOnce_, boolean shouldLookForOldTweets_){
         Collection<Callable<Collection<ParcelableUser>>> callables
                 = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        ITweetProcessor tweetProcessor = getKeywordTweetProcessor();
         ITwitterParameter<Query> queryITwitterParameter = new TwitterQueryParameter();
-
-        ITwitterRetriever retriever = new KeywordTweetRetriever(tweetProcessor, queryITwitterParameter,
+        ITwitterRetriever retriever = new KeywordTweetRetriever(_keywordTweetProcessor, queryITwitterParameter,
                 shouldRunOnce_, shouldLookForOldTweets_);
 
         for (ParcelableUser user : friendsWithKeywords_) {
@@ -93,9 +101,8 @@ public class TweetRetrieverWrapper {
     public Callable<Collection<ParcelableUser>> getTimeLineRetriever(ParcelableUser user_, boolean shouldRunOnce_,
                                                          boolean shouldLookForOldTweets){
 
-            ITweetProcessor dateBasedProcessor = new PlainTweetProcessor(_daterFormat);
             ITwitterParameter<Paging> twitterParameter = new TwitterPageParameter();
-            ITwitterRetriever retriever = new TimeLineRetriever(dateBasedProcessor, twitterParameter,
+            ITwitterRetriever retriever = new TimeLineRetriever(_plainTweetProcessor, twitterParameter,
                     shouldRunOnce_, shouldLookForOldTweets);
             return new TimelineRetrieverCallable(user_,retriever);
     }
@@ -126,10 +133,8 @@ public class TweetRetrieverWrapper {
 
     public Callable<Collection<ParcelableUser>> getMentionsRetriever(ParcelableUser user_, boolean shouldRunOnce_,
                                                          boolean shouldLookForOldTweets_){
-
-        ITweetProcessor mentionsTweetProcessor = new MentionsTweetProcessor(_daterFormat);
         ITwitterParameter<Paging> twitterParameter = new TwitterPageParameter();
-        ITwitterRetriever retriever = new MentionsRetriever(mentionsTweetProcessor, twitterParameter,
+        ITwitterRetriever retriever = new MentionsRetriever(_mentionsTweetProcessor, twitterParameter,
                 shouldRunOnce_,  shouldLookForOldTweets_);
         return new MentionsRetrieverCallable(user_, retriever);
     }
@@ -159,18 +164,6 @@ public class TweetRetrieverWrapper {
 //        }
 //        return futures;
 //    }
-
-    private ITweetProcessor getMentionsProcessor(){
-        return new DateBasedTweetProcessor(_daterFormat);
-    }
-
-    private ITweetProcessor getDateBasedProcessor(){
-        return new DateBasedTweetProcessor(_daterFormat);
-    }
-
-    private ITweetProcessor getKeywordTweetProcessor(){
-        return new KeywordTweetProcessor(_daterFormat);
-    }
 
 	private Future<Collection<ParcelableUser>> fireAsyncTask(Callable<Collection<ParcelableUser>> callableToExecute_){
         return _executor.submit(callableToExecute_);

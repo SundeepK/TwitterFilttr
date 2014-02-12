@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
@@ -15,15 +14,12 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
 
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
-//@Module
-//@Singleton
+@Singleton
 public class FriendDao extends ADBDao<ParcelableUser> {
 
 	private static final String TAG = FriendDao.class.getName();
@@ -33,15 +29,10 @@ public class FriendDao extends ADBDao<ParcelableUser> {
 	
 	Uri _friendUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_FRIEND + "/" + 110);
 
-
-	public FriendDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableUser> cursorToParcelable_) {
+    @Inject
+	public FriendDao(ContentResolver contentResolver_, FriendToParcelable cursorToParcelable_) {
 		super(contentResolver_, cursorToParcelable_);
 	}
-
-   // @Provides
-    CursorToParcelable<ParcelableUser> provideFriendToParcelable() {
-        return new FriendToParcelable();
-    }
 	
 	protected ContentValues getContentValues(ParcelableUser friend_, String[] columns_, boolean shouldSetNull_){
 		ContentValues contentValue = new ContentValues();

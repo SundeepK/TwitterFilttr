@@ -21,6 +21,8 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
+import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
 import com.sun.tweetfiltrr.twitter.retrievers.api.UsersFriendRetriever;
 import com.sun.tweetfiltrr.twitter.callables.FriendsRetriever;
@@ -45,6 +47,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
@@ -59,8 +63,7 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
     private static final String TAG = AUsersTab.class.getName();
     private SimpleCursorAdapter _dataAdapter;
     private static final int LIST_LOADER = 0x05;
-    private IDBDao<ParcelableUser> _friendDao;
-    private IDBDao<ParcelableUser> _usersToFriendDao;
+
     private UrlImageLoader _sicImageLoader;
     private ThreadPoolExecutor _threadExecutor;
     private long _currentLoggedInUserId;
@@ -73,6 +76,9 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
     private boolean _tabHasBeenSelected = false;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private ParcelableUser _currentUser;
+
+    @Inject FriendDao _friendDao;
+    private IDBDao<ParcelableUser> _usersToFriendDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -153,6 +159,8 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
     }
 
     protected void initControl() {
+        ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
+
         _currentLoggedInUserId = TwitterUtil.getInstance().getCurrentLoggedInUserId(getActivity());
 
         _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
@@ -175,8 +183,8 @@ public abstract class AUsersTab extends SherlockFragment implements LoaderManage
 
         _usersToFriendDao = (IDBDao<ParcelableUser>)
                 flyWeight.getDao(DaoFactory.USERS_FRIEND_DAO, _currentUser);
-        _friendDao = (IDBDao<ParcelableUser>)
-                flyWeight.getDao(DaoFactory.FRIEND_DAO, _currentUser);
+
+
 
         _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();

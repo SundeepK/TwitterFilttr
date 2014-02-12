@@ -26,13 +26,14 @@ import com.sun.tweetfiltrr.activity.activities.PostTweetActivity;
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
@@ -57,12 +58,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import twitter4j.TwitterException;
 
-import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
@@ -75,10 +76,6 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     private SimpleCursorAdapter _dataAdapter;
     private static final int TUTORIAL_LIST_LOADER = 0x04;
     private int _currentLimitCount = 50;
-    private IDBDao<ParcelableTweet> _timelineDao;
-    private IDBDao<ParcelableUser> _friendDao;
-    private ThreadPoolExecutor _threadExecutor;
-    private TweetRetrieverWrapper _tweetRetriver;
     private IDBUpdater<ParcelableTweet> _timelineBufferedDBUpdater;
     private UrlImageLoader _sicImageLoader;
     private PullToRefreshView _pullToRefreshHandler;
@@ -89,6 +86,11 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     private boolean _tabHasBeenSelected = false;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private boolean _isCursorReady;
+
+    @Inject TweetRetrieverWrapper _tweetRetriver;
+    @Inject FriendDao _friendDao;
+    @Inject TimelineDao _timelineDao;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,6 +118,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
 
       //  _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
 
+        ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
 
         _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
 
@@ -127,23 +130,13 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
 
-
-
-        _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
-
-        //init the Dao object using the flyweight so that we can share the Dao's between different fragments
-        _timelineDao = new TimelineDao(getActivity().getContentResolver(), new TimelineToParcelable());
-        _friendDao = (IDBDao<ParcelableUser>) flyWeight.getDao(
-                DaoFactory.FRIEND_DAO, _currentUser);
 
         ThreadLocal<SimpleDateFormat> simpleDateFormatLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
 
         _timelineBufferedDBUpdater =
                 new SimpleDBUpdater<ParcelableTweet>();
 
-        //initialise TweetRetrieverWrapper to easy tweet retrieval
-        _tweetRetriver = new TweetRetrieverWrapper(_threadExecutor, simpleDateFormatLocal);
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
         _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(),

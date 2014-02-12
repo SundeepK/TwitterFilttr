@@ -7,16 +7,19 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
+import com.sun.tweetfiltrr.cursorToParcelable.KeywordToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
-
+@Singleton
 public class KeywordGroupDao extends ADBDao<ParcelableKeywordGroup>{
 	private static final String TAG = KeywordGroupDao.class.getName();
 	
@@ -24,8 +27,8 @@ public class KeywordGroupDao extends ADBDao<ParcelableKeywordGroup>{
     public static final String[] PROJECTIONS = DBUtils.getprojections(KeywordGroupColumn.values());
 
     Uri _keywordGroupUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_GROUP + "/" + TweetFiltrrProvider.GROUP_TABLE_ID);
-	
-	public KeywordGroupDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableKeywordGroup> cursorToKeyword_){
+	@Inject
+	public KeywordGroupDao(ContentResolver contentResolver_,KeywordToParcelable cursorToKeyword_){
 		super(contentResolver_, cursorToKeyword_);
 	}
 	

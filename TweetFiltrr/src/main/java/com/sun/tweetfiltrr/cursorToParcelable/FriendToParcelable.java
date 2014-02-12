@@ -5,12 +5,16 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
+import javax.inject.Singleton;
+
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
-
+@Singleton
 public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 
 	private static final String TAG = FriendToParcelable.class.getName();
+
+    public FriendToParcelable(){};
 
 	@Override
 	public ParcelableUser getParcelable(Cursor cursorFriend_) {

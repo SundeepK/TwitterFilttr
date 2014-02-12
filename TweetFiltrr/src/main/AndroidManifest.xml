@@ -20,6 +20,7 @@
     <application
         android:allowBackup="true"
         android:debuggable="true"
+        android:name=".application.TweetFiltrrApplication"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppActionBarTheme">
         <activity

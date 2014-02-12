@@ -16,7 +16,6 @@ import java.util.Collection;
 
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.UsersToFollowersTable.UsersToFollowersColumn;
-
 public class UserFollowersDao extends  ADBDao<ParcelableUser> {
 
 

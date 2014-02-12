@@ -57,13 +57,14 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
         UrlImageLoader imageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
 
-        CursorToParcelable<ParcelableUser> friendCursorToParcelable =  new FriendToParcelable();
-        CursorToParcelable<ParcelableKeywordGroup> keywordToParcelable = new KeywordToParcelable();
-        _keywordGroupDao = new KeywordGroupDao(resolver,  keywordToParcelable  );
+       // CursorToParcelable<ParcelableUser> friendCursorToParcelable =  new FriendToParcelable();
+        FriendToParcelable friendCursorToParcelable =  new FriendToParcelable();
+
+        _keywordGroupDao = new KeywordGroupDao(resolver,   new KeywordToParcelable()  );
         _friendDao = new FriendDao(resolver, friendCursorToParcelable);
 
         CursorToParcelable<ParcelableUser> cursorToParcelable =
-                new KeywordFriendToParcelable(friendCursorToParcelable, keywordToParcelable);
+                new KeywordFriendToParcelable(friendCursorToParcelable,  new KeywordToParcelable() );
 //        String[] columns = {
 //                KeywordGroupColumn.COLUMN_ID.s(),
 //                KeywordGroupColumn.COLUMN_GROUP_NAME.s(),
