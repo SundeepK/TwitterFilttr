@@ -29,8 +29,9 @@ import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.ConversationAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
-import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
-import com.sun.tweetfiltrr.twitter.retrievers.ConversationRetriever;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
@@ -40,7 +41,6 @@ import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
-import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationHandler;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
@@ -125,7 +125,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
         SmoothProgressBarWrapper smoothProgressBarWrapper = new SmoothProgressBarWrapper(progressBar);
 
         SingleTweetAdapter.OnTweetOperation onTweetOperationListener
-                = new TweetOperationHandler(smoothProgressBarWrapper, _timelineDao);
+                = new TweetOperationController(smoothProgressBarWrapper, _timelineDao);
 
         _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
         _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);

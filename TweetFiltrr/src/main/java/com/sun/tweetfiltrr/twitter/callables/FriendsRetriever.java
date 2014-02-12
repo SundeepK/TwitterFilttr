@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.twitter.callables;
 
-import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
@@ -11,8 +12,9 @@ import java.util.concurrent.Callable;
 public class FriendsRetriever implements Callable<Collection<ParcelableUser>> {
 
     private static final String TAG = FriendsRetriever.class.getName();
-    private ITwitterRetriever<Collection<ParcelableUser>> _userRetriever;
+    private ITwitterAPICall<Collection<ParcelableUser>> _userRetriever;
     private ParcelableUser _currentUser;
+    private ITwitterAPICallStatus _lis;
     // private final int MAX_TIME_BETWEEN_FREIEND_UPDATES_MINS = 60;
     // private final int _maxTimeBetweenUpdates;
 
@@ -24,15 +26,17 @@ public class FriendsRetriever implements Callable<Collection<ParcelableUser>> {
      *
      * @param currentUser_
      */
-    public FriendsRetriever(ParcelableUser currentUser_, ITwitterRetriever<Collection<ParcelableUser>> userRetriever_) {
+    public FriendsRetriever(ParcelableUser currentUser_,
+                            ITwitterAPICall<Collection<ParcelableUser>> userRetriever_, ITwitterAPICallStatus lis_) {
         _currentUser = currentUser_;
         _userRetriever = userRetriever_;
+        _lis = lis_;
     }
 
     @Override
     public Collection<ParcelableUser> call() throws Exception {
         ICachedUser cachedDataUser = new CachedFriendDetails(_currentUser);
-         return _userRetriever.retrieveTwitterData(cachedDataUser);
+         return _userRetriever.retrieveTwitterData(cachedDataUser, _lis);
     }
 
 

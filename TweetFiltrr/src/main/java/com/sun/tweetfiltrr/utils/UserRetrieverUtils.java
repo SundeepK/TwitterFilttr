@@ -8,7 +8,7 @@ import android.util.Log;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.twitter.retrievers.AsyncAccessTokenRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 
 import java.util.ArrayList;
 import java.util.Collection;

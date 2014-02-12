@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.twitter.callables;
 
-import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
@@ -8,12 +9,12 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-public class TimelineRetrieverCallable implements Callable<Collection<ParcelableUser>> {
+public class TimeLineRetrieverCallable implements Callable<Collection<ParcelableUser>> {
 
-    private static final String TAG = TimelineRetrieverCallable.class.getName();
-    private ITwitterRetriever<Collection<ParcelableUser>> _userRetriever;
+    private static final String TAG = TimeLineRetrieverCallable.class.getName();
+    private ITwitterAPICall<Collection<ParcelableUser>> _userRetriever;
     private ParcelableUser _currentUser;
-
+    private ITwitterAPICallStatus _failListener;
 
     /**
      * Retrieves the up to 100 new friends + plus the user passed in through the constructor through a {@link java.util.Collection}
@@ -23,15 +24,17 @@ public class TimelineRetrieverCallable implements Callable<Collection<Parcelable
      *
      * @param currentUser_
      */
-    public TimelineRetrieverCallable(ParcelableUser currentUser_, ITwitterRetriever<Collection<ParcelableUser>> userRetriever_) {
+    public TimeLineRetrieverCallable(ParcelableUser currentUser_,
+                                     ITwitterAPICall<Collection<ParcelableUser>> userRetriever_, ITwitterAPICallStatus failListener_) {
         _currentUser = currentUser_;
         _userRetriever = userRetriever_;
+        _failListener = failListener_;
     }
 
     @Override
     public Collection<ParcelableUser> call() throws Exception {
         ICachedUser cachedDataUser = new CachedFriendDetails(_currentUser);
-         return _userRetriever.retrieveTwitterData(cachedDataUser);
+         return _userRetriever.retrieveTwitterData(cachedDataUser, _failListener);
     }
 
 

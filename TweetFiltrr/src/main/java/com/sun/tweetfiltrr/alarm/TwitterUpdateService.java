@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.alarm;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.sun.tweetfiltrr.twitter.tweetoperations.KeywordTweetUpdateRetriever;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.KeywordTweetUpdateRetriever;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.concurrent.ExecutorService;

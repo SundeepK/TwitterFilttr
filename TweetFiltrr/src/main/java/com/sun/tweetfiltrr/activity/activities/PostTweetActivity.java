@@ -19,9 +19,11 @@ import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.twitter.tweetoperations.PostTweet;
-import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationTask;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.PostTweet;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationTask;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -30,12 +32,12 @@ import java.util.Collection;
 
 import twitter4j.TwitterException;
 
-public class PostTweetActivity extends SherlockFragmentActivity implements TweetOperationTask.TwitterTaskListener {
+public class PostTweetActivity extends SherlockFragmentActivity implements ITwitterAPICallStatus {
 
     private static final String TAG =PostTweetActivity.class.getName() ;
     private IDBDao<ParcelableTweet> _timelineDao;
     private final int _initailCount  = 140;
-
+    private ParcelableUser _user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,12 +55,12 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
 
         _timelineDao = new TimelineDao(getContentResolver(), new TimelineToParcelable());
 
-        ParcelableUser user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
+         _user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
 
-        if(user != null){
+        if(_user != null){
             boolean shouldQuote =  getIntent().getExtras().getBoolean(TwitterConstants.IS_QUOTE_REPLY);
-            Collection<ParcelableTweet> tweets = user.getUserTimeLine();
-            friendName.setText("@" + user.getScreenName());
+            Collection<ParcelableTweet> tweets = _user.getUserTimeLine();
+            friendName.setText("@" + _user.getScreenName());
 
             if(!tweets.isEmpty()){
                 ParcelableTweet tweet =  tweets.iterator().next();//we only expect one tweet to reply too
@@ -67,9 +69,9 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
                 String photoUrl = tweet.getPhotoUrl();
 
                 if(shouldQuote){
-                    tweetEditTxt.setText("RT @" + user.getScreenName()+": " + tweet.getTweetText());
+                    tweetEditTxt.setText("RT @" + _user.getScreenName()+": " + tweet.getTweetText());
                 }else{
-                    tweetEditTxt.setText("@" + user.getScreenName());
+                    tweetEditTxt.setText("@" + _user.getScreenName());
                 }
             }
 
@@ -81,7 +83,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
 //            mediaPhoto.setVisibility(View.GONE);
 //        }
 
-            ImageLoaderUtils.attemptLoadImage(profilePic, urlImageLoader, user.getProfileImageUrl(),1, null);
+            ImageLoaderUtils.attemptLoadImage(profilePic, urlImageLoader, _user.getProfileImageUrl(),1, null);
 
 
         }
@@ -115,7 +117,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
     }
 
     private View.OnClickListener getOnClickPostTweet(final EditText editText_,
-            final IDBDao<ParcelableTweet> timelineDao_, final TweetOperationTask.TwitterTaskListener lis_ ) {
+            final IDBDao<ParcelableTweet> timelineDao_, final ITwitterAPICallStatus lis_ ) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,9 +125,9 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
                 // make an empty tweet with only text since we only care about the text
                 // the tweet updated in the DB will be the one returned from twitter after the post is complete so this is safe
                 ParcelableTweet tweet = new ParcelableTweet(editText_.getText().toString(), "",0l,0l,"",0l,0l,"",false,false, false);
-
-                ITweetOperation postTweet = new PostTweet();
-                TweetOperationTask task = new TweetOperationTask(timelineDao_,tweet, lis_ );
+                _user.addTimeLineEntry(tweet);
+                ITwitterAPICall<ParcelableTweet> postTweet = new PostTweet();
+                TweetOperationTask task = new TweetOperationTask(timelineDao_,_user, lis_ );
                 task.execute(postTweet);
                 PostTweetActivity.this.finish();
             }
@@ -138,15 +140,22 @@ public class PostTweetActivity extends SherlockFragmentActivity implements Tweet
 		super.finish();
 	};
 
-    @Override
     public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
         Toast.makeText(this, "Tweet posted", 2).show();
     }
 
-    @Override
     public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITweetOperation operation_) {
         Toast.makeText(this, "Tweet failed", 2).show();
     }
 
 
+    @Override
+    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+
+    }
+
+    @Override
+    public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall apiCallType_) {
+
+    }
 }

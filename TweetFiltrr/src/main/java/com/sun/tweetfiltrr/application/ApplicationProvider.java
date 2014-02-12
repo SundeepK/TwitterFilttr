@@ -12,7 +12,9 @@ import com.sun.tweetfiltrr.fragment.fragments.TimeLineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimeLineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserProfileFragment;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimeLineTab;
-import com.sun.tweetfiltrr.twitter.retrievers.api.TweetRetrieverWrapper;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterPageParameter;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterQueryParameter;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
@@ -38,10 +40,13 @@ import dagger.Provides;
                 TweetRetrieverWrapper.class,
                 UserDetailsTimeLineTab.class,
                 AUsersFragment.class,
-                UserProfileFragment.class
+                UserProfileFragment.class,
+                TwitterPageParameter.class,
+                TwitterQueryParameter.class
         },
         complete = false
 )
+//TODO have a look at breaking this up into different modules if necessary
 public class ApplicationProvider {
     private Context _context;
     public ApplicationProvider(Context context_){

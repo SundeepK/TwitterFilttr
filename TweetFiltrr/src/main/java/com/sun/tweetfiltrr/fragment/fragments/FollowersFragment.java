@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
-import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
-import com.sun.tweetfiltrr.twitter.retrievers.api.UsersFollowerRetriever;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFollowerRetriever;
 import com.sun.tweetfiltrr.twitter.callables.FollowersRetriever;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
@@ -58,8 +58,8 @@ public class FollowersFragment extends AUsersFragment {
     @Override
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        ITwitterRetriever<Collection<ParcelableUser>> followerRetriver = new UsersFollowerRetriever(true);
-        callables.add(new FollowersRetriever(getCurrentUser(), followerRetriver));
+        ITwitterAPICall<Collection<ParcelableUser>> followerRetriver = new UsersFollowerRetriever(true);
+        callables.add(new FollowersRetriever(getCurrentUser(), followerRetriver, this));
         return callables;
     }
 

@@ -73,7 +73,7 @@ public class UserDetailsTimeLineTab extends ATimeLineFragment {
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Log.v(TAG, "User passed for callable is: " + getCurrentUser().toString());
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        callables.add(getTweetRetriver().getTimeLineRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
+        callables.add(getTweetRetriver().getTimeLineRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets, this));
         return callables;
     }
 

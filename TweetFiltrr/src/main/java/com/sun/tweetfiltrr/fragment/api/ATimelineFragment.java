@@ -2,9 +2,7 @@ package com.sun.tweetfiltrr.fragment.api;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -16,10 +14,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.TabListener;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Window;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.PostTweetActivity;
@@ -40,14 +35,14 @@ import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
-import com.sun.tweetfiltrr.imageprocessor.IProcessScreenShot;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
-import com.sun.tweetfiltrr.twitter.retrievers.api.TweetRetrieverWrapper;
-import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationHandler;
-import com.sun.tweetfiltrr.twitter.tweetoperations.TweetOperationTask;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperationListener;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
@@ -65,9 +60,9 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 public abstract class ATimeLineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
-        IProcessScreenShot, AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
+        AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation,
-        TweetOperationTask.TwitterTaskListener {
+        ITwitterOperationListener, ITwitterAPICallStatus {
 
     private static final String TAG = ATimeLineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
@@ -170,7 +165,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
             _dataAdapter = timelineCursorAdapter;
             ZoomListView.OnItemFocused listener = timelineCursorAdapter;
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener, _userDaoUpdaters);
-            _onTweetOperationLis = new TweetOperationHandler(_pullToRefreshHandler, _timelineDao, this);
+            _onTweetOperationLis = new TweetOperationController(_pullToRefreshHandler, _timelineDao, this);
 
     }
 
@@ -228,14 +223,6 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     public void onLoaderReset(Loader<Cursor> arg0) {
         Log.v(TAG, "loaderreset" );
         _dataAdapter.swapCursor(null);
-
-    }
-
-    @Override
-    public Bitmap processScreenShot(Bitmap input_) {
-
-        int contentViewTop = getActivity().getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop(); /* skip status bar in screenshot */
-        return Bitmap.createBitmap(input_, 0, contentViewTop, input_.getWidth(), input_.getHeight() - contentViewTop, null, true);
 
     }
 
@@ -327,24 +314,31 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     @Override
     public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
         String message  = "Tweet successful";
+        Toast.makeText(getActivity(), message, 2).show();
+    }
 
+    @Override
+    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITwitterAPICall.TwitterAPICallType tweetType_) {
+        String message ;
+
+        if(tweetType_ == ITwitterAPICall.TwitterAPICallType.POST_RETWEET){
+            message = "Retweet failed";
+        }else if(tweetType_ == ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE) {
+            message = "Favourite tweet failed";
+        }else{
+            message = "Tweet failed";
+        }
 
         Toast.makeText(getActivity(), message, 2).show();
     }
 
     @Override
-    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITweetOperation operation_) {
-        String message ;
-        if(operation_.getTweetOperationType() == ITweetOperation.TweetOperationType.RETWEET){
-            message = "Retweet failed";
-        }else if(operation_.getTweetOperationType() == ITweetOperation.TweetOperationType.FAVOURITE) {
-            message = "Favourite tweet failed";
-        }else{
-            message = "Tweet failed";
-        }
-        
-        Toast.makeText(getActivity(), message, 2).show();
+    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+
     }
 
+    @Override
+    public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall tweetType_) {
 
+    }
 }

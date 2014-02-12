@@ -37,7 +37,7 @@ public class MentionsTab extends ATimeLineFragment {
     @Override
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        callables.add(getTweetRetriver().getMentionsRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets));
+        callables.add(getTweetRetriver().getMentionsRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets, this));
         return callables;
     }
 

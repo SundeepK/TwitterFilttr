@@ -20,8 +20,9 @@ import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.twitter.retrievers.api.ITwitterRetriever;
-import com.sun.tweetfiltrr.twitter.retrievers.api.UsersFriendRetriever;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFriendRetriever;
 import com.sun.tweetfiltrr.twitter.callables.FriendsRetriever;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
@@ -41,10 +42,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import twitter4j.TwitterException;
 
 import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
@@ -53,7 +55,7 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 public abstract class AUsersFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         AdapterView.OnItemClickListener,
         PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
-        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>> {
+        LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,ITwitterAPICallStatus {
 
     private int _currentLimitCount = 50;
 
@@ -63,7 +65,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     private long _currentLoggedInUserId;
     private boolean _isCurrentFriendDisplayed = true;
     private SimpleDBUpdater<ParcelableUser> _userUpdater;
-    private ITwitterRetriever<Collection<ParcelableUser>>  _userRetriever;
+    private ITwitterAPICall<Collection<ParcelableUser>>  _userRetriever;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading;
     private Collection<IDatabaseUpdater> _updaters = new ArrayList<IDatabaseUpdater>();
@@ -120,7 +122,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
         return rootView;
     }
 
-    private ITwitterRetriever<Collection<ParcelableUser>> getRetriever(){
+    private ITwitterAPICall<Collection<ParcelableUser>> getRetriever(){
         if (_currentUser.getUserId() == _currentLoggedInUserId) {
             return new UsersFriendRetriever( true);
         } else {
@@ -318,7 +320,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
-        callables.add(new FriendsRetriever(_currentUser, _userRetriever));
+        callables.add(new FriendsRetriever(_currentUser, _userRetriever, this));
         return callables;
     }
 
@@ -326,5 +328,14 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
         return _currentLimitCount;
     }
 
+    @Override
+    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+
+    }
+
+    @Override
+    public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall apiCallType_) {
+
+    }
 }
 
