@@ -9,7 +9,7 @@ import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.dao.TimeLineDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
@@ -25,7 +25,7 @@ public class CustomKeywordTimeLineTab extends ATimeLineFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-        String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimelineDao.FULLY_QUALIFIED_PROJECTIONS);
+        String[] projection = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, TimeLineDao.FULLY_QUALIFIED_PROJECTIONS);
        return new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_TIMELINE_FRIEND, projection,  TimelineColumn.IS_KEYWORD_SEARCH_TWEET.a() + " = ? ",
                 new String[]{ Integer.toString(1)},

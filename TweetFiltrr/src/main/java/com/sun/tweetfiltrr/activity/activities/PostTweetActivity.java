@@ -16,13 +16,12 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.dao.TimeLineDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.PostTweet;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationTask;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -53,7 +52,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
         EditText tweetEditTxt = (EditText)findViewById(R.id.reply_tweet_edittxt);
         ImageView profilePic =(ImageView)findViewById(R.id.profile_image);
 
-        _timelineDao = new TimelineDao(getContentResolver(), new TimelineToParcelable());
+        _timelineDao = new TimeLineDao(getContentResolver(), new TimelineToParcelable());
 
          _user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
 
@@ -140,22 +139,13 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
 		super.finish();
 	};
 
-    public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
-        Toast.makeText(this, "Tweet posted", 2).show();
-    }
-
-    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITweetOperation operation_) {
-        Toast.makeText(this, "Tweet failed", 2).show();
-    }
-
-
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
-
+        Toast.makeText(this, "Tweet posted", 2).show();
     }
 
     @Override
     public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall apiCallType_) {
-
+        Toast.makeText(this, "Tweet failed", 2).show();
     }
 }

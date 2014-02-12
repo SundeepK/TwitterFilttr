@@ -2,15 +2,17 @@ package com.sun.tweetfiltrr.twitter.tweetoperations.api;
 
 import android.view.View;
 
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+
 /**
  * Created by Sundeep on 29/01/14.
  */
-public class TwitterOperationTask implements ITwitterOperationTask<ITweetOperation> {
+public class TwitterOperationTask implements ITwitterOperationTask<ITwitterAPICall> {
 
     private final View _viewToUpdate;
-    private final ISubmittable<ITweetOperation> _submittable;
+    private final ISubmittable<ITwitterAPICall> _submittable;
 
-    public TwitterOperationTask(View viewToUpdate_, ISubmittable<ITweetOperation> submittable_){
+    public TwitterOperationTask(View viewToUpdate_, ISubmittable<ITwitterAPICall> submittable_){
         _viewToUpdate = viewToUpdate_;
         _submittable = submittable_;
     }
@@ -21,7 +23,7 @@ public class TwitterOperationTask implements ITwitterOperationTask<ITweetOperati
     }
 
     @Override
-    public ISubmittable<ITweetOperation> getSubmittableTask() {
+    public ISubmittable<ITwitterAPICall> getSubmittableTask() {
         return _submittable;
     }
 

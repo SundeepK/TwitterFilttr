@@ -19,16 +19,16 @@ import javax.inject.Singleton;
 
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 @Singleton
-public class TimelineDao extends ADBDao<ParcelableTweet> {
+public class TimeLineDao extends ADBDao<ParcelableTweet> {
 
-	private static final String TAG = TimelineDao.class.getName();
+	private static final String TAG = TimeLineDao.class.getName();
 
     public static final String[] PROJECTIONS = DBUtils.getprojections(TimelineColumn.values());
 	public static final String[] FULLY_QUALIFIED_PROJECTIONS = DBUtils.getFullyQualifiedProjections(TimelineColumn.values());
 	
 	Uri _timelineUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_TIMELINE + "/" + 110);
 	@Inject
-	public TimelineDao(ContentResolver contentResolver_, TimelineToParcelable cursorToParcelable_) {
+	public TimeLineDao(ContentResolver contentResolver_, TimelineToParcelable cursorToParcelable_) {
 		super(contentResolver_, cursorToParcelable_);
 		
 	}

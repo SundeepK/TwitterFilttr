@@ -28,7 +28,7 @@ import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.dao.TimeLineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
@@ -39,7 +39,6 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperationListener;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
@@ -62,7 +61,7 @@ import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 public abstract class ATimeLineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation,
-        ITwitterOperationListener, ITwitterAPICallStatus {
+        ITwitterAPICallStatus {
 
     private static final String TAG = ATimeLineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
@@ -80,7 +79,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
 
     @Inject TweetRetrieverWrapper _tweetRetriver;
     @Inject FriendDao _friendDao;
-    @Inject TimelineDao _timelineDao;
+    @Inject TimeLineDao _timeLineDao;
     @Inject UrlImageLoader _sicImageLoader;
 
     @Override
@@ -121,7 +120,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
                 new SimpleDBUpdater<ParcelableTweet>();
 
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
-        _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
+        _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timeLineDao));
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(),
                 FriendColumn.TWEET_COUNT.s(), FriendColumn.COLUMN_MAXID.s(), FriendColumn.COLUMN_SINCEID.s(),
                 FriendColumn.MAXID_FOR_MENTIONS.s(), FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendColumn.FRIEND_COUNT.s()
@@ -165,7 +164,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
             _dataAdapter = timelineCursorAdapter;
             ZoomListView.OnItemFocused listener = timelineCursorAdapter;
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener, _userDaoUpdaters);
-            _onTweetOperationLis = new TweetOperationController(_pullToRefreshHandler, _timelineDao, this);
+            _onTweetOperationLis = new TweetOperationController(_pullToRefreshHandler, _timeLineDao, this);
 
     }
 
@@ -235,7 +234,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
         int tweetID =
                 cursor.getInt(cursor.getColumnIndexOrThrow(TimelineColumn._ID.a()));
         Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
-        Collection<ParcelableTweet> tweets = _timelineDao.getEntry(tweetID);
+        Collection<ParcelableTweet> tweets = _timeLineDao.getEntry(tweetID);
         //we should only retrieve 1 friend since rowId is unique, so we iterate once
         ParcelableUser user = friends.iterator().next();
         ParcelableTweet tweet = tweets.iterator().next();
@@ -311,13 +310,11 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
         getActivity().startActivity(tweetConvo);
     }
 
-    @Override
     public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
         String message  = "Tweet successful";
         Toast.makeText(getActivity(), message, 2).show();
     }
 
-    @Override
     public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITwitterAPICall.TwitterAPICallType tweetType_) {
         String message ;
 

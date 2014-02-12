@@ -10,7 +10,6 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ISubmittable;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import twitter4j.TwitterException;
  * Created by Sundeep on 01/01/14.
  */
 public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICall<ParcelableTweet>, Void, Collection<ParcelableTweet>>
-        implements ISubmittable<ITweetOperation> ,  ITwitterAPICallStatus {
+        implements ISubmittable<ITwitterAPICall> ,  ITwitterAPICallStatus {
 
     private static final String TAG = TweetOperationTask.class.getName() ;
     private final IDBDao<ParcelableTweet> _timelineDao;
@@ -106,7 +105,7 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
     }
 
 
-    public boolean submitNewTask(ITweetOperation submittable_) {
+    public boolean submitNewTask(ITwitterAPICall submittable_) {
         boolean isSubmitSuccessful = false;
 
         synchronized (this) {

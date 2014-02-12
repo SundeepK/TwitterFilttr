@@ -10,7 +10,6 @@ import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITweetOperation;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.ITwitterOperationTask;
 import com.sun.tweetfiltrr.twitter.tweetoperations.api.TwitterOperationTask;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
@@ -29,7 +28,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
 
     private static final String TAG = TweetOperationController.class.getName();
     private final IProgress _progressBar;
-    private final ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITweetOperation>>> _twitterOperationsMap;
+    private final ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterAPICall>>> _twitterOperationsMap;
     private final IDBDao<ParcelableTweet> _tweetDao;
     private final ITwitterAPICall<ParcelableTweet> _favouriteTweet = new FavouriteTweet();
     private final ITwitterAPICall<ParcelableTweet> _retweet = new RetweetTweet();
@@ -41,7 +40,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
 
     public TweetOperationController(IProgress progressBar_, IDBDao<ParcelableTweet> tweetDao_, ITwitterAPICallStatus listener_){
         _progressBar = progressBar_;
-        _twitterOperationsMap = new ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITweetOperation>>>();
+        _twitterOperationsMap = new ConcurrentHashMap<ParcelableTweet, Collection<ITwitterOperationTask<ITwitterAPICall>>>();
         _tweetDao = tweetDao_;
         _listener = listener_;
     }
@@ -78,23 +77,23 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
 
     private void submitTask(View view_,
                             ParcelableUser user_, ITwitterAPICall<ParcelableTweet> operation_){
-        Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(user_);
+        Collection<ITwitterOperationTask<ITwitterAPICall>> operations = _twitterOperationsMap.get(user_);
         if(operations != null){
             submitTask(operations, view_,user_, operation_);
         }else{
-            operations = new ArrayList<ITwitterOperationTask<ITweetOperation>>();
-            ITwitterOperationTask<ITweetOperation> op =  getSubmittableTask(view_, user_, operation_);
+            operations = new ArrayList<ITwitterOperationTask<ITwitterAPICall>>();
+            ITwitterOperationTask<ITwitterAPICall> op =  getSubmittableTask(view_, user_, operation_);
             operations.add(op);
             _twitterOperationsMap.put(getTweet(user_),operations);
         }
     }
 
-    private void submitTask( Collection<ITwitterOperationTask<ITweetOperation>> operations_, View view_,
+    private void submitTask( Collection<ITwitterOperationTask<ITwitterAPICall>> operations_, View view_,
                              ParcelableUser user_, ITwitterAPICall<ParcelableTweet> operation_){
-        final Iterator<ITwitterOperationTask<ITweetOperation>> itr = operations_.iterator();
-        ITwitterOperationTask<ITweetOperation> newTask = null;
+        final Iterator<ITwitterOperationTask<ITwitterAPICall>> itr = operations_.iterator();
+        ITwitterOperationTask<ITwitterAPICall> newTask = null;
         while(itr.hasNext()){
-            ITwitterOperationTask<ITweetOperation> task = itr.next();
+            ITwitterOperationTask<ITwitterAPICall> task = itr.next();
                 if(!itr.hasNext()){
                     newTask = getSubmittableTask(view_,user_, operation_);
                 }
@@ -105,7 +104,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
         }
     }
 
-    private ITwitterOperationTask<ITweetOperation> getSubmittableTask(View view_, ParcelableUser user_, ITwitterAPICall<ParcelableTweet> operation_){
+    private ITwitterOperationTask<ITwitterAPICall> getSubmittableTask(View view_, ParcelableUser user_, ITwitterAPICall<ParcelableTweet> operation_){
         TweetOperationTask task = new TweetOperationTask(_progressBar,_tweetDao, user_, this );
         task.execute(operation_);
         return new TwitterOperationTask(view_, task);
@@ -115,13 +114,13 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
         ParcelableTweet tweet = getTweet(user_);
-        Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweet);
+        Collection<ITwitterOperationTask<ITwitterAPICall>> operations = _twitterOperationsMap.get(tweet);
 
         if (!operations.isEmpty()) {
 
-            final Iterator<ITwitterOperationTask<ITweetOperation>> itr = operations.iterator();
+            final Iterator<ITwitterOperationTask<ITwitterAPICall>> itr = operations.iterator();
             while (itr.hasNext()) {
-                ITwitterOperationTask<ITweetOperation> task = itr.next();
+                ITwitterOperationTask<ITwitterAPICall> task = itr.next();
                 if (task.isComplete()) {
                     if (!task.isFailed()) {
                         itr.remove();
@@ -140,13 +139,13 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
     @Override
     public void onTwitterApiCallFail(ParcelableUser failedUser_, TwitterException exception_, ITwitterAPICall tweetType_) {
         ParcelableTweet tweet = getTweet(failedUser_);
-        Collection<ITwitterOperationTask<ITweetOperation>> operations = _twitterOperationsMap.get(tweet);
+        Collection<ITwitterOperationTask<ITwitterAPICall>> operations = _twitterOperationsMap.get(tweet);
         Log.v(TAG, "on task failed");
 
         if (!operations.isEmpty()) {
-            final Iterator<ITwitterOperationTask<ITweetOperation>> itr = operations.iterator();
+            final Iterator<ITwitterOperationTask<ITwitterAPICall>> itr = operations.iterator();
             while (itr.hasNext()) {
-                ITwitterOperationTask<ITweetOperation> task = itr.next();
+                ITwitterOperationTask<ITwitterAPICall> task = itr.next();
                 if (task.isRunning()) {
                     Log.v(TAG, "task complete");
 
