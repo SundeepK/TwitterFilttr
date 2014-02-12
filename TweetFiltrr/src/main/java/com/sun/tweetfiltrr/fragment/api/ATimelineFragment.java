@@ -318,24 +318,55 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
     public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITwitterAPICall.TwitterAPICallType tweetType_) {
         String message ;
 
-        if(tweetType_ == ITwitterAPICall.TwitterAPICallType.POST_RETWEET){
-            message = "Retweet failed";
-        }else if(tweetType_ == ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE) {
-            message = "Favourite tweet failed";
-        }else{
-            message = "Tweet failed";
-        }
 
-        Toast.makeText(getActivity(), message, 2).show();
     }
 
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
-
+//        ITwitterAPICall.TwitterAPICallType twitterApiCallType = tweetType_.getTweetOperationType();
+//        String message;
+//        switch (twitterApiCallType){
+//            case POST_RETWEET:
+//                message = "Retweet failed";
+//                break;
+//            case POST_FAVOURITE:
+//                message = "Favourite tweet failed";
+//                break;
+//            case POST_TWEET:
+//                message = "Failed to post tweet";
+//                break;
+//            case GET_TIMELINE:
+//                message = "Failed to refreshed timeline";
+//                break;
+//            default:
+//                message = "Tweet failed";
+//                break;
+//        }
+        Toast.makeText(getActivity(), "", 2).show();
     }
 
     @Override
     public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall tweetType_) {
+        ITwitterAPICall.TwitterAPICallType twitterApiCallType = tweetType_.getTweetOperationType();
+        String message;
+        switch (twitterApiCallType){
+            case POST_RETWEET:
+                message = "Retweet failed";
+                break;
+            case POST_FAVOURITE:
+                message = "Favourite tweet failed";
+                break;
+            case POST_TWEET:
+                message = "Failed to post tweet";
+                break;
+            case GET_TIMELINE:
+                message = "Failed to refreshed timeline";
+                break;
+            default:
+                message = "Tweet failed";
+                break;
+        }
 
+        Toast.makeText(getActivity(), message, 2).show();
     }
 }
