@@ -79,7 +79,8 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
 
     @Inject TweetRetrieverWrapper _tweetRetriver;
     @Inject FriendDao _friendDao;
-    @Inject TimeLineDao _timeLineDao;
+    @Inject
+    TimeLineDao _timeLineDao;
     @Inject UrlImageLoader _sicImageLoader;
 
     @Override

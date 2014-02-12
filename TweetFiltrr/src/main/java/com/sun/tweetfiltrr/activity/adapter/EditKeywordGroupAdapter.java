@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
@@ -168,12 +167,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 
     @Override
     public int getSectionForPosition(int position) {
-
-       if(!getCursor().isClosed()){
-            return _alphabetIndexer.getSectionForPosition(position);
-        }
-
-        return 0;
+        return _alphabetIndexer.getSectionForPosition(position);
 
     }
 

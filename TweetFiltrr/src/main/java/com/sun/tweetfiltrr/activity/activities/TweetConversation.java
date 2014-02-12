@@ -283,13 +283,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
                 +BLURRED_IMAGE_PREFIX+imageSettings.getFinalFileName();
         Bitmap blurredBitmap = tryLoadImage(imageFilePath, bitmap);
         Log.v(TAG, "Image file path is " + imageFilePath);
-
-//        updateView(_screenWidth, _blurredBackground,blurredBitmap);
-
        _blurredBackground.setImageBitmap(blurredBitmap);
-
-//        _backgroundImage.setAlpha(0f);
-//        _blurredBackground.setImageDrawable(new ColorDrawable(Color.BLACK));
 
     }
 

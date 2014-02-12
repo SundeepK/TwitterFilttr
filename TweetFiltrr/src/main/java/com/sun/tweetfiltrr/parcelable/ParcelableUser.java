@@ -86,7 +86,7 @@ public class ParcelableUser implements IParcelableTwitter {
         _maxIdForMentions = 1l;
         _sinceIdForMentions = 1l;
         _newTweetCount = 0;
-        _totalTweetCount = 0;
+        _totalTweetCount = user_.getStatusesCount();
        _totalFollowerCount = user_.getFollowersCount();
         _lastFollowerIndex = 0;
        _currentFollowerCount = 0;

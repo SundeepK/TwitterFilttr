@@ -14,7 +14,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -73,6 +72,8 @@ public class SlidingMenu extends RelativeLayout {
 	private OnOpenListener mSecondaryOpenListner;
 
 	private OnCloseListener mCloseListener;
+
+    private OnPageChangeListener mExternalListener;
 
 	/**
 	 * The listener interface for receiving onOpen events.
@@ -192,6 +193,10 @@ public class SlidingMenu extends RelativeLayout {
 		this(context, attrs, 0);
 	}
 
+    public void setExternalOnPageChangeListener(OnPageChangeListener listener){
+        mExternalListener = listener;
+    }
+
 	/**
 	 * Instantiates a new SlidingMenu.
 	 *
@@ -217,9 +222,16 @@ public class SlidingMenu extends RelativeLayout {
 			public static final int POSITION_SECONDARY_OPEN = 2;
 
 			public void onPageScrolled(int position, float positionOffset,
-					int positionOffsetPixels) { }
+					int positionOffsetPixels) {
+                    if(SlidingMenu.this.mExternalListener != null){
+                        mExternalListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                    }
+            }
 
 			public void onPageSelected(int position) {
+                if(SlidingMenu.this.mExternalListener != null){
+                    mExternalListener.onPageSelected(position);
+                }
 				if (position == POSITION_OPEN && mOpenListener != null) {
 					mOpenListener.onOpen();
 				} else if (position == POSITION_CLOSE && mCloseListener != null) {

@@ -1,20 +1,14 @@
 package com.sun.tweetfiltrr.activity.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.ActionBar.TabListener;
+import com.jeremyfeinstein.slidingmenu.lib.CustomViewAbove;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.sun.imageloader.core.ImageSettings;
-import com.sun.imageloader.core.api.FailedTaskReason;
-import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterUserHomeTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
@@ -24,8 +18,8 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
-public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements TabListener,
-        ListView.OnItemClickListener, ImageTaskListener {
+public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements
+        ListView.OnItemClickListener {
 
 	private ViewPager _asyncBackgroundViewPager;
 	private TwitterUserHomeTabsAdapter _tabsAdapter;
@@ -42,39 +36,32 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
         _tabsAdapter = new TwitterUserHomeTabsAdapter(getSupportFragmentManager(), _currentUser );
 		_asyncBackgroundViewPager.setAdapter(_tabsAdapter);
 
-        SlidingMenu menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.LEFT);
+        final SlidingMenu menu = new SlidingMenu(this);
+        final SlidingMenuFragment frag = new SlidingMenuFragment();
+        menu.setMode(SlidingMenu.SLIDING_WINDOW);
         menu.setTouchModeAbove(SlidingMenu.LEFT);
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menu.setMenu(R.layout.sliding_menu_fragment);
-        menu.setBehindOffset(200);
+        menu.setBehindOffset(170);
+        menu.setFadeEnabled(true);
+        menu.setExternalOnPageChangeListener(new CustomViewAbove.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                frag.setOpactiy(positionOffset);
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+        });
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.menu_frame, new SlidingMenuFragment())
+                .replace(R.id.menu_frame,frag)
                 .commit();
-
 	}
 
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,19 +87,4 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements T
         }
     }
 
-    @Override
-    public void preImageLoad(ImageSettings imageSettings) {
-
-    }
-
-    @Override
-    public void onImageLoadComplete(Bitmap bitmap, ImageSettings imageSettings) {
-        //_slidingMenuListView.setBackground(new BitmapDrawable(getResources(),bitmap).);
-
-    }
-
-    @Override
-    public void onImageLoadFail(FailedTaskReason failedTaskReason, ImageSettings imageSettings) {
-
-    }
 }

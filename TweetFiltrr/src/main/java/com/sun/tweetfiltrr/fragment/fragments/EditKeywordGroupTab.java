@@ -13,6 +13,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.EditKeywordGroupAdapter;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
@@ -45,6 +46,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((TweetFiltrrApplication) getApplication()).getObjectGraph().inject(this);
         setContentView(R.layout.edit_keyworrd_group_layout);
         _group = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE);
         Log.v(TAG, "keyword group from bundle "  + _group.getGroupName());

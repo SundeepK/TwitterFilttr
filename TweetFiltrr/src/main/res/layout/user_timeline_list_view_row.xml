@@ -20,6 +20,7 @@
             android:clickable="false"
             android:layout_marginLeft="3dip"
             android:focusable="false"
+            android:layout_marginTop="10dp"
             android:scaleType="centerCrop" />
 
     <ImageView
@@ -73,12 +74,11 @@
             android:layout_marginLeft="10dip"
             android:layout_marginTop="10dip"
             android:padding="5dp"
-            android:background="#1a1a1a"
             android:layout_marginRight="3dip"
             android:layout_below="@id/timeline_date_time"
             android:layout_toRightOf="@id/profile_image"
             android:textColor="#9E9E9E"
-            android:textSize="16sp"
+            android:textSize="17sp"
             custom:typeface="robotoLight"
         />
 

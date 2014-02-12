@@ -14,6 +14,7 @@ import com.sun.tweetfiltrr.database.dao.TimeLineDao;
 import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
@@ -45,7 +46,8 @@ import dagger.Provides;
                 FriendDao.class,
                 TimeLineDao.class,
                 FriendKeywordDao.class,
-                KeywordGroupDao.class
+                KeywordGroupDao.class,
+                EditKeywordGroupTab.class
         },
         complete = false
 )
