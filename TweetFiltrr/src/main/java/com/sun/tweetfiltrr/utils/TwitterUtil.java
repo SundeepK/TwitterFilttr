@@ -4,8 +4,6 @@ package com.sun.tweetfiltrr.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -117,11 +115,8 @@ public final class TwitterUtil {
         configurationBuilder.setOAuthConsumerSecret(TwitterConstants.TWITTER_CONSUMER_SECRET);
         configurationBuilder.setOAuthAccessToken(accessToken.getToken());
         configurationBuilder.setOAuthAccessTokenSecret(accessToken.getTokenSecret());
-
-
         Configuration configuration = configurationBuilder.build();
         _twitterFactory = new TwitterFactory(configuration);
-
         _twitter = _twitterFactory.getInstance(accessToken);
       //  _twitter.setOAuthAccessToken(accessToken);
     }

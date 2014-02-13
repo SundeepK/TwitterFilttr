@@ -4,61 +4,53 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.imageloader.core.UrlImageLoader;
-import com.sun.imageloader.core.UrlImageLoaderConfiguration;
 import com.sun.tweetfiltrr.R;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.concurrent.ThreadPoolExecutor;
+import javax.inject.Inject;
 
 import twitter4j.auth.RequestToken;
 
 public class MainActivity extends SherlockFragmentActivity {
 
     private static final String TAG = MainActivity.class.getName();
-    Button _signInButton;
-	ImageView _bGImage;
+
+    @Inject UrlImageLoader _sicImageLoader;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_screen);
+        ((TweetFiltrrApplication)getApplication()).getObjectGraph().inject(this);
 
 		if (TwitterUtil.hasInternetConnection(this)) {
 
-			_signInButton = (Button) findViewById(R.id.login_to_twitter);
-			_bGImage = (ImageView) findViewById(R.id.login_screen_background);
+            Button _signInButton = (Button) findViewById(R.id.login_to_twitter);
+            ImageView _bGImage = (ImageView) findViewById(R.id.login_screen_background);
 			ImageView profileImage = (ImageView) findViewById(R.id.friend_profile_image);
 			TextView userName = (TextView) findViewById(R.id.friend_name);
 			TextView userDesc = (TextView) findViewById(R.id.friend_description);
 
-
-			ThreadPoolExecutor _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
-
-			 		   
 			   SharedPreferences sharedPreferences = PreferenceManager
 						.getDefaultSharedPreferences(this);
-			   String url = sharedPreferences.getString(
+			   String backgroundUrl = sharedPreferences.getString(
 						TwitterConstants.AUTH_USER_SCREEN_BG, null);
 			   String profileUrl = sharedPreferences.getString(
 						TwitterConstants.LOGIN_PROFILE_BG, null);
@@ -66,71 +58,33 @@ public class MainActivity extends SherlockFragmentActivity {
 						TwitterConstants.AUTH_USER_NAME_BG, null);
 			   String desc = sharedPreferences.getString(
 						TwitterConstants.AUTH_USER_DESC_BG, null);
-			   
 			   userName.setText(name);
 			   userDesc.setText(desc);
 
-			   
-				if (!TextUtils.isEmpty(profileUrl)) {
-//					 UrlImageLoaderConfiguration configs = new UrlImageLoaderConfiguration.Builder()
-//				        .setMaxCacheMemorySize(1)
-//				        .setDirectoryName("/storage/sdcard0/Pictures/twitterFiltrr")
-//				        .setImageQuality(100)
-//				         .setThreadExecutor(_threadExecutor)
-//				        .setImageType(CompressFormat.JPEG)
-//				        .setImageConfig(Bitmap.Config.ARGB_8888)
-//				        .useExternalStorage(true)
-//				        .build(this);
-//				        UrlImageLoader.getInstance().init(configs);
-//
-					   UrlImageLoader  _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
-					try {
-						
-						if(!TextUtils.isEmpty(url)){
-							_sicImageLoader.displayImage(url, _bGImage, 1);
-	
-						}					
-						_sicImageLoader.displayImage(profileUrl, profileImage, 1);
-
-					} catch (NullPointerException e) {
-						e.printStackTrace();
-					} catch (URISyntaxException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-
+            ImageLoaderUtils.attemptLoadImage(_bGImage, _sicImageLoader,backgroundUrl,1,null);
+            ImageLoaderUtils.attemptLoadImage(profileImage, _sicImageLoader,profileUrl,1,null);
 		} else {
 			displayConnectionAlert();
 		}
-		
-	
-
 	}
-	
-	@Override
-	public void finish() {
-		super.finish();
-	};
 
 	public void authenticateUser(View view) {
 
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
 
-		   if (!sharedPreferences.getBoolean(
+        if (!sharedPreferences.getBoolean(
 				TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, false)) {
-
 				new TwitterAuthenticateTask().execute();
                 finish();
-
-		} else {
-             Log.v(TAG, "User has logged in before so not authenticating");
-		     Intent intent = new Intent(MainActivity.this, TwitterFilttrLoggedInUserHome.class);
-             startActivity(intent);
-			 this.finish();
-		}
+        }else{
+            ParcelableUser user = UserRetrieverUtils.getCurrentFocusedUser(this);
+            Log.v(TAG, "User has logged in before so not authenticating");
+            Intent intent = new Intent(MainActivity.this, TwitterFilttrLoggedInUserHome.class);
+            intent.putExtra(TwitterConstants.FRIENDS_BUNDLE, user);
+            startActivity(intent);
+            this.finish();
+        }
 
 //		File f=new File("/data/data/com.sun.tweetfiltrr/databases/tweetFiltrr.db");
 //		FileInputStream fis=null;

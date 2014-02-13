@@ -80,7 +80,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
                     users.addAll(_userDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()  + " = ? ", new String[]{Long.toString(userId)}, null));
                 }
 
-                //we only expect one user since userid is alwats unique
+                //we only expect one user since userid is always unique
                 if(users.size() == 1){
                     Log.v(TAG, "Found user from DB");
                     user = users.iterator().next();
@@ -138,5 +138,6 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 		editor_.putString(TwitterConstants.AUTH_USER_DESC_BG,user_.getDescription());
 		editor_.putString(TwitterConstants.AUTH_USER_NAME_BG,user_.getScreenName());
 		editor_.putLong(TwitterConstants.AUTH_USER_ID,user_.getUserId());
+        editor_.putBoolean(TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, true);
 	}
 }

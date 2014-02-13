@@ -47,8 +47,6 @@ public class SlidingMenuFragment extends ATwitterFragment implements
         ListView.OnItemClickListener, ImageTaskListener, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener {
 
     private static final String TAG = SlidingMenuFragment.class.getName();
-    private ListView _slidingMenuListView;
-    private float _currentX = 0;
     private ImageView _blurredBackground;
     private static String BLURRED_IMAGE_PREFIX = "blurred_";
     private IImageProcessor _blurredImageProcessor;
@@ -67,7 +65,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
 
         String[] names = new String[]{"Profile", "Filter", "Settings"};
         ListAdapter navAdapter = new ArrayAdapter<String>(getActivity(), R.layout.sliding_menu_list_row, names);
-        _slidingMenuListView = (ListView) rootView.findViewById(R.id.sliding_menu_listview);
+        ListView _slidingMenuListView = (ListView) rootView.findViewById(R.id.sliding_menu_listview);
         _slidingMenuListView.setAdapter(navAdapter);
         _slidingMenuListView.setOnItemClickListener(this);
         ImageView background = (ImageView) rootView.findViewById(R.id.sliding_menu_background_image);
