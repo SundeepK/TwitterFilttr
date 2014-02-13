@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.jeremyfeinstein.slidingmenu.lib.CustomViewAbove;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterUserHomeTabsAdapter;
@@ -45,17 +44,19 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements
         menu.setMenu(R.layout.sliding_menu_fragment);
         menu.setBehindOffset(170);
         menu.setFadeEnabled(true);
-        menu.setExternalOnPageChangeListener(new CustomViewAbove.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                frag.setOpactiy(positionOffset);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-        });
+        menu.setOnOpenedListener(frag);
+        menu.setOnClosedListener(frag);
+//        menu.setExternalOnPageChangeListener(new CustomViewAbove.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                frag.setOpactiy(positionOffset);
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//
+//            }
+//        });
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.menu_frame,frag)

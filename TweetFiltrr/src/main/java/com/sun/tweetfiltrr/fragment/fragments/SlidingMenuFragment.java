@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.sun.imageloader.core.ImageSettings;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.imageloader.core.api.FailedTaskReason;
@@ -41,7 +44,7 @@ import java.io.IOException;
  * Created by Sundeep on 11/01/14.
  */
 public class SlidingMenuFragment extends ATwitterFragment implements
-        ListView.OnItemClickListener, ImageTaskListener {
+        ListView.OnItemClickListener, ImageTaskListener, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener {
 
     private static final String TAG = SlidingMenuFragment.class.getName();
     private ListView _slidingMenuListView;
@@ -49,13 +52,8 @@ public class SlidingMenuFragment extends ATwitterFragment implements
     private ImageView _blurredBackground;
     private static String BLURRED_IMAGE_PREFIX = "blurred_";
     private IImageProcessor _blurredImageProcessor;
-
-
-    public void setOpactiy(float i){
-        if(i > 6){
-            _blurredBackground.setAlpha((i * -2f));
-        }
-    }
+    private Animation _opacityOpenAnimation = new AlphaAnimation(0f, 1f);
+    private Animation _opacityCloseAnimation = new AlphaAnimation(1f, 0f);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,8 +73,13 @@ public class SlidingMenuFragment extends ATwitterFragment implements
         ImageView background = (ImageView) rootView.findViewById(R.id.sliding_menu_background_image);
         _blurredBackground = (ImageView) rootView.findViewById(R.id.sliding_menu__blurred_background_image);
         _blurredImageProcessor = new BlurredImageGenerator(getActivity());
-
-
+        //set up animations
+        _opacityCloseAnimation.setDuration(0);
+        _opacityCloseAnimation.setFillAfter(true);
+        _opacityOpenAnimation.setDuration(300);
+        _opacityOpenAnimation.setFillAfter(true);
+        //apply animation to hit it when it is created
+        _blurredBackground.setAnimation(_opacityCloseAnimation);
         UrlImageLoader imageLoader = TwitterUtil.getInstance().getGlobalImageLoader(getActivity());
 
         ImageLoaderUtils.attemptLoadImage(background,
@@ -108,25 +111,6 @@ public class SlidingMenuFragment extends ATwitterFragment implements
                         + "\n"
                         + "Followers " + _currentUser.getTotalFollowerCount()
         );
-
-
-//        rootView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-//                    case MotionEvent.ACTION_MOVE:
-//
-//                        if(event.getX() >= SlidingMenuFragment.this._currentX){
-//                            _currentX = event.getX();
-//                        }
-//                        break;
-//                }
-//
-//            return v.onTouchEvent(event);
-//            }
-//        });
-
         return rootView;
     }
 
@@ -220,5 +204,15 @@ public class SlidingMenuFragment extends ATwitterFragment implements
 //         bmp = _blurredImageProcessor.processImage(bitmap);
 
         return bmp;
+    }
+
+    @Override
+    public void onClosed() {
+        _blurredBackground.startAnimation(_opacityCloseAnimation);
+    }
+
+    @Override
+    public void onOpened() {
+        _blurredBackground.startAnimation(_opacityOpenAnimation);
     }
 }
