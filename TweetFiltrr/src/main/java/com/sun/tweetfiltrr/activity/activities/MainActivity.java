@@ -207,7 +207,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	class TwitterAuthenticateTask extends AsyncTask<String, String, RequestToken> {
 		 
-	    @Override
+	    @Override //TODO have a timeout here just incase we cant reach twitter and display an error message
 	    protected void onPostExecute(RequestToken requestToken) {
 	    	Log.v("Authentication url",Uri.parse(requestToken.getAuthenticationURL()).toString());
 	        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.getAuthenticationURL()));

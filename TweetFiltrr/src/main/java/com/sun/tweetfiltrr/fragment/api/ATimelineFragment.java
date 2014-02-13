@@ -134,7 +134,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
         if(!users.isEmpty()){
             _currentUser = users.iterator().next();
             _currentLimitCount = _currentUser.getTotalTweetCount() > 0 ? _currentUser.getTotalTweetCount(): 50;
-            Log.v(TAG, "user queried from db" + _currentUser);
+            Log.v(TAG, "user queried from db" + _currentUser.toString());
         }
 
     }
@@ -343,7 +343,7 @@ public abstract class ATimeLineFragment extends SherlockFragment implements Load
 //                message = "Tweet failed";
 //                break;
 //        }
-        Toast.makeText(getActivity(), "", 2).show();
+        Toast.makeText(getActivity(), "Successfully posted tweet", 2).show();
     }
 
     @Override

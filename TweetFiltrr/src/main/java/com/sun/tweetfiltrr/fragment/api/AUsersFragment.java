@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
@@ -57,8 +58,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
         PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,ITwitterAPICallStatus {
 
-    private int _currentLimitCount = 50;
-
+    private int _currentFriendLimit = 50;
     private static final String TAG = AUsersFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
     private static final int LIST_LOADER = 0x05;
@@ -73,6 +73,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private ParcelableUser _currentUser;
     private IDBDao<ParcelableUser> _usersToFriendDao;
+    private boolean _isCursorReady;
 
     @Inject FriendDao _friendDao;
     @Inject UrlImageLoader _sicImageLoader;
@@ -94,18 +95,21 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
         // Make sure that we are currently visible
+        //do a long check before we are sure that we can automatically search for friends
         if (this.isVisible()) {
-            // If we are becoming invisible, then...
+            // about to become visible
             if (!isVisibleToUser) {
                 Log.d(TAG, "Not visible anymore");
             }else{
                 Log.d(TAG, "Visible now!");
-
                 if(!_tabHasBeenSelected){
                     _tabHasBeenSelected = true;
-                    _pullToRefreshHandler.startRefresh();
+                    if(_currentUser != null){
+                        if(!(_currentUser.getCurrentFriendCount() > 0)){
+                            _pullToRefreshHandler.startRefresh();
+                        }
+                    }
                 }
             }
         }
@@ -115,13 +119,12 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
         View rootView = _pullToRefreshHandler.onCreateViewCallback(inflater, container, savedInstanceState);
         getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this);
         return rootView;
     }
 
+    //Get correct UsersFriendRetriever based on if the user is looking at their profile
     private ITwitterAPICall<Collection<ParcelableUser>> getRetriever(){
         if (_currentUser.getUserId() == _currentLoggedInUserId) {
             return new UsersFriendRetriever( true);
@@ -187,11 +190,11 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
         _updaters.add(new DatabaseUpdater(_friendDao,cols));
         _updaters.add(new DatabaseUpdater(_usersToFriendDao));
 
-//        Collection<ParcelableUser> users = UserRetrieverUtils.getUserFromDB(_friendDao, _currentUser);
-//
-//        if(!users.isEmpty()){
-//            _currentUser = users.iterator().next();
-//        }
+        Collection<ParcelableUser> users = UserRetrieverUtils.getUserFromDB(_friendDao, _currentUser);
+        if(!users.isEmpty()){
+            _currentUser = users.iterator().next();
+            _currentFriendLimit = (_currentUser.getCurrentFriendCount()  > 0 && _currentUser.getCurrentFriendCount() <=  100 )? _currentUser.getCurrentFriendCount(): 100;
+        }
 
     }
 
@@ -218,7 +221,6 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
         ZoomListView.OnItemFocused listener = friendsCursorAdapter;
         _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser, listener, _updaters);
 
-
     }
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_,
@@ -234,7 +236,6 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
         Log.v(TAG, "On load startyed with future size:" + futureTask_.size());
         AsyncUserDBUpdateTask<Integer> updatetask =
                 new AsyncUserDBUpdateTask<Integer>(1, TimeUnit.MINUTES, _updaters, _pullToRefreshHandler);
-
         updatetask.execute(futureTask_.toArray(new Future[futureTask_.size()]));
     }
 
@@ -242,6 +243,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public void onLoadFinished(Loader<Cursor> arg, Cursor cursor) {
         _dataAdapter.swapCursor(cursor);
+        _isCursorReady = true;
     }
 
     @Override
@@ -253,21 +255,24 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        if(_tabHasBeenSelected){
-
-            if (_currentLimitCount < _currentUser.getCurrentFriendCount()) {
-                Log.v(TAG, "_currentLimitCount: " + _currentLimitCount + " current friend acount " +  _currentUser.getCurrentFriendCount());
-                _currentLimitCount += 50;
+        if(_tabHasBeenSelected && _isCursorReady){
+            if (_currentFriendLimit < _currentUser.getCurrentFriendCount()) {
+                Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount());
+                int diff = _currentUser.getCurrentFriendCount()-  _currentFriendLimit;
+                if(diff > 100){
+                    _currentFriendLimit += 100;
+                }else{
+                    _currentFriendLimit += diff;
+                }
                 restartCursor();
                 return false;
             } else if (_isFinishedLoading){
-                Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentLimitCount);
+                Log.v(TAG, "not looing fro tweets onscroll, new limit count: " + _currentFriendLimit);
                 return false;
             }else{
                 Log.v(TAG, "going to load more friends for:" + _currentUser);
                 return true;
             }
-
         }else{
             Log.v(TAG, "_tabHasBeenSelected is false");
         return false;
@@ -291,7 +296,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
             Log.v(TAG, "User after rowID query" + friend.toString());
             break;
         }
-
+        //start new activity for the clicked user
         Intent i = new Intent(getActivity(), TwitterUserProfileHome.class);
         i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
         _userQueue.add(newFriend);
@@ -303,18 +308,13 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public void OnRefreshComplete(Collection<ParcelableUser> twitterParcelable) {
         Log.v(TAG, "on refresh completed with count:" + twitterParcelable.size());
-
-
-        int totalNewTweets = twitterParcelable.size();
-        Log.v(TAG, "on refresh completed timeline frag qith size " + totalNewTweets);
-
-        _isFinishedLoading = (totalNewTweets <= 1);
-        _currentLimitCount += totalNewTweets;
-
+        int totalFriendsReturned = twitterParcelable.size();
+        Log.v(TAG, "on refresh completed timeline frag qith size " + totalFriendsReturned);
+        _isFinishedLoading = (totalFriendsReturned <= 1);
+        _currentFriendLimit += totalFriendsReturned;
         if(this.getActivity() != null){
             restartCursor();
         }
-
     }
 
     @Override
@@ -325,17 +325,17 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     }
 
     protected int getTimeLineCount(){
-        return _currentLimitCount;
+        return _currentFriendLimit;
     }
 
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
-
     }
 
     @Override
     public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall apiCallType_) {
-
+        //add generic error
+        Toast.makeText(getActivity(), "Problem connecting to twitter", 2).show();
     }
 }
 

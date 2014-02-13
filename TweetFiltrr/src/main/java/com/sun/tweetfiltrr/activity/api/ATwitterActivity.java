@@ -53,16 +53,11 @@ public class ATwitterActivity extends SherlockFragmentActivity {
     }
 
 
-    @Override
+    @Override //TODO check for internet connection becuase if its slow/cant connect tghen we will get null user
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
         loadActionBar();
-
-
-
-
     }
 
 

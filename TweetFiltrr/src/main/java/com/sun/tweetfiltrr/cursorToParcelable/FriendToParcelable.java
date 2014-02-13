@@ -39,7 +39,7 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_MAXID.a()));
 		long groupId = cursorFriend_.getLong(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_GROUP_ID.a()));
-		long lastCursorNo = cursorFriend_.getLong(cursorFriend_
+		long lastFriendPageNo = cursorFriend_.getLong(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.LAST_FRIEND_PAGE_NO.a()));
 		int lastTimelineNo = cursorFriend_.getInt(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.LAST_TIMELINE_PAGE_NO.a()));
@@ -53,6 +53,10 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
                 .getColumnIndexOrThrow(FriendColumn.TOTAL_NEW_TWEETS.a()));
         int totalTweetCount = cursorFriend_.getInt(cursorFriend_
                 .getColumnIndexOrThrow(FriendColumn.TWEET_COUNT.a()));
+        int lastFriendIndex = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.COLUMN_LAST_FRIEND_INDEX.a()));
+        int currentFriendCount = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.a()));
 		
 		Log.v(TAG, "Since ID passed for query is : " + sinceID
 				+ " with page number " + maxID + " with tweet count: " + newTweetCount);
@@ -66,14 +70,15 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 		friend.setProfileBannerImageUrl(bannerProfileUrl);
 		friend.setProfileImageUrl(profileImage);
 		friend.setDescription(description);
-		friend.setLastFriendPageNumber(lastCursorNo);
+		friend.setLastFriendPageNumber(lastFriendPageNo);
 		friend.setFriendCount(friendCount);
 		friend.hasLoadedAllTweetsForToday(false);
 		friend.setLastTimelinePageNumber(lastTimelineNo);
 		friend.setIsFriend(isFriend);
         friend.setNewTweetCount(newTweetCount);
         friend.setTotalTweetCount(totalTweetCount);
-
+        friend.setLastFriendIndex(lastFriendIndex);
+        friend.setCurrentFriendTotal(currentFriendCount);
         return friend;
 		
 	}

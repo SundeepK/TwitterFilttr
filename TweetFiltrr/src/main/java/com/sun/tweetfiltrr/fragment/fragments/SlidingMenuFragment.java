@@ -52,7 +52,9 @@ public class SlidingMenuFragment extends ATwitterFragment implements
 
 
     public void setOpactiy(float i){
-       _blurredBackground.setAlpha((i * -2f));
+        if(i > 6){
+            _blurredBackground.setAlpha((i * -2f));
+        }
     }
 
     @Override
