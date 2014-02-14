@@ -67,12 +67,6 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 		}
 	}
 
-    @Override
-    public void startActivity(Intent intent) {
-        overridePendingTransition(R.anim.display_anim_top_bot_top, R.anim.fade_in_anim);
-        super.startActivity(intent);
-    }
-
     public void authenticateUser() {
 
 		SharedPreferences sharedPreferences = PreferenceManager
@@ -84,6 +78,7 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
         }else{
             new AsyncAccessTokenRetriever(this, this).execute("");
         }
+
 
 //		File f=new File("/data/data/com.sun.tweetfiltrr/databases/tweetFiltrr.db");
 //		FileInputStream fis=null;

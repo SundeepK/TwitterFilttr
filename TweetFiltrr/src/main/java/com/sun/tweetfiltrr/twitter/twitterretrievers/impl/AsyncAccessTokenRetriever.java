@@ -51,11 +51,11 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 	@Override
     protected ParcelableUser doInBackground(String... params) {
 
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(_context);

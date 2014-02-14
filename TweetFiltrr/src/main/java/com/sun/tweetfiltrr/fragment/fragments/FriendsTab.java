@@ -19,8 +19,8 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.UsersToFriendsTable.UsersToFriendsColumn;
 
 
-public class FriendsFragment extends AUsersFragment {
-    private static final String TAG = FriendsFragment.class.getName();
+public class FriendsTab extends AUsersFragment {
+    private static final String TAG = FriendsTab.class.getName();
 
 
     @Override

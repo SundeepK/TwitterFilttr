@@ -5,19 +5,16 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFollowerRetriever;
-import com.sun.tweetfiltrr.twitter.callables.FollowersRetriever;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.UserFollowersDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
+import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.callables.FollowersRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFollowerRetriever;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,21 +24,9 @@ import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.UsersToFollowersTable.UsersToFollowersColumn;
 
 
-public class FollowersFragment extends AUsersFragment {
-    private static final String TAG = FollowersFragment.class.getName();
+public class FollowersTab extends AUsersFragment {
+    private static final String TAG = FollowersTab.class.getName();
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        return rootView;
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {

@@ -9,7 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
+import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -23,7 +24,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
     private ActionBar _actionBar;
     private FragmentManager _fragmentManager;
     private ArrayList<ParcelableUser> _users;
-    private static final String[] titles = { "Tweets", "Friends" };
+    private static final String[] titles = { "Tweets", "Friends", "Followers" };
 
 
    private final List<Fragment> fragments = new ArrayList<Fragment>();
@@ -89,17 +90,20 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
 
 	        switch (index) {
             case 0:
-                   frag =  new UserDetailsTimelineTab();
-                   frag.setArguments(bundle);
+                 frag =  new UserDetailsTimelineTab();
+                 frag.setArguments(bundle);
                  frag.setUserVisibleHint(true);
-                   return frag;
+                 return frag;
 	        case 1:
                 Log.v(TAG, "tab is switched to second");
-                frag =  new FriendsFragment();
+                frag =  new FriendsTab();
                 frag.setArguments(bundle);
                 return frag;
 	        case 2:
-
+                Log.v(TAG, "tab is switched to followers");
+                frag =  new FollowersTab();
+                frag.setArguments(bundle);
+                return frag;
 	        }
 
 	        return null;
@@ -113,7 +117,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
 	    @Override
 	    public int getCount() {
 	        // get item count - equal to number of tabs
-	        return 2;
+	        return 3;
 	    }
 
     @Override

@@ -15,8 +15,8 @@ import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
-import com.sun.tweetfiltrr.fragment.fragments.FollowersFragment;
-import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
+import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
+import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
@@ -41,8 +41,8 @@ import dagger.Provides;
                 UserTimelineTab.class,
                 UserDetailsTimelineTab.class,
                 AUsersFragment.class,
-                FriendsFragment.class,
-                FollowersFragment.class,
+                FriendsTab.class,
+                FollowersTab.class,
                 FriendDao.class,
                 TimeLineDao.class,
                 FriendKeywordDao.class,

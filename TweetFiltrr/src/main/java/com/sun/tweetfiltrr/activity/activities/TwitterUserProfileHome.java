@@ -74,7 +74,7 @@ public class TwitterUserProfileHome extends ATwitterActivity implements TabListe
 //                frag = getSupportFragmentManager().findFragmentByTag("friend");
 //
 //                if(frag == null){
-//                frag =  new FriendsFragment();
+//                frag =  new FriendsTab();
 //                frag.setArguments(bundle);
 //                getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.tweets_container, frag, "friend").addToBackStack("friend").commit();
