@@ -154,26 +154,15 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 
             }
 
-            /**
-             * Listen to the list scroll. This is where magic happens ;)
-             */
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                // Calculate the ratio between the scroll amount and the list
-                // header weight to determinate the top picture alpha
                 alpha = (float) -_headerView.getTop() / (float) TOP_HEIGHT;
-                // Apply a ceil
                 if (alpha > 1) {
                     alpha = 1;
                 }
                 alpha*=4;
                 Log.v(TAG, "alpha value is: " + alpha);
-                // Apply on the ImageView if needed
                 _blurredBackground.setAlpha(alpha);
-
-                // Parallax effect : we apply half the scroll amount to our
-                // three views
                _blurredBackground.setTop(_headerView.getTop() / 2);
                _backgroundImage.setTop(_headerView.getTop() / 2);
 
@@ -251,8 +240,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
             if(_currentUser != null){
             Log.v(TAG, "I have parcelalbe!!" + _currentUser.getScreenName());
             Log.v(TAG, "User has timeline size!! " + _currentUser.getUserTimeLine().size());
-
-                return;
+               return;
             }
         }
 

@@ -58,12 +58,12 @@ import twitter4j.TwitterException;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
-public abstract class ATimeLineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
+public abstract class ATimelineFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         AdapterView.OnItemClickListener, PullToRefreshView.OnNewTweetRefreshListener<Collection<ParcelableUser>>,
         LoadMoreOnScrollListener.LoadMoreListener<Collection<ParcelableUser>>,SingleTweetAdapter.OnTweetOperation,
         ITwitterAPICallStatus {
 
-    private static final String TAG = ATimeLineFragment.class.getName();
+    private static final String TAG = ATimelineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
     private static final int TUTORIAL_LIST_LOADER = 0x04;
     private int _currentLimitCount = 50;

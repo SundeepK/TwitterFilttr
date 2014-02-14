@@ -19,13 +19,18 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
-import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
+
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import twitter4j.TwitterException;
 import twitter4j.auth.RequestToken;
 
 public class MainActivity extends SherlockFragmentActivity {
@@ -47,6 +52,8 @@ public class MainActivity extends SherlockFragmentActivity {
 			ImageView profileImage = (ImageView) findViewById(R.id.friend_profile_image);
 			TextView userName = (TextView) findViewById(R.id.friend_name);
 			TextView userDesc = (TextView) findViewById(R.id.friend_description);
+            SmoothProgressBar progressBar = (SmoothProgressBar) findViewById(R.id.progress_bar);
+            final  SmoothProgressBarWrapper wrapper = new SmoothProgressBarWrapper(progressBar);
 
 			   SharedPreferences sharedPreferences = PreferenceManager
 						.getDefaultSharedPreferences(this);
@@ -62,13 +69,19 @@ public class MainActivity extends SherlockFragmentActivity {
 			   userDesc.setText(desc);
 
             ImageLoaderUtils.attemptLoadImage(_bGImage, _sicImageLoader,backgroundUrl,1,null);
-            ImageLoaderUtils.attemptLoadImage(profileImage, _sicImageLoader,profileUrl,1,null);
+            ImageLoaderUtils.attemptLoadImage(profileImage, _sicImageLoader, profileUrl, 1, null);
+            _signInButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    authenticateUser(wrapper);
+                }
+            });
 		} else {
 			displayConnectionAlert();
 		}
 	}
 
-	public void authenticateUser(View view) {
+	public void authenticateUser(SmoothProgressBarWrapper wrapper_) {
 
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -78,7 +91,15 @@ public class MainActivity extends SherlockFragmentActivity {
 				new TwitterAuthenticateTask().execute();
                 finish();
         }else{
-            ParcelableUser user = UserRetrieverUtils.getCurrentFocusedUser(this);
+
+            ParcelableUser user = null;
+            try {
+                user = new AsyncAccessTokenRetriever(this).execute("").get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
             Log.v(TAG, "User has logged in before so not authenticating");
             Intent intent = new Intent(MainActivity.this, TwitterFilttrLoggedInUserHome.class);
             intent.putExtra(TwitterConstants.FRIENDS_BUNDLE, user);
@@ -143,21 +164,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		alertDialog.show();
 
 	}
-	
-//	private void initControl() throws InterruptedException, ExecutionException {
-//		Uri uri = getActivity().getIntent().getData();
-//		if (uri != null
-//				&& uri.toString().startsWith(
-//						TwitterConstants.TWITTER_CALLBACK_URL)) {
-//			String verifier = uri
-//					.getQueryParameter(TwitterConstants.URL_PARAMETER_TWITTER_OAUTH_VERIFIER);
-//			Log.v(TAG, "Verifier is " + verifier);
-//			_userID = new AsyncAccessTokenRetriever(getActivity()).execute(verifier).get();
-//		} else
-//			_userID = new AsyncAccessTokenRetriever(getActivity()).execute("").get();
-//	}
-
-
 
 	class TwitterAuthenticateTask extends AsyncTask<String, String, RequestToken> {
 		 
@@ -171,8 +177,13 @@ public class MainActivity extends SherlockFragmentActivity {
 	 
 	    @Override
 	    protected RequestToken doInBackground(String... params) {
-	        return TwitterUtil.getInstance().getRequestToken();
-	    }
+            try {
+                return TwitterUtil.getInstance().getRequestToken();
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 	}
 
 }

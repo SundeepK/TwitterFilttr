@@ -60,7 +60,7 @@ public class TwitterUserProfileHome extends ATwitterActivity implements TabListe
 //                frag = getSupportFragmentManager().findFragmentByTag("user");
 //
 //                if(frag == null){
-//                    frag =  new UserDetailsTimeLineTab();
+//                    frag =  new UserDetailsTimelineTab();
 //                    frag.setArguments(bundle);
 //                    getSupportFragmentManager().beginTransaction()
 //                            .replace(R.id.tweets_container, frag, "user").addToBackStack("user").commit();

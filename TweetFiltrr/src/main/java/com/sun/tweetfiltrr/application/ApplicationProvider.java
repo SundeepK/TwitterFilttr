@@ -5,15 +5,15 @@ import android.content.Context;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.activity.activities.MainActivity;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
-import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
+import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
-import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
-import com.sun.tweetfiltrr.fragment.fragments.TimeLineTab;
-import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
+import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserProfileFragment;
-import com.sun.tweetfiltrr.fragment.fragments.UserTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterPageParameter;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterQueryParameter;
@@ -32,15 +32,15 @@ import dagger.Provides;
  */
 @Module(
         injects = {
-                ATimeLineFragment.class,
+                ATimelineFragment.class,
                 TwitterFilttrLoggedInUserHome.class,
                 TweetFiltrrApplication.class,
-                CustomKeywordTimeLineTab.class,
+                CustomKeywordTimelineTab.class,
                 MentionsTab.class,
-                TimeLineTab.class,
-                UserTimeLineTab.class,
+                TimelineTab.class,
+                UserTimelineTab.class,
                 TweetRetrieverWrapper.class,
-                UserDetailsTimeLineTab.class,
+                UserDetailsTimelineTab.class,
                 AUsersFragment.class,
                 UserProfileFragment.class,
                 TwitterPageParameter.class,

@@ -8,97 +8,54 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 
 public class AsyncAccessTokenRetriever extends AsyncTask<String, String, ParcelableUser> {
 
 	private static final String TAG = AsyncAccessTokenRetriever.class.getName();
 
 	private Context _context;
-	IDBDao<ParcelableUser> _userDao;
+	private FriendDao _userDao;
+    private AccessTokenRetriever _tokenRetriever;
 	public AsyncAccessTokenRetriever(Context context_){
 		_context = context_;
-        _userDao = new FriendDao(context_.getContentResolver(), new FriendToParcelable());
+        _userDao = new FriendDao(_context.getContentResolver(), new FriendToParcelable());
+        _tokenRetriever = new AccessTokenRetriever(_userDao);
 	}
 	
 	@Override
-	protected ParcelableUser doInBackground(String... params) {
+    protected ParcelableUser doInBackground(String... params) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(_context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-		RequestToken requestToken = TwitterUtil.getInstance()
-				.getRequestToken();
-		SharedPreferences sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(_context);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
 
-		
-		ParcelableUser user = null;
-		synchronized (this){
-		try{
-			if (!(params[0] == "")) {
-				Log.v(TAG, "Verifier is not null so doing OAuth with request token" + requestToken.getToken() + " secrect  " + requestToken.getTokenSecret());
-                Log.v(TAG, "params is " +params[0] );
+        ParcelableUser user = null;
+        synchronized (this) {
+            try {
 
-//                AccessToken accessToken = TwitterUtil.getInstance().getTwitter().getOAuthAccessToken(
-//						requestToken, params[0]);
-
-                AccessToken accessToken = new AccessToken(TwitterConstants.TWITTER_OAUTH_KEY, TwitterConstants.TWITTER_OAUTH_SECRET);
-				setUserPreferences(editor, accessToken);
-				TwitterUtil.getInstance().setTwitterFactories(accessToken);
-				
-				user = new ParcelableUser(TwitterUtil.getInstance().getTwitter().showUser(accessToken
-						.getUserId()));
-				persistUserDetails(editor, user);
-				editor.commit();
-
-				return user;
-			} else {
-
-				String accessTokenString = sharedPreferences.getString(
-						TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN, "");
-				String accessTokenSecret = sharedPreferences.getString(
-						TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
-						"");
-				AccessToken accessToken = new AccessToken(accessTokenString,
-						accessTokenSecret);
-				TwitterUtil.getInstance().setTwitterFactories(accessToken);
-
-                long userId = sharedPreferences.getLong(
-                        TwitterConstants.AUTH_USER_ID, -1l);
-                Collection<ParcelableUser> users = new ArrayList<ParcelableUser>(1);
-                if(userId > -1){
-                    users.addAll(_userDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()  + " = ? ", new String[]{Long.toString(userId)}, null));
-                }
-
-                //we only expect one user since userid is always unique
-                if(users.size() == 1){
-                    Log.v(TAG, "Found user from DB");
-                    user = users.iterator().next();
-                }else{
-                    user = new ParcelableUser(TwitterUtil.getInstance()
-                            .getTwitter().showUser(accessToken.getUserId()));
-                }
+                AccessTokenRetriever.UserBundle bundle =
+                        _tokenRetriever.retrieverAccessToken(sharedPreferences, params[0]);
+                AccessToken accessToken = bundle.getAccessToken();
+                user = bundle.getUser();
+                setUserPreferences(editor, accessToken);
+                persistUserDetails(editor, user);
                 TwitterUtil.getInstance().setCurrentUser(user);
-				return user;
+                TwitterUtil.getInstance().setTwitterFactories(accessToken);
+                editor.commit();
 
-			}
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
         }
 
-		return null; 
-	}
+        return user;
+    }
 
 //    private void setUserPreferences(SharedPreferences.Editor editor_, RequestToken accessToken_ ) {
 //        editor_.putString(

@@ -11,16 +11,16 @@ import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.FriendKeywordDao;
 import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
 import com.sun.tweetfiltrr.database.dao.TimeLineDao;
-import com.sun.tweetfiltrr.fragment.api.ATimeLineFragment;
+import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
-import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
-import com.sun.tweetfiltrr.fragment.fragments.TimeLineTab;
-import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimeLineTab;
-import com.sun.tweetfiltrr.fragment.fragments.UserTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
+import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
+import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
 
 import javax.inject.Singleton;
 
@@ -32,14 +32,14 @@ import dagger.Provides;
  */
 @Module(
         injects = {
-                ATimeLineFragment.class,
+                ATimelineFragment.class,
                 TwitterFilttrLoggedInUserHome.class,
                 TweetFiltrrApplication.class,
-                CustomKeywordTimeLineTab.class,
+                CustomKeywordTimelineTab.class,
                 MentionsTab.class,
-                TimeLineTab.class,
-                UserTimeLineTab.class,
-                UserDetailsTimeLineTab.class,
+                TimelineTab.class,
+                UserTimelineTab.class,
+                UserDetailsTimelineTab.class,
                 AUsersFragment.class,
                 FriendsFragment.class,
                 FollowersFragment.class,

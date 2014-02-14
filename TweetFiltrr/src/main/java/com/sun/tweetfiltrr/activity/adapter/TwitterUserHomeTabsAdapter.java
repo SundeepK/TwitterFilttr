@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
@@ -33,7 +33,7 @@ public class TwitterUserHomeTabsAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
-               frag = new CustomKeywordTimeLineTab();
+               frag = new CustomKeywordTimelineTab();
                frag.setArguments(bundle);
                return frag;
 

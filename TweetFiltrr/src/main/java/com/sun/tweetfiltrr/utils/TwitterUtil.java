@@ -126,13 +126,13 @@ public final class TwitterUtil {
         return _twitter;
     }
 
-    public RequestToken getRequestToken() {
+    public RequestToken getRequestToken() throws TwitterException {
         if (_requestToken == null) {
             try {
                 _requestToken = _twitterFactory.getInstance().getOAuthRequestToken(TwitterConstants.TWITTER_CALLBACK_URL);
             } catch (TwitterException e) {
                 Log.v(TAG, "error gettings requesttoken");
-                e.printStackTrace();
+                throw new TwitterException(e);
             }
         }
         return _requestToken;

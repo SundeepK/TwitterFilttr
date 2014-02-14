@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsFragment;
-import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimeLineTab;
+import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
@@ -89,7 +89,7 @@ public class TwitterTabsAdapter  extends FragmentPagerAdapter implements ActionB
 
 	        switch (index) {
             case 0:
-                   frag =  new UserDetailsTimeLineTab();
+                   frag =  new UserDetailsTimelineTab();
                    frag.setArguments(bundle);
                  frag.setUserVisibleHint(true);
                    return frag;
