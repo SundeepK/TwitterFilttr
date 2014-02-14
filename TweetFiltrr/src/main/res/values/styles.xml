@@ -28,6 +28,7 @@
         <item name="height">45dip</item>
     </style>
 
+
     <!--<style name="CustomDialogTheme" parent="@android:style/Theme.Holo.Light.Dialog">-->
         <!--<item name="android:windowBackground">@null</item>-->
         <!--<item name="android:windowIsFloating">true</item>-->

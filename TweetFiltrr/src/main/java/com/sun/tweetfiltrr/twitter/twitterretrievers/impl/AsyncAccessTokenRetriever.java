@@ -22,7 +22,27 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 	private Context _context;
 	private FriendDao _userDao;
     private AccessTokenRetriever _tokenRetriever;
-	public AsyncAccessTokenRetriever(Context context_){
+    private OnTokenFinish _lis;
+    public interface OnTokenFinish {
+        public void OnTokenFinish(ParcelableUser parcelableUser);
+    }
+
+    public AsyncAccessTokenRetriever(Context context_, OnTokenFinish list){
+        _context = context_;
+        _lis = list;
+        _userDao = new FriendDao(_context.getContentResolver(), new FriendToParcelable());
+        _tokenRetriever = new AccessTokenRetriever(_userDao);
+    }
+
+    @Override
+    protected void onPostExecute(ParcelableUser parcelableUser) {
+        super.onPostExecute(parcelableUser);
+        if(_lis !=null){
+            _lis.OnTokenFinish(parcelableUser);
+        }
+    }
+
+    public AsyncAccessTokenRetriever(Context context_){
 		_context = context_;
         _userDao = new FriendDao(_context.getContentResolver(), new FriendToParcelable());
         _tokenRetriever = new AccessTokenRetriever(_userDao);
@@ -30,6 +50,13 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 	
 	@Override
     protected ParcelableUser doInBackground(String... params) {
+
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(_context);
         SharedPreferences.Editor editor = sharedPreferences.edit();

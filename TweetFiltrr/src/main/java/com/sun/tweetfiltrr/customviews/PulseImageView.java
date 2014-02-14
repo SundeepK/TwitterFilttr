@@ -23,7 +23,8 @@ public class PulseImageView extends ImageView {
 
     private final RectF _bitmapRect = new RectF();
     private  BitmapShader _bitmapShader;
-    private  Paint _bitmapPaint;
+    private  Paint _bitmapPaint = new Paint();
+
     private  int _bitmapWidth;
     private  int _bitmapHeight;
     private  Matrix _matrix = new Matrix();
@@ -44,7 +45,7 @@ public class PulseImageView extends ImageView {
     @Override
     public void setImageBitmap(Bitmap bitmap) {
         super.setImageBitmap(bitmap);
-
+        if(bitmap !=null){
         _bitmapWidth = bitmap.getWidth();
         _bitmapHeight = bitmap.getHeight();
         _bitmapRect.set(0, 0, _bitmapWidth, _bitmapHeight);
@@ -52,7 +53,6 @@ public class PulseImageView extends ImageView {
         _bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         _bitmapShader.setLocalMatrix(_matrix);
 
-        _bitmapPaint = new Paint();
         _bitmapPaint.setStyle(Paint.Style.FILL);
         _bitmapPaint.setAntiAlias(true);
         _bitmapPaint.setShader(_bitmapShader);
@@ -70,19 +70,31 @@ public class PulseImageView extends ImageView {
             dy = ( _bitmapHeight - _bitmapRect.height() * scale) * 0.5f;
         }
         Log.v(TAG, "scale is " + scale);
-        _bitmapRect.set(0, 0, _bitmapWidth*2, _bitmapHeight*2);
+        int top = getTop();
+        int left = getLeft();
+            int right = getRight();
+            int bot = getBottom();
+    //   _bitmapRect.set(0, 0, _bitmapWidth, _bitmapHeight);
+
        _matrix.setScale(2, 2);
-       // _matrix.setTranslate((int) (dx + 0.5f),
-       //         (int) (dy + 0.5f));
+//       _matrix.postTranslate((int) (50),
+//                (int) (50));
         _bitmapShader.setLocalMatrix(_matrix);
 
         invalidate();
+        }
 
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawOval(_bitmapRect, _bitmapPaint);
+//        if(_bitmapWidth > 0){
+            Matrix maxt = new Matrix();
+            maxt.setTranslate((float)(_bitmapWidth/2),(float)(_bitmapHeight/2) );
+         //   canvas.setMatrix(maxt);
+            canvas.drawOval(_bitmapRect, _bitmapPaint);
+//        }
+
     }
 }
