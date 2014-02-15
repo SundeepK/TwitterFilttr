@@ -29,6 +29,9 @@ public  class FavouriteTweet implements ITwitterAPICall<ParcelableTweet> {
         ParcelableTweet newTweet = null;
         ParcelableTweet tweetToProcess =  user_.getUser().getUserTimeLine().iterator().next();
         SimpleDateFormat format = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal().get();
+
+        Log.v(TAG, "fav before " + tweetToProcess.toString());
+
         try {
             twitter4j.Status status = twitter.createFavorite(tweetToProcess.getTweetID());
             newTweet = new ParcelableTweet(status, format.format(status.getCreatedAt()), status.getUser().getId());
@@ -40,6 +43,7 @@ public  class FavouriteTweet implements ITwitterAPICall<ParcelableTweet> {
             if(tweetToProcess.isMention()){
                 newTweet.setIsMention(true);
             }
+            Log.v(TAG, "fav after " + newTweet.toString());
 
 
         } catch (TwitterException e) {

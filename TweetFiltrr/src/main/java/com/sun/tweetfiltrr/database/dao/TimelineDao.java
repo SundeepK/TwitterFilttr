@@ -67,7 +67,7 @@ public class TimeLineDao extends ADBDao<ParcelableTweet> {
             }else if (TextUtils.equals(column, TimelineColumn.IS_RETWEETED.s())) {
                 contentValue.put(TimelineColumn.IS_RETWEETED.s(), timeline_.isRetweeted());
             }else if (TextUtils.equals(column, TimelineColumn.IS_FAVOURITE.s())) {
-                contentValue.put(TimelineColumn.IS_FAVOURITE.s(), timeline_.isFavourite());
+                contentValue.put(TimelineColumn.IS_FAVOURITE.s(), (timeline_.isFavourite() ? 1 : 0) );
             }else if (TextUtils.equals(column, TimelineColumn.IS_MENTION.s())) {
                 contentValue.put(TimelineColumn.IS_MENTION.s(), timeline_.isMention());
             }else if (TextUtils.equals(column, TimelineColumn.IS_KEYWORD_SEARCH_TWEET.s())) {

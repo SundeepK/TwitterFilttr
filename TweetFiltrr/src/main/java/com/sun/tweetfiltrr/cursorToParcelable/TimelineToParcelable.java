@@ -38,7 +38,7 @@ public class TimelineToParcelable implements CursorToParcelable<ParcelableTweet>
         String photoUrl = cursorTimeline_.getString(cursorTimeline_
                 .getColumnIndexOrThrow(TimelineColumn.PHOTO_URL.a()));
         boolean isFav = cursorTimeline_.getInt(cursorTimeline_
-                .getColumnIndexOrThrow(TimelineColumn.IS_FAVOURITE.a()))  == 1 ? true : false ;
+                .getColumnIndexOrThrow(TimelineColumn.IS_FAVOURITE.a())) == 1;
         boolean isRetweeted = cursorTimeline_.getInt(cursorTimeline_
                 .getColumnIndexOrThrow(TimelineColumn.IS_RETWEETED.a())) == 1 ? true : false ;
         boolean isMention = cursorTimeline_.getInt(cursorTimeline_
@@ -49,7 +49,8 @@ public class TimelineToParcelable implements CursorToParcelable<ParcelableTweet>
         }
 
 
-		return new ParcelableTweet(tweetText, tweetDate, tweetID, friendID,
+
+        return new ParcelableTweet(tweetText, tweetDate, tweetID, friendID,
 				inReplyToScreenName,inReplyToTweetId,inReplyToUserId, photoUrl, isFav, isRetweeted , isMention);
 	}
 

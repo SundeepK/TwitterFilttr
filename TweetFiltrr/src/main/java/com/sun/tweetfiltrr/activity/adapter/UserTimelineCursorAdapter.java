@@ -89,9 +89,12 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         tweetTextView.setText(tweet.getTweetText());
 
         ImageButton favBut = (ImageButton) view_.findViewById(R.id.favourite_but);
-        favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         if(tweet.isFavourite()){
+            favBut.setEnabled(false);
             favBut.setBackgroundColor(Color.rgb(71, 71, 71));
+        }else{
+            favBut.setBackgroundColor(Color.rgb(0, 0, 0));
+            favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         }
 
         ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
@@ -100,6 +103,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
             reTweetBut.setEnabled(false);
             reTweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
         }else{
+            reTweetBut.setBackgroundColor(Color.rgb(0, 0, 0));
             reTweetBut.setOnClickListener(getReTweetOnClick(user, _onTweetOperationLis));
         }
 
@@ -108,7 +112,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
         ImageButton quoteTweetBut = (ImageButton) view_.findViewById(R.id.copy_tweet_but);
         quoteTweetBut.setOnClickListener(getQuoteOnClick(user, _onTweetOperationLis));
-
+        //Log.v(TAG, "bindview called for tweet :" + tweet + " with fav bool as: "+ tweet.isFavourite());
 	}
 
     @Override
@@ -123,7 +127,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
         long id =  cursor.getLong(cursor.getColumnIndexOrThrow(TimelineTable.TimelineColumn.TWEET_ID.a()));
-        Log.v(TAG, "item id in cursor adapter " + id);
+     //   Log.v(TAG, "item id in cursor adapter " + id);
         return id;
     }
 
@@ -203,6 +207,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 	@Override
 	public View newView(Context context, Cursor  cursor, ViewGroup parent) {
 		final View view=_inflater.inflate(_layout,parent,false);
+
         return view;
 	}
 
@@ -221,6 +226,10 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
     @Override
     public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_) {
+        Cursor cursor = getCursor();
+        cursor.moveToPosition(listViewPosition_);
+        ParcelableTweet tweet = getParcelable(cursor).getUserTimeLine().iterator().next();
+        Log.v(TAG,  "item pos " +  listViewPosition_ +" onlonglick tweet is: " + tweet);
         return focusedView_.findViewById(R.id.tweet_operation_buttons);
     }
 

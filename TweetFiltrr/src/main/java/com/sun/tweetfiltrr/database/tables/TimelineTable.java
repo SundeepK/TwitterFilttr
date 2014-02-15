@@ -56,7 +56,7 @@ public class TimelineTable {
 			+ TimelineColumn._ID.s()	+ " integer primary key autoincrement, " 
 			+ TimelineColumn.FRIEND_ID.s()	+ " integer , "
 			+ TimelineColumn.TIMELINE_TEXT.s()  + " text , "
-			+ TimelineColumn.TWEET_ID.s()  + " integer , "
+			+ TimelineColumn.TWEET_ID.s()  + "  integer not null , "
 			+ TimelineColumn.IN_REPLY_SCREENNAME.s()  + " text , "
             + TimelineColumn.PHOTO_URL.s()  + " text , "
             + TimelineColumn.IN_REPLY_USERID.s()  + " integer , "

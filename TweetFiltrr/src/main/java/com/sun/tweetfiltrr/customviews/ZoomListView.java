@@ -124,11 +124,11 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             getParent().requestDisallowInterceptTouchEvent(true);
         }
 
-        scaleAllVisibleViews(shouldEnable);
+        scaleAllVisibleViews(shouldEnable, itemPos_);
     }
 
 
-    private void scaleAllVisibleViews(final boolean shouldEnable_) {
+    private void scaleAllVisibleViews(final boolean shouldEnable_, int listViewPosition_) {
         final ListAdapter adapter = getAdapter();
         Animation scaleAnimation;
         if(_isZoomed){
@@ -139,13 +139,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
         int count = getChildCount();
             for (int i = 0; i < count; i++) {
-                applyAnimation(i, adapter, shouldEnable_, scaleAnimation);
+                applyAnimation(i, listViewPosition_, adapter, shouldEnable_, scaleAnimation);
             }
         invalidate();
     }
 
 
-    private void applyAnimation(int position_, ListAdapter adapter_, boolean shouldEnable_, Animation animation_){
+    private void applyAnimation(int position_, int itemFocusedListViewPosition_, ListAdapter adapter_, boolean shouldEnable_, Animation animation_){
         if (_isZoomed) {
                 if (_currentFocusedId != adapter_.getItemId(position_)) {
                     scaleView(position_,  shouldEnable_, animation_);
@@ -158,7 +158,9 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 scaleView(position_,  shouldEnable_, animation_);
             }else{
                 View view = getChildAt(position_);
-                final View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, getAdapter().getItemId(position_));
+                int p =  getFirstVisiblePosition() + position_;
+                final View viewToShow =  _onItemFocusedLis.onItemFocused(view, p,
+                        getAdapter().getItemId(position_));
 
                 if(viewToShow != null){
                     viewToShow.setVisibility(GONE);
@@ -172,7 +174,10 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     private void displayExpandingView(int position_, ListAdapter adapter_){
         View view = getChildAt(position_);
         if(view != null){
-            View viewToShow =  _onItemFocusedLis.onItemFocused(view, position_, adapter_.getItemId(position_));
+          //  Log.e(TAG, "onlongclickpos is : " + getFirstVisiblePosition() + position_);
+            //the below position can be used to query the underlying cursor in the adapater for the DB data
+            int listViewPosition = getFirstVisiblePosition() + position_ - 1;
+            View viewToShow =  _onItemFocusedLis.onItemFocused(view, listViewPosition, adapter_.getItemId(position_));
             viewToShow.setVisibility(VISIBLE);
             Animation flip = new FlipAnimation(60f);
             flip.setDuration(1000);
@@ -221,7 +226,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int listViewPosition_, long l) {
         //set list to zoom mode so we can animate out when required
         _isZoomed = true;
         int firstVisiblePosition = getFirstVisiblePosition();
@@ -229,7 +234,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
         int positionOrg = pos - firstVisiblePosition;
         //get current scaled long id
         _currentFocusedId = getAdapter().getItemId(positionOrg);
-        scaleChildViews(l, i, 0.8f, false);
+        scaleChildViews(l, listViewPosition_, 0.8f, false);
         return true;
     }
 

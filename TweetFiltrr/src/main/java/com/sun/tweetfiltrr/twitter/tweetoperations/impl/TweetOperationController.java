@@ -55,7 +55,6 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
 
     @Override
     public void onReTweet(View view_,ParcelableUser user_) {
-
         view_.setEnabled(false);
         view_.setBackgroundColor(Color.rgb(71,71,71));
         submitTask(view_, (user_), _retweet);

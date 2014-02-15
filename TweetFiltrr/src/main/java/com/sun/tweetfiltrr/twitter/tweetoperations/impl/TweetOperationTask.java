@@ -9,8 +9,8 @@ import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.tweetoperations.api.ISubmittable;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
+import com.sun.tweetfiltrr.twitter.tweetoperations.api.ISubmittable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,10 +56,6 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
 
     @Override
     protected void onPostExecute( Collection<ParcelableTweet> status) {
-        _timelineDao.insertOrUpdate(status, new String[]{TimelineTable.TimelineColumn.IS_FAVOURITE.s(),
-                TimelineTable.TimelineColumn.IS_MENTION.s(), TimelineTable.TimelineColumn.IS_RETWEETED.s()});
-        Log.v(TAG, "Updating database");
-
         if(!_exceptions.isEmpty()){
             Log.v(TAG, "exceptions are not empty so calling fail listener");
             _isFailed = true;
@@ -73,6 +69,8 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
             }
 
         }else{
+
+            Log.v(TAG, "Updating database");
             _listener.onTwitterApiCallSuccess(_user);
         }
 
@@ -90,6 +88,10 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
                 timeLineEntries.add(tweet);
             }
         }
+
+        _timelineDao.insertOrUpdate(timeLineEntries, new String[]{TimelineTable.TimelineColumn.TWEET_ID.s(),
+                TimelineTable.TimelineColumn.IS_FAVOURITE.s(),
+                TimelineTable.TimelineColumn.IS_MENTION.s(), TimelineTable.TimelineColumn.IS_RETWEETED.s()} );
         return timeLineEntries;
     }
 
