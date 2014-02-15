@@ -114,7 +114,7 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
         if(_callablesToExecute != null){
             futures = executeCallables(_callablesToExecute);
         }else{
-            futures =   executeCallables(_refreshLis.getTweetRetriever(true, true));
+            futures =   executeCallables(_refreshLis.getUsersRetriever(true, true));
         }
         return futures;
     }

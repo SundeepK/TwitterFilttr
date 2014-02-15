@@ -39,12 +39,10 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_MAXID.a()));
 		long groupId = cursorFriend_.getLong(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_GROUP_ID.a()));
-		long lastFriendPageNo = cursorFriend_.getLong(cursorFriend_
-				.getColumnIndexOrThrow(FriendColumn.LAST_FRIEND_PAGE_NO.a()));
+
 		int lastTimelineNo = cursorFriend_.getInt(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.LAST_TIMELINE_PAGE_NO.a()));
-		int friendCount = cursorFriend_.getInt(cursorFriend_
-				.getColumnIndexOrThrow(FriendColumn.FRIEND_COUNT.a()));
+
 		boolean hasLoadedAllTweets = cursorFriend_.getInt(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.HAS_ALL_TWEETS_FOR_TODAY.a())) == 1;
 		boolean isFriend = cursorFriend_.getInt(cursorFriend_
@@ -53,10 +51,24 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
                 .getColumnIndexOrThrow(FriendColumn.TOTAL_NEW_TWEETS.a()));
         int totalTweetCount = cursorFriend_.getInt(cursorFriend_
                 .getColumnIndexOrThrow(FriendColumn.TWEET_COUNT.a()));
+        //friends
+        int friendCount = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.FRIEND_COUNT.a()));
         int lastFriendIndex = cursorFriend_.getInt(cursorFriend_
                 .getColumnIndexOrThrow(FriendColumn.COLUMN_LAST_FRIEND_INDEX.a()));
         int currentFriendCount = cursorFriend_.getInt(cursorFriend_
                 .getColumnIndexOrThrow(FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.a()));
+        long lastFriendPageNo = cursorFriend_.getLong(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.LAST_FRIEND_PAGE_NO.a()));
+        //followers
+        int totalFollowerCount = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.FOLLOWER_COUNT.a()));
+        int lastFollowerPageNo = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.LAST_FOLLOWER_PAGE_NO.a()));
+        int lastFollowerIndex = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.COLUMN_LAST_FOLLOWER_INDEX.a()));
+        int currentFollowerCount = cursorFriend_.getInt(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.a()));
 		
 		Log.v(TAG, "Since ID passed for query is : " + sinceID
 				+ " with page number " + maxID + " with tweet count: " + newTweetCount);
@@ -79,6 +91,10 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
         friend.setTotalTweetCount(totalTweetCount);
         friend.setLastFriendIndex(lastFriendIndex);
         friend.setCurrentFriendTotal(currentFriendCount);
+        friend.setTotalFollowerCount(totalFollowerCount);
+        friend.setLastFollowerPageNumber(lastFollowerPageNo);
+        friend.setLastFollowerIndex(lastFollowerIndex);
+        friend.setCurrentFollowerCount(currentFollowerCount);
         return friend;
 		
 	}

@@ -51,6 +51,9 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
                 accessToken = new AccessToken(TwitterConstants.TWITTER_OAUTH_KEY, TwitterConstants.TWITTER_OAUTH_SECRET);
                 parcelableUser = new ParcelableUser(TwitterUtil.getInstance().getTwitter().showUser(accessToken
                         .getUserId()));
+                Collection<ParcelableUser> users =  new ArrayList<ParcelableUser>();
+                users.add(parcelableUser);
+                _userDao.insertOrUpdate(users);
                 user = new UserBundle(parcelableUser, accessToken);
             } else {
 
@@ -58,9 +61,10 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
                 TwitterUtil.getInstance().setTwitterFactories(accessToken);
                 //attempt to get user from DB, we should almost always get a user if we are here
                 parcelableUser = getParcelableUserFromDB(sharedPreferences_);
-                //incase we don't have a user for whateer reason, we query twitter for it
+                //incase we don't have a user for whatever reason, we query twitter for it
                 if(parcelableUser == null){
                     parcelableUser = getParcelableUserFromTwitter(accessToken);
+                    Log.v(TAG, "Found user from twitter network call");
                 }
 
                 TwitterUtil.getInstance().setCurrentUser(parcelableUser);

@@ -59,9 +59,6 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(_context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-
         ParcelableUser user = null;
         synchronized (this) {
             try {
@@ -70,11 +67,12 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
                         _tokenRetriever.retrieverAccessToken(sharedPreferences, params[0]);
                 AccessToken accessToken = bundle.getAccessToken();
                 user = bundle.getUser();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 setUserPreferences(editor, accessToken);
                 persistUserDetails(editor, user);
+                editor.commit();
                 TwitterUtil.getInstance().setCurrentUser(user);
                 TwitterUtil.getInstance().setTwitterFactories(accessToken);
-                editor.commit();
 
             } catch (TwitterException e) {
                 e.printStackTrace();

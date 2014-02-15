@@ -95,7 +95,6 @@ public class DaoFlyWeightFactory {
 			return dao;
 
 		case USERS_FRIEND_DAO:
-			 dao = _daoCache.get(daoVal_);
 
             if(user_ == null)
                 throw new IllegalArgumentException("null ParcelableUser passed in through parameter, FriendDao requires a non-null value");
@@ -105,7 +104,6 @@ public class DaoFlyWeightFactory {
 			return dao;
 
         case USER_FOLLOWER_DAO:
-                dao = _daoCache.get(daoVal_);
 
                 if(user_ == null)
                     throw new IllegalArgumentException("null ParcelableUser passed in through parameter, FriendDao requires a non-null value");

@@ -31,7 +31,7 @@ public class UserTimelineTab extends ATimelineFragment {
     }
 
     @Override
-    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+    public Collection<Callable<Collection<ParcelableUser>>> getUsersRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         return null;
     }
 

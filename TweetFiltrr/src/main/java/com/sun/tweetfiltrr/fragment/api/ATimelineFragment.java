@@ -124,7 +124,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timeLineDao));
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(),
                 FriendColumn.TWEET_COUNT.s(), FriendColumn.COLUMN_MAXID.s(), FriendColumn.COLUMN_SINCEID.s(),
-                FriendColumn.MAXID_FOR_MENTIONS.s(), FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendColumn.FRIEND_COUNT.s()
+                FriendColumn.MAXID_FOR_MENTIONS.s(), FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendColumn.FOLLOWER_COUNT.s()
                 , FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(), FriendColumn.PROFILE_IMAGE_URL.s(),
                 FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.DESCRIPTION.s()};
         _userDaoUpdaters.add(new DatabaseUpdater(_friendDao,cols ));

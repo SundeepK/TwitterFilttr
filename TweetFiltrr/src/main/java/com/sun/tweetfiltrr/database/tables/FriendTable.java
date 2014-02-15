@@ -14,10 +14,23 @@ public class FriendTable {
         DESCRIPTION("description"),
         COLUMN_SINCEID("sinceID"),
         COLUMN_MAXID("maxID"),
-        FRIEND_COUNT("friendCount"),
         TWEET_COUNT("totalTweetCount"),
-        LAST_FRIEND_PAGE_NO("lastFriendPageNo"),
         LAST_TIMELINE_PAGE_NO("lastTimelinePageNo"),
+
+        //friends
+        FRIEND_COUNT("friendCount"),
+        LAST_FRIEND_PAGE_NO("lastFriendPageNo"),
+        COLUMN_LAST_FRIEND_INDEX("lastFriendIndex"),
+        COLUMN_LAST_FRIEND_SYNC("lastFriendMultiple"),  //TODO not using this right now, maybe we need to et rid of it
+        COLUMN_CURRENT_FRIEND_COUNT("currentFriendCount"),
+
+        //followers
+        FOLLOWER_COUNT("followerCount"),
+        LAST_FOLLOWER_PAGE_NO("lastFollowerPageNo"),
+        COLUMN_LAST_FOLLOWER_INDEX("lastFollowerIndex"),
+        COLUMN_LAST_FOLLOWER_SYNC("lastFollowerMultiple"), //TODO not using this right now, maybe we need to et rid of it
+        COLUMN_CURRENT_FOLLOWER_COUNT("currentFollowerCount"),
+
         IS_FRIEND("isFriend"),
         PROFILE_IMAGE_URL("profileImageUrl"),
         HAS_ALL_TWEETS_FOR_TODAY("shouldLoadMoreTweets"),
@@ -25,9 +38,6 @@ public class FriendTable {
         BANNER_PROFILE_IMAE_URL("bannerProfileUrl"),
         COLUMN_LAST_DATETIME_SYNC("lastDateTimeSync"), // YYYY-MM-DD HH:MM:SS.SSS
         COLUMN_GROUP_ID("groupID"),
-        COLUMN_LAST_FRIEND_INDEX("lastFriendIndex"),
-        COLUMN_LAST_FRIEND_SYNC("lastFriendMultiple"),
-        COLUMN_CURRENT_FRIEND_COUNT("currentFriendCount"),
         SINCEID_FOR_MENTIONS("sinceIDForMentions"),
         MAXID_FOR_MENTIONS("maxIDForMentions"),
         TOTAL_NEW_TWEETS("totalNewTweets");
@@ -78,17 +88,22 @@ public class FriendTable {
             + FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s() + " text , "
             + FriendColumn.BANNER_PROFILE_IMAE_URL.s() + " text , "
             + FriendColumn.COLUMN_GROUP_ID.s() + " integer , "
-            + FriendColumn.FRIEND_COUNT.s() + " integer , "
             + FriendColumn.TWEET_COUNT.s() + " integer , "
             + FriendColumn.IS_FRIEND.s() + " integer , "
             + FriendColumn.HAS_ALL_TWEETS_FOR_TODAY.s() + " integer , "
-            + FriendColumn.LAST_FRIEND_PAGE_NO.s() + " integer default -1, "
             + FriendColumn.LAST_TIMELINE_PAGE_NO.s() + " integer , "
             + FriendColumn.TOTAL_NEW_TWEETS.s() + " integer , "
+            + FriendColumn.FRIEND_COUNT.s() + " integer , "
+            + FriendColumn.LAST_FRIEND_PAGE_NO.s() + " integer , "
             + FriendColumn.COLUMN_LAST_FRIEND_INDEX.s() + " integer , "
             + FriendColumn.COLUMN_LAST_FRIEND_SYNC.s() + " integer , "
             + FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s() + " integer , "
             + FriendColumn.MAXID_FOR_MENTIONS.s() + " integer , "
             + FriendColumn.SINCEID_FOR_MENTIONS.s() + " integer , "
+            + FriendColumn.FOLLOWER_COUNT.s() + " integer , "
+            + FriendColumn.LAST_FOLLOWER_PAGE_NO.s() + " integer , "
+            + FriendColumn.COLUMN_LAST_FOLLOWER_INDEX.s() + " integer , "
+            + FriendColumn.COLUMN_LAST_FOLLOWER_SYNC.s() + " integer , "
+            + FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.s() + " integer , "
             + FriendColumn.COLUMN_MAXID.s() + " integer default 1 " + ");";
 }

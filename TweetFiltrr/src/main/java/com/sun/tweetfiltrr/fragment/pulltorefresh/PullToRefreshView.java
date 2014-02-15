@@ -67,7 +67,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
-        public Collection<Callable<T>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
+        public Collection<Callable<T>> getUsersRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
 
     }
 
@@ -157,7 +157,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         Log.v(TAG, "We are looking for friends tweets because pull to refresh was done");
         Log.v(TAG, "is friend : " + _currentUser.isFriend());
         final   Collection<Future<T>> futures = new ArrayList<Future<T>>();
-        final Collection<Callable<T>> callables = _pullToRefreshLis.getTweetRetriever(true, false);
+        final Collection<Callable<T>> callables = _pullToRefreshLis.getUsersRetriever(true, false);
         for(Callable<T> callabe : callables){
             futures.add(_threadExecutor.submit(callabe));
         }

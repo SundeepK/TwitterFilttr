@@ -53,8 +53,6 @@ public class FriendDao extends ADBDao<ParcelableUser> {
                 contentValue.put(FriendColumn.FRIEND_ID.s(), friend_.getUserId());
             } else if (TextUtils.equals(column, FriendColumn.FRIEND_NAME.s())) {
                 contentValue.put(FriendColumn.FRIEND_NAME.s(), friend_.getUserName());
-            } else if (TextUtils.equals(column, FriendColumn.FRIEND_COUNT.s())) {
-                contentValue.put(FriendColumn.FRIEND_COUNT.s(), friend_.getTotalFriendCount());
             } else if (TextUtils.equals(column, FriendColumn.FRIEND_SCREENNAME.s())) {
                 contentValue.put(FriendColumn.FRIEND_SCREENNAME.s(), friend_.getScreenName());
             } else if (TextUtils.equals(column, FriendColumn.DESCRIPTION.s())) {
@@ -73,8 +71,6 @@ public class FriendDao extends ADBDao<ParcelableUser> {
                 contentValue.put(FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), friend_.getProfileBackgroundImageUrl());
             } else if (TextUtils.equals(column, FriendColumn.BANNER_PROFILE_IMAE_URL.s())) {
                 contentValue.put(FriendColumn.BANNER_PROFILE_IMAE_URL.s(), friend_.getProfileBannerImageUrl());
-            } else if (TextUtils.equals(column, FriendColumn.LAST_FRIEND_PAGE_NO.s())) {
-                contentValue.put(FriendColumn.LAST_FRIEND_PAGE_NO.s(), friend_.getLastFriendPageNumber());
             } else if (TextUtils.equals(column, FriendColumn.HAS_ALL_TWEETS_FOR_TODAY.s())) {
                 contentValue.put(FriendColumn.HAS_ALL_TWEETS_FOR_TODAY.s(), friend_.hasLoadedAllTweetsForToday());
             } else if (TextUtils.equals(column, FriendColumn.LAST_TIMELINE_PAGE_NO.s())) {
@@ -83,14 +79,28 @@ public class FriendDao extends ADBDao<ParcelableUser> {
                 contentValue.put(FriendColumn.IS_FRIEND.s(), friend_.isFriend() ? 1 : 0);
             } else if (TextUtils.equals(column, FriendColumn.TOTAL_NEW_TWEETS.s())) {
                 contentValue.put(FriendColumn.TOTAL_NEW_TWEETS.s(), friend_.getNewTweetCount());
+                //friends
             } else if (TextUtils.equals(column, FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s())) {
                 contentValue.put(FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(), friend_.getCurrentFriendCount());
             }else if (TextUtils.equals(column, FriendColumn.COLUMN_LAST_FRIEND_INDEX.s())) {
                 contentValue.put(FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(), friend_.getLastFriendIndex());
+            }else if (TextUtils.equals(column, FriendColumn.FRIEND_COUNT.s())) {
+                contentValue.put(FriendColumn.FRIEND_COUNT.s(), friend_.getTotalFriendCount());
+            } else if (TextUtils.equals(column, FriendColumn.LAST_FRIEND_PAGE_NO.s())) {
+                contentValue.put(FriendColumn.LAST_FRIEND_PAGE_NO.s(), friend_.getLastFriendPageNumber());
+
             }else if (TextUtils.equals(column, FriendColumn.TWEET_COUNT.s())) {
                 contentValue.put(FriendColumn.TWEET_COUNT.s(), friend_.getTotalTweetCount());
+                //followers
+            }else if (TextUtils.equals(column, FriendColumn.FOLLOWER_COUNT.s())) {
+                contentValue.put(FriendColumn.FOLLOWER_COUNT.s(), friend_.getTotalFollowerCount());
+            }else if (TextUtils.equals(column, FriendColumn.LAST_FOLLOWER_PAGE_NO.s())) {
+                contentValue.put(FriendColumn.LAST_FOLLOWER_PAGE_NO.s(), friend_.getLastFollowerPageNumber());
+            }else if (TextUtils.equals(column, FriendColumn.COLUMN_LAST_FOLLOWER_INDEX.s())) {
+                contentValue.put(FriendColumn.COLUMN_LAST_FOLLOWER_INDEX.s(), friend_.getLastFollowerIndex());
+            }else if (TextUtils.equals(column, FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.s())) {
+                contentValue.put(FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.s(), friend_.getCurrentFollowerCount());
             }
-
 		}
 		
 		return contentValue;

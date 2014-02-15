@@ -20,23 +20,19 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFriendRetriever;
-import com.sun.tweetfiltrr.twitter.callables.FriendsRetriever;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.customviews.ZoomListView;
+import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
+import com.sun.tweetfiltrr.twitter.callables.FriendsRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFriendRetriever;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.util.ArrayList;
@@ -49,7 +45,6 @@ import javax.inject.Inject;
 
 import twitter4j.TwitterException;
 
-import static com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory.DaoFactory;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 
 
@@ -64,7 +59,6 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     private static final int LIST_LOADER = 0x05;
     private long _currentLoggedInUserId;
     private boolean _isCurrentFriendDisplayed = true;
-    private SimpleDBUpdater<ParcelableUser> _userUpdater;
     private ITwitterAPICall<Collection<ParcelableUser>>  _userRetriever;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading;
@@ -72,9 +66,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     private boolean _tabHasBeenSelected = false;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private ParcelableUser _currentUser;
-    private IDBDao<ParcelableUser> _usersToFriendDao;
     private boolean _isCursorReady;
-
     @Inject FriendDao _friendDao;
     @Inject UrlImageLoader _sicImageLoader;
 
@@ -129,6 +121,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     //Get correct UsersFriendRetriever based on if the user is looking at their profile
     private ITwitterAPICall<Collection<ParcelableUser>> getRetriever(){
         if (_currentUser.getUserId() == _currentLoggedInUserId) {
+            //current logged in user
             return new UsersFriendRetriever( true);
         } else {
             return new UsersFriendRetriever(false);
@@ -175,30 +168,20 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
 
-        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
         Log.v(TAG, "Current user is :" + _currentUser);
-
-        _usersToFriendDao = (IDBDao<ParcelableUser>)
-                flyWeight.getDao(DaoFactory.USERS_FRIEND_DAO, _currentUser);
-
-        _userUpdater = new SimpleDBUpdater<ParcelableUser>();
         _userRetriever = getRetriever();
-        String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
-                FriendColumn.FRIEND_COUNT.s(), FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(),
-                FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(), FriendColumn.LAST_FRIEND_PAGE_NO.s(),
-                FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
-                FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
-                FriendColumn.DESCRIPTION.s()};
-        _updaters.add(new DatabaseUpdater(_friendDao,cols));
-        _updaters.add(new DatabaseUpdater(_usersToFriendDao));
+
+        _updaters = getDBUpdaters();
 
         Collection<ParcelableUser> users = UserRetrieverUtils.getUserFromDB(_friendDao, _currentUser);
         if(!users.isEmpty()){
             _currentUser = users.iterator().next();
+            Log.v(TAG, "user taken from db is :" + _currentUser);
             _currentFriendLimit = (_currentUser.getCurrentFriendCount()  > 0 && _currentUser.getCurrentFriendCount() <=  100 )? _currentUser.getCurrentFriendCount(): 100;
         }
-
     }
+
+    protected abstract Collection<IDatabaseUpdater> getDBUpdaters();
 
 
     protected void initAdapter() {
@@ -320,7 +303,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     }
 
     @Override
-    public Collection<Callable<Collection<ParcelableUser>>> getTweetRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
+    public Collection<Callable<Collection<ParcelableUser>>> getUsersRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets) {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
         callables.add(new FriendsRetriever(_currentUser, _userRetriever, this));
         return callables;
