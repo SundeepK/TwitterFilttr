@@ -37,11 +37,12 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements
 
         final SlidingMenu menu = new SlidingMenu(this);
         final SlidingMenuFragment frag = new SlidingMenuFragment();
-        menu.setMode(SlidingMenu.SLIDING_WINDOW);
-        menu.setTouchModeAbove(SlidingMenu.LEFT);
+       // menu.setMode(SlidingMenu.SLIDING_WINDOW);
+    //    menu.setTouchModeAbove(SlidingMenu.LEFT);
         menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
         menu.setMenu(R.layout.sliding_menu_fragment);
+        menu.setTouchModeAbove(SlidingMenu.LEFT);
         menu.setBehindOffset(170);
         menu.setFadeEnabled(true);
         menu.setOnOpenedListener(frag);

@@ -25,6 +25,13 @@
         android:focusable="false"
         android:scaleType="centerCrop" />
 
+    <RelativeLayout
+        android:background="#64000000"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="100dp"
@@ -33,7 +40,6 @@
         android:clickable="false"
         android:focusable="false"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginBottom="3dp"
         android:scaleType="centerCrop" />
 
@@ -43,7 +49,6 @@
         android:layout_width="match_parent"
         android:textColor="#fff"
         android:textSize="16sp"
-        android:background="#64000000"
         android:padding="5dp"
         custom:typeface="robotoLight"
         android:layout_alignTop="@+id/profile_image"
@@ -57,7 +62,6 @@
         android:layout_alignLeft="@id/profile_image"
         android:textColor="#fff"
         android:textSize="16sp"
-        android:background="#64000000"
         android:padding="5dp"
         custom:typeface="robotoLight"
         />
@@ -67,13 +71,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginBottom="3dp"
         android:layout_below="@+id/user_details"
         android:background="#C8000000"
         android:divider="#64ffffff"
         android:dividerHeight="2dp" />
 
-
+    </RelativeLayout>
 
 </RelativeLayout>

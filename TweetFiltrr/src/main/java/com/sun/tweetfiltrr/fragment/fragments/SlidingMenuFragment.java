@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +29,7 @@ import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.utils.FontUtils;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -82,7 +82,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
 
         ImageLoaderUtils.attemptLoadImage(background,
                 imageLoader,
-                getCurrentUser().getProfileBackgroundImageUrl(), 1, this);
+                getCurrentUser().getProfileBackgroundImageUrl(), 1, null);
 
         ImageLoaderUtils.attemptLoadImage(_blurredBackground,
                 imageLoader,
@@ -90,17 +90,17 @@ public class SlidingMenuFragment extends ATwitterFragment implements
 
 
         ImageLoaderUtils.attemptLoadImage(profileImage, imageLoader,
-                getCurrentUser().getProfileImageUrl(), 1, this);
+                getCurrentUser().getProfileImageUrl(), 1, null);
         userNameView.setText(
                 _currentUser.getUserName()
                         + "\n"
                         + "@" + _currentUser.getScreenName()
                         + "\n"
-                        + getText(_currentUser.getLocation())
+                        + FontUtils.getText(_currentUser.getLocation())
         );
 
         userDesc.setText(
-                getText(_currentUser.getDescription())
+                FontUtils.getText(_currentUser.getDescription())
                         + "\n"
                         + "\n"
                         + "Tweets " + _currentUser.getTotalTweetCount()
@@ -113,13 +113,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
     }
 
 
-    private String getText(String text_) {
-        if (!TextUtils.isEmpty(text_) && !text_.equals("null")) {
-            return "\n" + text_;
-        } else {
-            return "";
-        }
-    }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -175,7 +169,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
                     Log.v(TAG, "Bitmap null so attempting to generate a new one");
                     bmp = _blurredImageProcessor.processImage(bitmap);
                     out = new FileOutputStream(blurredImage);
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 80, out);
                     out.flush();
 
                     return bmp;

@@ -79,6 +79,8 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Inject UrlImageLoader _sicImageLoader;
 
 
+    protected abstract int getLoaderID();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +122,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = _pullToRefreshHandler.onCreateViewCallback(inflater, container, savedInstanceState);
-        getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(getLoaderID(), null, this);
         return rootView;
     }
 

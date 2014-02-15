@@ -9,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,9 +22,9 @@ import com.sun.tweetfiltrr.activity.adapter.UserTwitterDetails;
 import com.sun.tweetfiltrr.animation.ExpandingAnimation;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.utils.FontUtils;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +58,8 @@ public class UserProfileFragment extends SherlockFragment {
         final ImageView backgroundImage = (ImageView) rootView.findViewById(R.id.user_profile_background);
 
         final RelativeLayout containeranium = (RelativeLayout) rootView.findViewById(R.id.main_container);
-        final Button friendsButton = (Button) rootView.findViewById(R.id.friends_button);
-        final Button followersButton = (Button) rootView.findViewById(R.id.followers_button);
+        final TextView friendsButton = (TextView) rootView.findViewById(R.id.friends_button);
+        final TextView followersButton = (TextView) rootView.findViewById(R.id.followers_button);
 
         friendsButton.setOnClickListener(getButtonClickLis(3));
         followersButton.setOnClickListener(getButtonClickLis(4));
@@ -146,9 +144,8 @@ public class UserProfileFragment extends SherlockFragment {
 
 	private void initUserDetailTextView(ParcelableUser currentUser_){
 	 _userName.setText(currentUser_.getUserName()
-             + " \n " + '@' + currentUser_.getScreenName()
-             + " \n " + currentUser_.getLocation());
-	 _description.setText(currentUser_.getDescription());
+             + "\n" + '@' + currentUser_.getScreenName());
+	 _description.setText(FontUtils.getText(currentUser_.getDescription()));
 	}
 	
 	

@@ -21,11 +21,18 @@ import static com.sun.tweetfiltrr.database.tables.UsersToFriendsTable.UsersToFri
 
 public class FriendsTab extends AUsersFragment {
     private static final String TAG = FriendsTab.class.getName();
+    private final static int ID = 0x010;
 
+    @Override
+    protected int getLoaderID() {
+        return 0x021;
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        rootView.setId(ID);
         return rootView;
     }
 

@@ -171,11 +171,19 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 
     @Override
     public void OnTokenFinish(ParcelableUser parcelableUser) {
+        _profile.clearAnimation();
         Intent intent = new Intent(MainActivity.this, TwitterFilttrLoggedInUserHome.class);
         intent.putExtra(TwitterConstants.FRIENDS_BUNDLE, parcelableUser);
         startActivity(intent);
+   //     overridePendingTransition(0, R.anim.display_anim_top_bot_top);
         this.finish();
-        overridePendingTransition(R.anim.fade_in_anim, R.anim.display_anim_top_bot_top);
+
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
     }
 
     class TwitterAuthenticateTask extends AsyncTask<String, String, RequestToken> {

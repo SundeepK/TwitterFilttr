@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
@@ -26,7 +29,21 @@ import static com.sun.tweetfiltrr.database.tables.UsersToFollowersTable.UsersToF
 
 public class FollowersTab extends AUsersFragment {
     private static final String TAG = FollowersTab.class.getName();
+    private final static int ID = 0x011;
 
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        rootView.setId(ID);
+        return rootView;
+    }
+
+    @Override
+    protected int getLoaderID() {
+        return 0x025;
+
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
