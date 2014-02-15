@@ -177,12 +177,6 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             Animation flip = new FlipAnimation(60f);
             flip.setDuration(1000);
             viewToShow.startAnimation(flip);
-
-            if(_expandingViewHeight <= 0){
-                viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                _expandingViewHeight = viewToShow.getMeasuredHeight();
-            }
-
         }
     }
 
@@ -228,12 +222,12 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        //set list to zoom mode so we can animate out when required
         _isZoomed = true;
-
         int firstVisiblePosition = getFirstVisiblePosition();
         int pos = pointToPosition(_xPos, _yPos);
         int positionOrg = pos - firstVisiblePosition;
-
+        //get current scaled long id
         _currentFocusedId = getAdapter().getItemId(positionOrg);
         scaleChildViews(l, i, 0.8f, false);
         return true;
@@ -260,7 +254,7 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 int childNum = (position != INVALID_POSITION) ? position - getFirstVisiblePosition() : -1;
                 View itemView = (childNum >= 0) ? getChildAt(childNum) : null;
                 if (itemView != null) {
-                    _viewBounds = getChildViewRect(this, itemView);
+                    _viewBounds = getChildViewRect(this, itemView, childNum);
                 }
 
                 break;
@@ -293,12 +287,15 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
     }
 
 
-    private Rect getChildViewRect(View parentView, View childView) {
-        final Rect childRect = new Rect(childView.getLeft(), childView.getTop(), childView.getRight(), childView.getBottom() + _expandingViewHeight);
+    private Rect getChildViewRect(View parentView, View childView, int position) {
+        //set the expanding view height if it is not yet set
+        setExpandingViewHeight(childView, position);
+        final Rect childRect = new Rect(childView.getLeft(), childView.getTop(),
+                childView.getRight(), childView.getBottom() + _expandingViewHeight);
         if (parentView == childView) {
             return childRect;
         }
-
+        //get the correct Rect position for the item that is long clicked
         ViewGroup parent = (ViewGroup) childView.getParent();
         while (parent != parentView) {
             childRect.offset(parent.getLeft(), parent.getTop());
@@ -306,6 +303,25 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             parent = (ViewGroup) childView.getParent();
         }
         return childRect;
+    }
+
+    private void setExpandingViewHeight(View childView, int position) {
+        if (_expandingViewHeight <= 0) {
+            View viewToShow = _onItemFocusedLis.onItemFocused(childView, position, getAdapter().getItemId(position));
+            if(viewToShow != null){
+                viewToShow.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                _expandingViewHeight = viewToShow.getMeasuredHeight();
+                if (_expandingViewHeight <= 0) {
+                    //this will mean that there is view but it's height is not valid so just set to one
+                    //to prevent it finding out view height again
+                    //TODO have a look at using a boolean flage instead
+                    _expandingViewHeight = 1;
+                }
+            }else{
+                _expandingViewHeight = 1;
+
+            }
+        }
     }
 
     private class PropertyHolder{
