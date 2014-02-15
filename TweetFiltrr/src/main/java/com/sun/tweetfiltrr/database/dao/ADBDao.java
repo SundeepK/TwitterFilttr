@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
-import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 
 import java.util.ArrayList;
@@ -41,8 +40,12 @@ public abstract class ADBDao<T extends IParcelableTwitter> implements IDBDao<T> 
 	
 	protected ContentValues[] getContentValuesForInsertOrUpdate(Collection<T> entries_, String[] columns_, boolean shouldSetNull_){
 		Collection<ContentValues> contentValues = new ArrayList<ContentValues>();
+        //TODO run in n^2 (well rather n*m) so we need to go ahead and re-think this part
 		for(T friend : entries_){
-			contentValues.add(getContentValues(friend, columns_, shouldSetNull_));
+            ContentValues contentValue = getContentValues(friend, columns_, shouldSetNull_);
+            if(contentValue.size() > 1){
+                contentValues.add(contentValue);
+            }
 		}
 		
 		ContentValues[] contentValuesArray = new ContentValues[contentValues.size()];

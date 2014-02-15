@@ -53,6 +53,7 @@ public class FriendsTab extends AUsersFragment {
         Collection<IDatabaseUpdater> updaters = new ArrayList<IDatabaseUpdater>();
        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
        String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
+                FriendColumn.FOLLOWER_COUNT.s(),
                 FriendColumn.FRIEND_COUNT.s(), FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(),
                 FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(), FriendColumn.LAST_FRIEND_PAGE_NO.s(),
                 FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),

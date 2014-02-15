@@ -79,6 +79,10 @@ public class UserFriendsDao extends  ADBDao<ParcelableUser> {
                 }
             }
 
+            if(_currentFriend.getUserId() == friend_.getUserId()){
+                //user cannot be friends themselves so skip
+                continue;
+            }
 
             if (TextUtils.equals(column, UsersToFriendsColumn.FRIEND_ID.s())) {
                 contentValue.put(UsersToFriendsColumn.FRIEND_ID.s(),friend_.getUserId());

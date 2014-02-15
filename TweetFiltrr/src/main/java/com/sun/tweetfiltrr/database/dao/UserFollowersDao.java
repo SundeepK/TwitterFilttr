@@ -78,6 +78,11 @@ public class UserFollowersDao extends  ADBDao<ParcelableUser> {
                 }
             }
 
+            if(_currentFriend.getUserId() == friend_.getUserId()){
+                //user cannot follower themselves so skip
+                continue;
+            }
+
 
             if (TextUtils.equals(column, UsersToFollowersColumn.FOLLOWER_ID.s())) {
                 contentValue.put(UsersToFollowersColumn.FOLLOWER_ID.s(),friend_.getUserId());
