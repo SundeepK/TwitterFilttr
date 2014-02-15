@@ -209,7 +209,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
     @Override
     public void onItemScaleOut(int position, View view, boolean status_) {
-        view.findViewById(R.id.overlay_view);
+       // view.findViewById(R.id.overlay_view);
         _enabledItems.put(position, status_);
 
     }

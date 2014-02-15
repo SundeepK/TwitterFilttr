@@ -5,16 +5,16 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginTop="10dip"
-        android:background="#000"
-        >
+    android:layout_marginTop="15dip"
+    android:background="#000"
+    >
 
 
 
     <ImageView
             android:id="@+id/profile_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:adjustViewBounds="true"
             android:layout_alignParentLeft="true"
             android:clickable="false"
@@ -43,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="3dip"
         android:layout_below="@id/media_photo"
         android:layout_toRightOf="@+id/profile_image"
@@ -56,12 +57,13 @@
         android:id="@+id/timeline_date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="3dip"
         android:layout_alignParentRight="true"
         android:layout_below="@id/media_photo"
         android:textColor="#9E9E9E"
-        android:textSize="14sp"
+        android:textSize="12sp"
         custom:typeface="robotoThin"
 
         />
@@ -78,15 +80,16 @@
             android:layout_below="@id/timeline_date_time"
             android:layout_toRightOf="@id/profile_image"
             android:textColor="#9E9E9E"
-            android:textSize="17sp"
+            android:textSize="16sp"
             custom:typeface="robotoLight"
+            android:textScaleX="1.1"
         />
 
-    <View
-        android:id="@+id/overlay_view"
-        android:background="#000"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+    <!--<View-->
+        <!--android:id="@+id/overlay_view"-->
+        <!--android:background="#000"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"/>-->
 
     <RelativeLayout
         android:id="@+id/tweet_operation_buttons"
