@@ -62,30 +62,24 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
             }
         }
         int friendIDCount = friendIDs.length;
-//        if(friendIDCount <= 0){
-//            _friends.addAll(searchForFriends(cachedFriendUser));
-//        }
-
         Log.v(TAG, "passed initail load with last array index @ " + cachedFriendUser.getLastArrayIndex());
 
         //we already processed all friends
-//        if(_friends.size() >= friendIDCount){
-//            Log.v(TAG, "already processed user " + _currentUser.getScreenName() + " so returnining");
-//            return null;
-//        }
+        if(_friends.size() >= friendIDCount){
+            Log.v(TAG, "already processed user " + _currentUser.getScreenName() + " so returnining");
+            return ;
+        }
 
         Collection<Future<Collection<ParcelableUser>>> futures = new ArrayList<Future<Collection<ParcelableUser>>>();
         int currentIndex = cachedFriendUser.getLastArrayIndex();
         int totalFriendsSearched = currentIndex;
         boolean isReachMaxFriendNumber = false;
-        while (totalFriendsSearched < cachedFriendUser.getUser().getTotalFriendCount()) {
+        while (!isReachMaxFriendNumber) {
             //make 4 threads to run in batched rather than submit many threads at once
             Collection<Callable<Collection<ParcelableUser>>> callables
                     = new ArrayList<Callable<Collection<ParcelableUser>>>();
             for (int i = 0; i < 4; i++) {
-                if(isReachMaxFriendNumber){
-                    break;
-                }
+
                 int totalCacheFriendCount = cachedFriendUser.getUser().getTotalFriendCount();
                 //make copy of user but set the ID's and last array index so it can pick up at correct index
                 if (currentIndex >= 5000 || currentIndex > totalCacheFriendCount) {
@@ -96,8 +90,9 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
 
                 if (currentIndex < 5000) {
                     if(currentIndex > totalCacheFriendCount){
-                        currentIndex = (totalCacheFriendCount - currentIndex - 100);
+                        currentIndex-=100;
                         isReachMaxFriendNumber = true;
+                        break;
                     }
                 }
 
@@ -108,6 +103,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                 cachedUser.setFriendIDs(friendIDs);
                 Log.v(TAG, "adding callable for user" + cachedUser.getScreenName() + " with last index" + cachedUser.getLastFriendIndex());
                 callables.add(new FriendsRetriever(cachedUser, _userRetriver, this));
+
             }
             //add the total search friends so far
             totalFriendsSearched += currentIndex;
@@ -123,7 +119,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                 break;
             } else {
                 for (Callable<Collection<ParcelableUser>> callable : callables) {
-                    futures.add(_executorService.submit(callable));
+                 //   futures.add(_executorService.submit(callable));
                 }
 
                 if (waitForFriendTasks(futures)) {
@@ -133,19 +129,12 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                         //  updater.updateUsersToDB(_friends);
                         _friends.clear();
                     }
-
                 } else {
                     break;
                 }
             }
-
-
         }
-
-
-        Log.v(TAG, "finished with currentcount" + cachedFriendUser.getUser().getCurrentFriendCount() + "with total friend count" + cachedFriendUser.getUser().getTotalFriendCount());
-
-        return;
+        Log.v(TAG, "finished with with total friend count" + cachedFriendUser.getUser().getTotalFriendCount());
     }
 
     /**
