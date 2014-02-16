@@ -152,7 +152,7 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
         Collection<ParcelableUser> friends = new ArrayList<ParcelableUser>();
         while (friendsIter_.hasNext()) {
             ParcelableUser friend = new ParcelableUser(friendsIter_.next());
-            Log.v(TAG, "freidn retirever" + friend.toString());
+        //    Log.v(TAG, "freidn retirever" + friend.toString());
             processFriend(friend);
             friends.add(friend);
         }
