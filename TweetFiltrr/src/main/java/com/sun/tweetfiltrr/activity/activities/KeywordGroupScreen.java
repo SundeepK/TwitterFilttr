@@ -31,19 +31,26 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.KeywordGroupAdapter;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordToParcelable;
+import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
+import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.multipleselector.api.OnTextViewLoad;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.callables.BulkFriendRetriever;
 import com.sun.tweetfiltrr.utils.InputValidator;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
 
@@ -57,6 +64,7 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
 	private IDBDao<ParcelableUser> _friendDao;
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
 	private InputValidator _inputValidator;
+    private Collection<IDatabaseUpdater> _dbUpdaters;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,6 +123,40 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
         listView.setAdapter(_groupAdapter);
         listView.setOnItemClickListener(this);
         this.getSupportLoaderManager().initLoader(TUTORIAL_LIST_LOADER, null, this);
+
+
+
+        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getContentResolver());
+        String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(), FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(),
+                FriendTable.FriendColumn.FOLLOWER_COUNT.s(),
+                FriendTable.FriendColumn.FRIEND_COUNT.s(), FriendTable.FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(),
+                FriendTable.FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(), FriendTable.FriendColumn.LAST_FRIEND_PAGE_NO.s(),
+                FriendTable.FriendColumn.IS_FRIEND.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
+                FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
+                FriendTable.FriendColumn.DESCRIPTION.s()};
+        Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
+                + " = ? ", new String[]{Long.toString(15670515l)}, null));
+        final ParcelableUser user = users.iterator().next();
+        IDBDao<ParcelableUser> _usersToFriendDao=   (IDBDao<ParcelableUser>)
+                flyWeight.getDao(DaoFlyWeightFactory.DaoFactory.USERS_FRIEND_DAO, user);
+        _dbUpdaters = new ArrayList<IDatabaseUpdater>();
+        _dbUpdaters.add(new DatabaseUpdater(_friendDao, cols));
+        _dbUpdaters.add(new DatabaseUpdater(_usersToFriendDao));
+
+
+
+        Button loadFriends = (Button) findViewById(R.id.load_all_friends);
+        saveChangesBut.setOnClickListener(getSaveButtonLis(_keywordGroupDao, groupName, groupKeyword));
+
+        loadFriends.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(TAG, "onclicked for load friends");
+                BulkFriendRetriever r = new BulkFriendRetriever(user,_dbUpdaters);
+                Executors.newFixedThreadPool(1).submit(r);
+
+            }
+        });
 
 
     }

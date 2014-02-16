@@ -84,7 +84,7 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
             loadFriendIds(user_, twitter);
             Log.v(TAG, "Attempting to search friends ids for user :" + user_.getUser().toString());
         }
-
+        Log.v(TAG, "lastindex for :" + user_.getUser().getScreenName() + " is "+ user_.getUser().getLastFriendIndex());
         long ids[] = getFriendsIdsToQuery(user_, twitter);
         Log.v(TAG, "friend ids to query for :" + Arrays.toString(ids));
         ResponseList<User> friends = twitter.lookupUsers(ids);
@@ -125,14 +125,15 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
         int lenght = friendDiff  < 100 ? friendDiff : 100;
         //minus 1 from the lastOffsetPos becuase were dealing with arrays here
         int lastOffsetPos = lastArrayIndex < 1 ? 0 : lastArrayIndex -1;
-
         lenght = lenght <= 0 ? friendCount : lenght; //TODO CHECK THIS also
-
+        if( lenght + lastOffsetPos > friendCount){
+            lenght = friendCount -lastOffsetPos;
+        }
         long[] ids = new long[lenght];
-
         System.arraycopy(friendIds, lastOffsetPos , ids, 0, lenght);
-
         user_.setLastArrayIndex((lastOffsetPos + lenght));
+
+
         return ids;
     }
 
@@ -155,7 +156,7 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
             processFriend(friend);
             friends.add(friend);
         }
-        Log.v(TAG , "Adding friend: " + user_.getUser().toString());
+      //  Log.v(TAG , "Adding friend: " + user_.getUser().toString());
         friends.add(user_.getUser());
         Log.v(TAG , "final size of collection: " + friends.size());
 

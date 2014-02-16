@@ -1,10 +1,10 @@
 package com.sun.tweetfiltrr.twitter.callables;
 
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -32,6 +32,8 @@ public class FriendsRetriever implements Callable<Collection<ParcelableUser>> {
         _userRetriever = userRetriever_;
         _lis = lis_;
     }
+
+
 
     @Override
     public Collection<ParcelableUser> call() throws Exception {

@@ -40,6 +40,16 @@
         android:text="Save group"
         android:textSize="12dp" />
 
+    <Button
+        android:id="@+id/load_all_friends"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="#9E9E9E"
+        android:padding="5dp"
+        android:text="Load all friends"
+        android:textSize="12dp" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"

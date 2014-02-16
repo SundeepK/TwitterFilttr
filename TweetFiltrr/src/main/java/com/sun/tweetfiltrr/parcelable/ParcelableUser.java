@@ -96,7 +96,7 @@ public class ParcelableUser implements IParcelableTwitter {
 	}
 
     /**
-     * This copy constructor DOES NOT copy the user's timeline {@link ParcelableTweet},
+     * This copy constructor DOES NOT copy the user's timeline {@link ParcelableTweet}, or cached friend/follower ID's
      * you can set it explicitly through its setter.
      *
      * @param user_
