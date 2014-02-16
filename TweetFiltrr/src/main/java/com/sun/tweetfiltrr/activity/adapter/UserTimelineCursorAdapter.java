@@ -102,10 +102,9 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
 
         if(tweet.isRetweeted()){
-            reTweetBut.setEnabled(true);
             reTweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
         }else{
-            reTweetBut.setEnabled(false);
+            reTweetBut.setEnabled(true);
             reTweetBut.setBackgroundColor(Color.rgb(0, 0, 0));
             reTweetBut.setOnClickListener(getReTweetOnClick(user, _onTweetOperationLis));
         }
