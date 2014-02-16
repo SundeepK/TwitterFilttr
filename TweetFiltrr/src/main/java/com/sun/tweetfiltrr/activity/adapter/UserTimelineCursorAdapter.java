@@ -90,9 +90,11 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
         ImageButton favBut = (ImageButton) view_.findViewById(R.id.favourite_but);
         if(tweet.isFavourite()){
-            favBut.setEnabled(false);
+            favBut.setEnabled(true);
             favBut.setBackgroundColor(Color.rgb(71, 71, 71));
+            favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         }else{
+            favBut.setEnabled(true);
             favBut.setBackgroundColor(Color.rgb(0, 0, 0));
             favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         }
@@ -100,9 +102,10 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
 
         if(tweet.isRetweeted()){
-            reTweetBut.setEnabled(false);
+            reTweetBut.setEnabled(true);
             reTweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
         }else{
+            reTweetBut.setEnabled(false);
             reTweetBut.setBackgroundColor(Color.rgb(0, 0, 0));
             reTweetBut.setOnClickListener(getReTweetOnClick(user, _onTweetOperationLis));
         }

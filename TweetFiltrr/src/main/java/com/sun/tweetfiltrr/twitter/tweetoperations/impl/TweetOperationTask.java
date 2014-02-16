@@ -69,7 +69,6 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
             }
 
         }else{
-
             Log.v(TAG, "Updating database");
             _listener.onTwitterApiCallSuccess(_user);
         }

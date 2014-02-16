@@ -159,11 +159,12 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
             }else{
                 View view = getChildAt(position_);
                 int p =  getFirstVisiblePosition() + position_;
-                final View viewToShow =  _onItemFocusedLis.onItemFocused(view, p,
-                        getAdapter().getItemId(position_));
-
-                if(viewToShow != null){
-                    viewToShow.setVisibility(GONE);
+                if(_onItemFocusedLis != null){
+                    final View viewToShow =  _onItemFocusedLis.onItemFocused(view, p,
+                            getAdapter().getItemId(position_));
+                    if(viewToShow != null){
+                        viewToShow.setVisibility(GONE);
+                    }
                 }
             }
 
@@ -177,11 +178,13 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
           //  Log.e(TAG, "onlongclickpos is : " + getFirstVisiblePosition() + position_);
             //the below position can be used to query the underlying cursor in the adapater for the DB data
             int listViewPosition = getFirstVisiblePosition() + position_ - 1;
-            View viewToShow =  _onItemFocusedLis.onItemFocused(view, listViewPosition, adapter_.getItemId(position_));
-            viewToShow.setVisibility(VISIBLE);
-            Animation flip = new FlipAnimation(60f);
-            flip.setDuration(1000);
-            viewToShow.startAnimation(flip);
+            if(_onItemFocusedLis != null){
+                View viewToShow =  _onItemFocusedLis.onItemFocused(view, listViewPosition, adapter_.getItemId(position_));
+                viewToShow.setVisibility(VISIBLE);
+                Animation flip = new FlipAnimation(60f);
+                flip.setDuration(1000);
+                viewToShow.startAnimation(flip);
+            }
         }
     }
 

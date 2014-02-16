@@ -48,8 +48,14 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
 
     @Override
     public void onTweetFav(View view_, ParcelableUser user_) {
+        ParcelableTweet tweet = getTweet(user_);
+        if(!tweet.isFavourite()){
+            view_.setBackgroundColor(Color.rgb(71,71,71));
+        }else{
+            view_.setBackgroundColor(Color.rgb(0,0,0));
+        }
         view_.setEnabled(false);
-        view_.setBackgroundColor(Color.rgb(71,71,71));
+        view_.setTag(tweet);
         submitTask(view_, (user_), _favouriteTweet);
     }
 
@@ -114,14 +120,20 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
         ParcelableTweet tweet = getTweet(user_);
         Collection<ITwitterOperationTask<ITwitterAPICall>> operations = _twitterOperationsMap.get(tweet);
-
+        Log.v(TAG, "success called");
         if (!operations.isEmpty()) {
-
             final Iterator<ITwitterOperationTask<ITwitterAPICall>> itr = operations.iterator();
             while (itr.hasNext()) {
                 ITwitterOperationTask<ITwitterAPICall> task = itr.next();
-                if (task.isComplete()) {
+                if (task.isRunning()) {
                     if (!task.isFailed()) {
+                         ParcelableTweet isFavView = (ParcelableTweet) task.getView().getTag();
+                        if(isFavView != null){
+                            Log.v(TAG, "view should be fav a view");
+                            task.getView().setEnabled(true);
+                            task.getView().setTag(null);
+                        }
+                        Log.v(TAG, "task removed");
                         itr.remove();
                     }
                 }
