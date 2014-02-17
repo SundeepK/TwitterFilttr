@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TweetFiltrr/TweetFiltrr.iml" filepath="$PROJECT_DIR$/TweetFiltrr/TweetFiltrr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TweetFiltrrProject.iml" filepath="$PROJECT_DIR$/TweetFiltrrProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/TwitterFilttr.iml" filepath="$PROJECT_DIR$/TwitterFilttr.iml" />
       <module fileurl="file://$PROJECT_DIR$/non-gradle-libs/library/library.iml" filepath="$PROJECT_DIR$/non-gradle-libs/library/library.iml" />
     </modules>

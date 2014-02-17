@@ -150,7 +150,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
 //    }
 
     private void restartCursor() {
-        getActivity().getSupportLoaderManager().restartLoader(LIST_LOADER, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(getLoaderID(), null, this);
         _dataAdapter.notifyDataSetChanged();
     }
 
@@ -239,15 +239,16 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
 
     @Override
     public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        int rowCount =  _currentUser.getCurrentFriendCount() - _currentFriendLimit;
+
         if(_tabHasBeenSelected && _isCursorReady){
-            if ( rowCount>0) {
-                if(rowCount > 100){
+            if (_currentFriendLimit < _currentUser.getCurrentFriendCount()) {
+                Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount());
+                int diff = _currentUser.getCurrentFriendCount()-  _currentFriendLimit;
+                if(diff > 100){
                     _currentFriendLimit += 100;
                 }else{
-                    _currentFriendLimit += rowCount;
+                    _currentFriendLimit += diff;
                 }
-                Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount() + "total friend count" + _currentUser.getTotalFriendCount());
                 restartCursor();
                 return false;
             } else if (_isFinishedLoading){
@@ -258,9 +259,9 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                 return true;
             }
         }else{
-            Log.v(TAG, "_tabHasBeenSelected:" +_tabHasBeenSelected + " with cursor ready: " + _isCursorReady);
-        return false;
-     }
+            Log.v(TAG, "_tabHasBeenSelected is false");
+            return false;
+        }
 
 
     }
