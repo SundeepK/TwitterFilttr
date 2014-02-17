@@ -39,6 +39,7 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
                 failLis_.onTwitterApiCallFail(user_.getUser(), e, this);
             }
             updateUserDetails(user_, friends);
+            failLis_.onTwitterApiCallSuccess(user_.getUser());
         }
         return friends;
     }

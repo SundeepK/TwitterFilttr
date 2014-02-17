@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -37,7 +38,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
     private Collection<ParcelableUser> _friends;
     private ExecutorService _executorService;
     private Collection<IDatabaseUpdater> _dbUpdaters;
-
+    AtomicInteger currentFriendCount = new AtomicInteger();
     public BulkFriendRetriever(ParcelableUser currentUser_, Collection<IDatabaseUpdater> dbUpdaters_) {
         _currentUser = currentUser_;
         _userRetriver = new UsersFriendRetriever(true);
@@ -128,17 +129,26 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
 
                 if (waitForFriendTasks(futures)) {
                     //all tasks finished fine so update DB
+                    _currentUser.setCurrentFriendTotal(currentFriendCount.get());
+                    _friends.add(_currentUser);
                     Log.v(TAG, "finished waiting for 4 tasks with total size: " + _friends.size());
                     for (IDatabaseUpdater updater : _dbUpdaters) {
                           updater.updateUsersToDB(_friends);
-                        _friends.clear();
                     }
+                    _friends.clear();
+
                 } else {
                     break;
                 }
             }
         }
-        Log.v(TAG, "finished with with total friend count" + cachedFriendUser.getUser().getTotalFriendCount());
+        _friends.clear();
+        _friends.add(_currentUser);
+        Log.v(TAG, " final currentcount for user is : " +_currentUser.getScreenName() + " index " +_currentUser.getCurrentFriendCount() );
+
+        for (IDatabaseUpdater updater : _dbUpdaters) {
+            updater.updateUsersToDB(_friends);
+        }
     }
 
     /**
@@ -177,7 +187,12 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
 
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
-        Log.v(TAG, "SUCCESS");
+        Log.v(TAG, "SUCCESS with current count: " + user_.getCurrentFriendCount() + " current index " + user_.getLastFriendIndex() +
+        "current friend current friend count" + _currentUser.getCurrentFriendCount());
+        currentFriendCount.addAndGet(user_.getLastFriendIndex());
+       // int currentCount = _currentUser.getCurrentFriendCount();
+       // _currentUser.setCurrentFriendTotal((user_.getLastFriendIndex()+currentCount));
+
     }
 
     @Override

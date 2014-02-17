@@ -100,7 +100,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                 if(_tabHasBeenSelected == false){
                     _tabHasBeenSelected = true;
                     if(_currentUser != null){
-                        if(!(_currentUser.getCurrentFriendCount() > 0)){
+                        if((_currentUser.getCurrentFriendCount() <= 0)){
                             _pullToRefreshHandler.startRefresh();
                         }
                     }

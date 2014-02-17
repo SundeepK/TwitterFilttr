@@ -138,9 +138,9 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
         Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
                 + " = ? ", new String[]{Long.toString(15670515l)}, null));
         final ParcelableUser user = users.iterator().next();
-        IDBDao<ParcelableUser> _usersToFriendDao=   (IDBDao<ParcelableUser>)
+        final IDBDao<ParcelableUser> _usersToFriendDao=   (IDBDao<ParcelableUser>)
                 flyWeight.getDao(DaoFlyWeightFactory.DaoFactory.USERS_FRIEND_DAO, user);
-        _dbUpdaters = new ArrayList<IDatabaseUpdater>();
+        final Collection<IDatabaseUpdater> _dbUpdaters = new ArrayList<IDatabaseUpdater>();
         _dbUpdaters.add(new DatabaseUpdater(_friendDao, cols));
         _dbUpdaters.add(new DatabaseUpdater(_usersToFriendDao));
 
