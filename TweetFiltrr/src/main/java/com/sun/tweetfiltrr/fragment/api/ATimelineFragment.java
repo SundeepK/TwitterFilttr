@@ -28,7 +28,7 @@ import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.TimeLineDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
@@ -80,7 +80,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     @Inject TweetRetrieverWrapper _tweetRetriver;
     @Inject FriendDao _friendDao;
     @Inject
-    TimeLineDao _timeLineDao;
+    TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
 
     @Override
@@ -121,7 +121,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                 new SimpleDBUpdater<ParcelableTweet>();
 
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
-        _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timeLineDao));
+        _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(),
                 FriendColumn.TWEET_COUNT.s(), FriendColumn.COLUMN_MAXID.s(), FriendColumn.COLUMN_SINCEID.s(),
                 FriendColumn.MAXID_FOR_MENTIONS.s(), FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendColumn.FOLLOWER_COUNT.s()
@@ -165,7 +165,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             _dataAdapter = timelineCursorAdapter;
             ZoomListView.OnItemFocused listener = timelineCursorAdapter;
             _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener, _userDaoUpdaters);
-            _onTweetOperationLis = new TweetOperationController(_pullToRefreshHandler, _timeLineDao, this);
+            _onTweetOperationLis = new TweetOperationController(_pullToRefreshHandler, _timelineDao, this);
 
     }
 
@@ -235,7 +235,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         int tweetID =
                 cursor.getInt(cursor.getColumnIndexOrThrow(TimelineColumn._ID.a()));
         Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
-        Collection<ParcelableTweet> tweets = _timeLineDao.getEntry(tweetID);
+        Collection<ParcelableTweet> tweets = _timelineDao.getEntry(tweetID);
         //we should only retrieve 1 friend since rowId is unique, so we iterate once
         ParcelableUser user = friends.iterator().next();
         ParcelableTweet tweet = tweets.iterator().next();

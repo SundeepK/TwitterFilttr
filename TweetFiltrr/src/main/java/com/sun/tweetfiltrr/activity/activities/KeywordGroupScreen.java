@@ -134,6 +134,7 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
                 FriendTable.FriendColumn.IS_FRIEND.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
                 FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
                 FriendTable.FriendColumn.DESCRIPTION.s()};
+        //TODO this is for testing purposes and needs to be changed to current user instead
         Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
                 + " = ? ", new String[]{Long.toString(15670515l)}, null));
         final ParcelableUser user = users.iterator().next();

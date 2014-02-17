@@ -10,7 +10,7 @@ import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.FriendKeywordDao;
 import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
-import com.sun.tweetfiltrr.database.dao.TimeLineDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
@@ -44,7 +44,7 @@ import dagger.Provides;
                 FriendsTab.class,
                 FollowersTab.class,
                 FriendDao.class,
-                TimeLineDao.class,
+                TimelineDao.class,
                 FriendKeywordDao.class,
                 KeywordGroupDao.class,
                 EditKeywordGroupTab.class

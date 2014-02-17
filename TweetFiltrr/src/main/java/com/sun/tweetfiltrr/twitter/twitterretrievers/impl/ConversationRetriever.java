@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimeLineDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -52,7 +52,7 @@ public class ConversationRetriever implements Runnable{
 	}
 	
 //	public ConversationRetriever(
-//			ParcelableTweet tweetFirsInConvo_, TimeLineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
+//			ParcelableTweet tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
 //	
 //		_tweetFirsInConvo = tweetFirsInConvo_;
 //		_timelineDao = timelineDao_;
@@ -65,7 +65,7 @@ public class ConversationRetriever implements Runnable{
 //	}
 	
 //	protected ConversationRetriever(Handler timelineHandler_, int flag_,
-//			ParcelableTweet tweetFirsInConvo_, TimeLineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
+//			ParcelableTweet tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
 //		super(timelineHandler_, flag_);
 //		_tweetFirsInConvo = tweetFirsInConvo_;
 //		_timelineDao = timelineDao_;
@@ -216,7 +216,7 @@ public class ConversationRetriever implements Runnable{
     }
 
 	private void  getConversationFromDB(ParcelableTweet tweetFirsInConvo_,
-			Collection<ParcelableTweet> conversation_, TimeLineDao timeLineDao_){
+			Collection<ParcelableTweet> conversation_, TimelineDao timelineDao_){
 		
 		Collection<ParcelableTweet> convo =_timelineDao.getEntries(TimelineColumn.TWEET_ID.s() + "=?",
 				new String[]{tweetFirsInConvo_.getInReplyToTweetId() + ""}, null);
@@ -224,7 +224,7 @@ public class ConversationRetriever implements Runnable{
 		if(!convo.isEmpty() && convo.size() > 0){
 			for(ParcelableTweet friend : convo){
 				if(friend.getInReplyToTweetId() != 0){
-					getConversationFromDB(friend, conversation_, timeLineDao_);
+					getConversationFromDB(friend, conversation_, timelineDao_);
 				}
 			}
 		}

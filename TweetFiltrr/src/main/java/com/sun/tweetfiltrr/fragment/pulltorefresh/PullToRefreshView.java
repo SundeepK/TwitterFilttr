@@ -18,7 +18,7 @@ import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.ZoomListView;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimeLineDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
@@ -97,7 +97,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
                 .getInstance(_activity.getContentResolver());
         //init the Dao object using the flyweight so that we can share the Dao's between different fragments
-        _timelineDao = new TimeLineDao(_activity.getContentResolver(), new TimelineToParcelable());
+        _timelineDao = new TimelineDao(_activity.getContentResolver(), new TimelineToParcelable());
         _friendDao = (IDBDao<ParcelableUser>) flyWeight.getDao(
                 DaoFlyWeightFactory.DaoFactory.FRIEND_DAO, _currentUser);
         _timelineBufferedDBUpdater =

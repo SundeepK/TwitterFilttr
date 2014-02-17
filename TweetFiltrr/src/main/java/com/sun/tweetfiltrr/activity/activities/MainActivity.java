@@ -203,7 +203,7 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
-            return null;
+            return null;//TODO not return null, instead add extra handling
         }
 	}
 

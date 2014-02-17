@@ -16,7 +16,7 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimeLineDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
@@ -52,7 +52,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
         EditText tweetEditTxt = (EditText)findViewById(R.id.reply_tweet_edittxt);
         ImageView profilePic =(ImageView)findViewById(R.id.profile_image);
 
-        _timelineDao = new TimeLineDao(getContentResolver(), new TimelineToParcelable());
+        _timelineDao = new TimelineDao(getContentResolver(), new TimelineToParcelable());
 
          _user = getIntent().getExtras().getParcelable(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE);
 

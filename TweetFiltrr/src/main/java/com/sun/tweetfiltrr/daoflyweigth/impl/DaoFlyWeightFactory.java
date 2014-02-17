@@ -11,7 +11,7 @@ import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.FriendKeywordDao;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
-import com.sun.tweetfiltrr.database.dao.TimeLineDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dao.UserFollowersDao;
 import com.sun.tweetfiltrr.database.dao.UserFriendsDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
@@ -89,7 +89,7 @@ public class DaoFlyWeightFactory {
 			 dao = _daoCache.get(daoVal_);
 
 			if(dao == null){
-				dao = new TimeLineDao(_resolver, _timeLineToParcelable);
+				dao = new TimelineDao(_resolver, _timeLineToParcelable);
 				_daoCache.put(DaoFactory.TIMELINE_DAO, dao);
 			}
 			return dao;

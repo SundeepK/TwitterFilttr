@@ -79,7 +79,7 @@ public class FriendsTab extends AUsersFragment {
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TweetFiltrrProvider.CONTENT_URI_USER_TO_FRIEND, pro,
                 UsersToFriendsColumn.USERS_TO_FRIENDS_TABLE.s() + "." + UsersToFriendsColumn.USER_ID.s() + "=?",
-                new String[]{"" + getCurrentUser().getUserId()}, FriendColumn._ID.s() + " ASC " + " LIMIT " + getTimeLineCount() + "");
+                new String[]{"" + getCurrentUser().getUserId()}, FriendColumn._ID.s() + " DESC " + " LIMIT " + getTimeLineCount() + "");
         return cursorLoader;
     }
 

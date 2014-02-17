@@ -97,7 +97,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                 Log.d(TAG, "Not visible anymore");
             }else{
                 Log.d(TAG, "Visible now!");
-                if(!_tabHasBeenSelected){
+                if(_tabHasBeenSelected == false){
                     _tabHasBeenSelected = true;
                     if(_currentUser != null){
                         if(!(_currentUser.getCurrentFriendCount() > 0)){
@@ -234,21 +234,20 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         _dataAdapter.swapCursor(null);
-
+        _isCursorReady = false;
     }
 
     @Override
     public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+        int rowCount =  _currentUser.getCurrentFriendCount() - _currentFriendLimit;
         if(_tabHasBeenSelected && _isCursorReady){
-            if (_currentFriendLimit < _currentUser.getCurrentFriendCount()) {
-                Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount());
-                int diff = _currentUser.getCurrentFriendCount()-  _currentFriendLimit;
-                if(diff > 100){
+            if ( rowCount>0) {
+                if(rowCount > 100){
                     _currentFriendLimit += 100;
                 }else{
-                    _currentFriendLimit += diff;
+                    _currentFriendLimit += rowCount;
                 }
+                Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount() + "total friend count" + _currentUser.getTotalFriendCount());
                 restartCursor();
                 return false;
             } else if (_isFinishedLoading){
@@ -259,7 +258,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                 return true;
             }
         }else{
-            Log.v(TAG, "_tabHasBeenSelected is false");
+            Log.v(TAG, "_tabHasBeenSelected:" +_tabHasBeenSelected + " with cursor ready: " + _isCursorReady);
         return false;
      }
 
@@ -294,10 +293,10 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     public void OnRefreshComplete(Collection<ParcelableUser> twitterParcelable) {
         Log.v(TAG, "on refresh completed with count:" + twitterParcelable.size());
         int totalFriendsReturned = twitterParcelable.size();
-        Log.v(TAG, "on refresh completed timeline frag qith size " + totalFriendsReturned);
         _isFinishedLoading = (totalFriendsReturned <= 1);
         _currentFriendLimit += totalFriendsReturned;
         if(this.getActivity() != null){
+            Log.v(TAG, "activity not null so restarting");
             restartCursor();
         }
     }
