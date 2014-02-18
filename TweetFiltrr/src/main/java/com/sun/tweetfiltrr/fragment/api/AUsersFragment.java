@@ -234,7 +234,6 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         _dataAdapter.swapCursor(null);
-        _isCursorReady = false;
     }
 
     @Override
@@ -249,6 +248,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                 }else{
                     _currentFriendLimit += diff;
                 }
+                _isCursorReady = false;
                 restartCursor();
                 return false;
             } else if (_isFinishedLoading){
