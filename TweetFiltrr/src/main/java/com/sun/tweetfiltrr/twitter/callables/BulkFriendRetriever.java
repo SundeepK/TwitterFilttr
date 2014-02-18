@@ -70,7 +70,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
             Log.v(TAG, "already processed user " + _currentUser.getScreenName() + " so returnining");
             return ;
         }
-
+        currentFriendCount.addAndGet(cachedFriendUser.getCurrentUserCount());
         Collection<Future<Collection<ParcelableUser>>> futures = new ArrayList<Future<Collection<ParcelableUser>>>();
         int currentIndex = cachedFriendUser.getLastArrayIndex();
         int totalFriendsSearched = currentIndex;
@@ -91,13 +91,14 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
 
                 if (currentIndex < 5000) {
                     if(currentIndex > totalCacheFriendCount){
+                        Log.v(TAG, "currentIndex < 5000 && currentIndex > totalCacheFriendCount, with currentIndex " +currentIndex);
                         currentIndex-=100;
                         isReachMaxFriendNumber = true;
                         lenght = totalCacheFriendCount-currentIndex;
                     }
                 }
 
-                Log.v(TAG, "current array index is: " + currentIndex + " with total frnd count "+ totalCacheFriendCount);
+                Log.v(TAG, "current array index is: " + currentIndex + " with total frnd count "+ totalCacheFriendCount + " and length " + lenght);
 
                 long[] ids = new long[lenght];
                 System.arraycopy(friendIDs, currentIndex , ids, 0, lenght);
@@ -133,11 +134,12 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                     _friends.add(_currentUser);
                     Log.v(TAG, "finished waiting for 4 tasks with total size: " + _friends.size());
                     for (IDatabaseUpdater updater : _dbUpdaters) {
-                          updater.updateUsersToDB(_friends);
+                         // updater.updateUsersToDB(_friends);
                     }
                     _friends.clear();
 
                 } else {
+                    Log.v(TAG, "waitForFriendTasks was false");
                     break;
                 }
             }
@@ -187,9 +189,10 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
 
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_) {
+
+        currentFriendCount.addAndGet(user_.getCurrentFriendCount());
         Log.v(TAG, "SUCCESS with current count: " + user_.getCurrentFriendCount() + " current index " + user_.getLastFriendIndex() +
-        "current friend current friend count" + _currentUser.getCurrentFriendCount());
-        currentFriendCount.addAndGet(user_.getLastFriendIndex());
+                "current friend current friend count" + currentFriendCount.get());
        // int currentCount = _currentUser.getCurrentFriendCount();
        // _currentUser.setCurrentFriendTotal((user_.getLastFriendIndex()+currentCount));
 

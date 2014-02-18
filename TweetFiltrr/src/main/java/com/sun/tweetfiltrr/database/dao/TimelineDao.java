@@ -30,7 +30,7 @@ public class TimelineDao extends ADBDao<ParcelableTweet> {
 	@Inject
 	public TimelineDao(ContentResolver contentResolver_, TimelineToParcelable cursorToParcelable_) {
 		super(contentResolver_, cursorToParcelable_);
-		
+
 	}
 
 	@Override

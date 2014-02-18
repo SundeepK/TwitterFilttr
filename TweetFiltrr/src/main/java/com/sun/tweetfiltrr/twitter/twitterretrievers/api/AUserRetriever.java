@@ -108,11 +108,12 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
         long[] friendIds = user_.getUserIds();
         int lastArrayIndex = user_.getLastArrayIndex();
         int friendCount = 0;
+        //minus 1 from the lastOffsetPos becuase were dealing with arrays here
         int lastOffsetPos = lastArrayIndex < 1 ? 0 : lastArrayIndex -1;
         //we can just return here rather than copy array since twitter can handle only 100 id's
-//        if(lastOffsetPos ==0 && friendIds.length < 100){
-//            return friendIds;
-//        }
+        if(lastOffsetPos ==0 && friendIds.length < 100){
+            return friendIds;
+        }
         if (friendIds != null) {
             friendCount = friendIds.length;
         }else{
@@ -129,7 +130,6 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
 
 
         int lenght = friendDiff  < 100 ? friendDiff : 100;
-        //minus 1 from the lastOffsetPos becuase were dealing with arrays here
 
         lenght = lenght <= 0 ? friendCount : lenght; //TODO CHECK THIS also
 //        if( lenght + lastOffsetPos > friendCount){

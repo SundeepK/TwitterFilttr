@@ -46,6 +46,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.callables.BulkFriendRetriever;
 import com.sun.tweetfiltrr.utils.InputValidator;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,12 +66,12 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
 	private InputValidator _inputValidator;
     private Collection<IDatabaseUpdater> _dbUpdaters;
-
+    private ParcelableUser _currentUser;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_listview);
-
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
 
         ActionBar actionBar =  getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -148,17 +149,15 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
 
         Button loadFriends = (Button) findViewById(R.id.load_all_friends);
         saveChangesBut.setOnClickListener(getSaveButtonLis(_keywordGroupDao, groupName, groupKeyword));
-
+        loadFriends.setText(_currentUser.getCurrentFollowerCount() + " out of " + _currentUser.getTotalFriendCount() + " friend's , load more?");
         loadFriends.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "onclicked for load friends");
-                BulkFriendRetriever r = new BulkFriendRetriever(user,_dbUpdaters);
+                BulkFriendRetriever r = new BulkFriendRetriever(user, _dbUpdaters);
                 Executors.newFixedThreadPool(1).submit(r);
-
             }
         });
-
 
     }
 
