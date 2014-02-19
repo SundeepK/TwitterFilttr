@@ -9,13 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.imageloader.core.ImageSettings;
@@ -24,27 +23,28 @@ import com.sun.imageloader.core.api.FailedTaskReason;
 import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
-import com.sun.tweetfiltrr.customviews.CircleCroppedDrawable;
+import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
+import com.sun.tweetfiltrr.customviews.webview.AuthenticationDetails;
+import com.sun.tweetfiltrr.customviews.webview.TwitterAuthView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import twitter4j.TwitterException;
+import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-public class MainActivity extends SherlockFragmentActivity implements ImageTaskListener, AsyncAccessTokenRetriever.OnTokenFinish {
+public class MainActivity extends SherlockFragmentActivity implements ImageTaskListener,
+        AsyncAccessTokenRetriever.OnTokenFinish, TwitterAuthView.OnSuccessfulTwitterOAuth {
 
     private static final String TAG = MainActivity.class.getName();
     private ImageView _profile;
+    private TwitterAuthView _authWebView;
+
     @Inject UrlImageLoader _sicImageLoader;
 
 	@Override
@@ -52,7 +52,6 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_screen);
         ((TweetFiltrrApplication)getApplication()).getObjectGraph().inject(this);
-
 		if (TwitterUtil.hasInternetConnection(this)) {
 
             _profile = (ImageView) findViewById(R.id.friend_profile_image);
@@ -67,6 +66,8 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 						TwitterConstants.AUTH_USER_DESC_BG, null);
 			   userName.setText(name);
             ImageLoaderUtils.attemptLoadImage(_profile, _sicImageLoader, profileUrl, 1, this);
+            _authWebView = (TwitterAuthView) findViewById(R.id.twitter_auth_web_view);
+            _authWebView.setSuccessLis(this);
             authenticateUser();
 		} else {
 			displayConnectionAlert();
@@ -79,8 +80,13 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 				.getDefaultSharedPreferences(this);
         if (!sharedPreferences.getBoolean(
 				TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, false)) {
-				new TwitterAuthenticateTask().execute();
-                finish();
+			//	new TwitterAuthenticateTask().execute();
+           // new AsyncAccessTokenRetriever(this, this).execute("");
+            AuthenticationDetails details = new AuthenticationDetails(TwitterConstants.TWITTER_CONSUMER_KEY,
+                    TwitterConstants.TWITTER_CONSUMER_SECRET, "https://twitterfiltrr.com");
+            _authWebView.setVisibility(View.VISIBLE);
+            _authWebView.startTwitterAuthentication(details);
+         //   finish();
         }else{
             new AsyncAccessTokenRetriever(this, this).execute("");
         }
@@ -192,11 +198,18 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 
     }
 
+    @Override
+    public void onSuccessTwitterOAuth(AccessToken acccessToken) {
+        Intent intent = new Intent(this, TwitterFilttrLoggedInUserHome.class);
+        startActivity(intent);
+        finish();
+    }
+
     class TwitterAuthenticateTask extends AsyncTask<String, String, RequestToken> {
 		 
 	    @Override //TODO have a timeout here just incase we cant reach twitter and display an error message
 	    protected void onPostExecute(RequestToken requestToken) {
-	    	Log.v("Authentication url",Uri.parse(requestToken.getAuthenticationURL()).toString());
+	    	//Log.v("Authentication url",Uri.parse(requestToken.getAuthenticationURL()).toString());
 	        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.getAuthenticationURL()));
 	        startActivity(intent);
 	        finish();

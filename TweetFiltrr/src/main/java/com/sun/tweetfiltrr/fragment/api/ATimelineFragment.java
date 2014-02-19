@@ -26,7 +26,7 @@ import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
+import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;

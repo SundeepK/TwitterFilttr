@@ -20,7 +20,7 @@
         android:textSize="12dp" />
 
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceEditText
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceEditText
         android:id="@+id/group_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         custom:typeface="robotoLight"
         android:padding="5dp" />
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceEditText
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceEditText
         android:id="@+id/group_keyword"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

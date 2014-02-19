@@ -21,7 +21,7 @@ import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
+import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;

@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.twitter.twitterretrievers.impl;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.database.dao.FriendDao;
@@ -61,7 +62,11 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
 //                parcelableUser = new ParcelableUser(TwitterUtil.getInstance().getTwitter().showUser(accessToken
 //                        .getUserId()));
                 RequestToken toek =   twitter.getOAuthRequestToken();
-            accessToken =   twitter.getOAuthAccessToken(toek);
+
+                    Uri s =Uri.parse(toek.getAuthorizationURL());
+            String verifier = s.getQueryParameter(TwitterConstants.URL_PARAMETER_TWITTER_OAUTH_VERIFIER);
+
+            accessToken =   twitter.getOAuthAccessToken(toek, verifier);
 
             parcelableUser = new ParcelableUser(twitter.showUser(accessToken
                         .getUserId()));

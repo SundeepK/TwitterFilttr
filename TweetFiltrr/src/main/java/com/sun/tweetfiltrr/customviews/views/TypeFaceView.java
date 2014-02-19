@@ -1,31 +1,32 @@
-package com.sun.tweetfiltrr.customviews;
+package com.sun.tweetfiltrr.customviews.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.utils.FontUtils;
 
 /**
- * Created by Sundeep on 07/02/14.
+ * Created by Sundeep on 06/02/14.
  */
-public class TypeFaceEditText extends EditText {
-    public TypeFaceEditText(Context context) {
+public class TypeFaceView extends TextView{
+
+
+
+    public TypeFaceView(Context context) {
         super(context);
     }
 
-    public TypeFaceEditText(Context context, AttributeSet attrs) {
+    public TypeFaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        parseAttributes(context, attrs);
-
+        parseAttributes(context, attrs); //I'll explain this method later
     }
 
-    public TypeFaceEditText(Context context, AttributeSet attrs, int defStyle) {
+    public TypeFaceView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         parseAttributes(context, attrs);
-
     }
 
     private void parseAttributes(Context context, AttributeSet attrs) {
@@ -34,6 +35,4 @@ public class TypeFaceEditText extends EditText {
         int typeface = values.getInt(R.styleable.TypeFaceView_typeface, 0);
         setTypeface(FontUtils.getTypeFace(typeface, context));
     }
-
-
 }

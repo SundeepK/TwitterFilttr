@@ -8,7 +8,7 @@
     android:padding="8dp"
     >
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/user_name"
         android:focusable="false"
         android:focusableInTouchMode="false"

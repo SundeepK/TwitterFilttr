@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.customviews;
+package com.sun.tweetfiltrr.customviews.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

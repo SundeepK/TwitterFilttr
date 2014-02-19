@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.customviews;
+package com.sun.tweetfiltrr.customviews.views;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

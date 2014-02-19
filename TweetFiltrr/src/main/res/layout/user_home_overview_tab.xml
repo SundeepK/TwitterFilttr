@@ -41,7 +41,7 @@
             />
 
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/user_name_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         custom:typeface="robotoLight"
         android:textSize="16dp"/>
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/user_desc_textview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             android:layout_toRightOf="@+id/user_profile_imageview" />
 
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
             android:id="@+id/tweets_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             android:textSize="16dp" />
 
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
             android:id="@+id/friends_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
              />
 
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
             android:id="@+id/followers_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -27,7 +27,7 @@ import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
+import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadPoolExecutor;

@@ -43,7 +43,7 @@
         android:layout_marginBottom="3dp"
         android:scaleType="centerCrop" />
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/user_name"
         android:layout_height="100dp"
         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
         android:layout_alignTop="@+id/profile_image"
         android:layout_toRightOf="@+id/profile_image" />
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/user_details"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

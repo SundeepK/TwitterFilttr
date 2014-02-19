@@ -20,7 +20,7 @@
         android:orientation="vertical" >
         <!--android:background="#99000000"-->
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
@@ -41,7 +41,7 @@
             android:focusable="false"
             android:scaleType="centerCrop" />
 
-        <com.sun.tweetfiltrr.customviews.TypeFaceView
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
             android:id="@+id/friend_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,5 +52,13 @@
             custom:typeface="robotoThin"
             />
     </LinearLayout>
+
+    <com.sun.tweetfiltrr.customviews.webview.TwitterAuthView
+        android:id="@+id/twitter_auth_web_view"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        </com.sun.tweetfiltrr.customviews.webview.TwitterAuthView>
 
 </FrameLayout>

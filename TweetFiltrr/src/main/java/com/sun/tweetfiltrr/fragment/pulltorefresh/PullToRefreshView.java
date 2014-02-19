@@ -15,7 +15,7 @@ import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
 import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
-import com.sun.tweetfiltrr.customviews.ZoomListView;
+import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;

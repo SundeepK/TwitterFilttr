@@ -19,7 +19,7 @@
      />
 
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         custom:typeface="robotoLight"
         android:textSize="16sp" />
 
-    <com.sun.tweetfiltrr.customviews.TypeFaceView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

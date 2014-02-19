@@ -25,7 +25,7 @@
             <!--android:textColor="#fff" />-->
     <!--</com.sun.parallaxviewpage.core.AsyncBackgroundViewPager>-->
 
-    <!--<com.sun.tweetfiltrr.customviews.TypeFaceView-->
+    <!--<com.sun.tweetfiltrr.customviews.views.TypeFaceView-->
         <!--android:id="@+id/action_bar_title"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
