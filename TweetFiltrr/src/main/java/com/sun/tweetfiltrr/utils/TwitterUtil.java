@@ -37,20 +37,22 @@ public final class TwitterUtil {
     private static TwitterUtil instance = new TwitterUtil();
     private ParcelableUser _currentUser;
     private UrlImageLoader _imageloader;
+    private AccessToken _accesstoken;
     private TwitterUtil() {
-    	ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-    	configurationBuilder.setDebugEnabled(true);
-        configurationBuilder.setOAuthConsumerKey(TwitterConstants.TWITTER_CONSUMER_KEY);
-        configurationBuilder.setOAuthConsumerSecret(TwitterConstants.TWITTER_CONSUMER_SECRET);
+//    	ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+//    	configurationBuilder.setDebugEnabled(true);
+//        configurationBuilder.setOAuthConsumerKey(TwitterConstants.TWITTER_CONSUMER_KEY);
+//        configurationBuilder.setOAuthConsumerSecret(TwitterConstants.TWITTER_CONSUMER_SECRET);
 //        configurationBuilder.setOAuthAccessToken(TwitterConstants.TWITTER_OAUTH_KEY);
 //        configurationBuilder.setOAuthAccessTokenSecret(TwitterConstants.TWITTER_OAUTH_SECRET);
-        configurationBuilder.setUseSSL(true);
+      //  configurationBuilder.setUseSSL(true);
     //    configurationBuilder.setApplicationOnlyAuthEnabled(true);
 
 
-        Configuration  configuration = configurationBuilder.build();
-        _twitterFactory = new TwitterFactory(configuration);
-        _twitter = _twitterFactory.getInstance();
+//        Configuration  configuration = configurationBuilder.build();
+    // _twitterFactory = new TwitterFactory().getInstance();
+        _twitter = new TwitterFactory().getInstance();
+        _twitter.setOAuthConsumer(TwitterConstants.TWITTER_CONSUMER_KEY,TwitterConstants.TWITTER_CONSUMER_SECRET );
         _threadPoolExecutor =  new ThreadPoolExecutor(4, 10, 60, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>());
                 
@@ -129,7 +131,8 @@ public final class TwitterUtil {
     public RequestToken getRequestToken() throws TwitterException {
         if (_requestToken == null) {
             try {
-                _requestToken = _twitterFactory.getInstance().getOAuthRequestToken(TwitterConstants.TWITTER_CALLBACK_URL);
+                Log.v(TAG, "setting request token");
+                _requestToken = _twitter.getOAuthRequestToken(TwitterConstants.TWITTER_CALLBACK_URL);
             } catch (TwitterException e) {
                 Log.v(TAG, "error gettings requesttoken");
                 throw new TwitterException(e);
@@ -137,7 +140,10 @@ public final class TwitterUtil {
         }
         return _requestToken;
     }
-    
+
+    public AccessToken getAccesToken(){
+        return _accesstoken;
+    }
     
 	public static boolean hasInternetConnection(Context context_ ) {
 		ConnectivityManager cm = (ConnectivityManager) context_.getSystemService(Context.CONNECTIVITY_SERVICE);

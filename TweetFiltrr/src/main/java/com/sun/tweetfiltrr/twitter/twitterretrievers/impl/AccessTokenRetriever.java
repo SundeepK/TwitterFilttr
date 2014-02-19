@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 /**
  * Created by Sundeep on 13/02/14.
@@ -38,9 +40,12 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
         UserBundle user = null;
         ParcelableUser parcelableUser = null;
         AccessToken accessToken = null;
+        TwitterUtil util = TwitterUtil.getInstance();
+        Twitter twitter = util.getTwitter();
         try{
-            if (!(verifier_ == "")) {
-//                RequestToken requestToken = TwitterUtil.getInstance()
+//            if (!(verifier_ == "")) {
+
+      //                RequestToken requestToken = TwitterUtil.getInstance()
 //                        .getRequestToken();
 //                Log.v(TAG, "Verifier is not null so doing OAuth with request token" + requestToken.getToken()
 //                        + " secrect  " + requestToken.getTokenSecret());
@@ -48,29 +53,41 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
 //                AccessToken accessToken = TwitterUtil.getInstance().getTwitter().getOAuthAccessToken(
 //						requestToken, params[0]);
 
-                accessToken = new AccessToken(TwitterConstants.TWITTER_OAUTH_KEY, TwitterConstants.TWITTER_OAUTH_SECRET);
-                parcelableUser = new ParcelableUser(TwitterUtil.getInstance().getTwitter().showUser(accessToken
+
+             //   accessToken = new AccessToken(TwitterConstants.TWITTER_OAUTH_KEY, TwitterConstants.TWITTER_OAUTH_SECRET);
+               // RequestToken requestToken = twitter.getOAuthRequestToken(TwitterConstants.TWITTER_AUTH_URL);
+             //   accessToken =   twitter.getOAuthAccessToken(requestToken);
+
+//                parcelableUser = new ParcelableUser(TwitterUtil.getInstance().getTwitter().showUser(accessToken
+//                        .getUserId()));
+                RequestToken toek =   twitter.getOAuthRequestToken();
+            accessToken =   twitter.getOAuthAccessToken(toek);
+
+            parcelableUser = new ParcelableUser(twitter.showUser(accessToken
                         .getUserId()));
                 Collection<ParcelableUser> users =  new ArrayList<ParcelableUser>();
                 users.add(parcelableUser);
                 _userDao.insertOrUpdate(users);
                 user = new UserBundle(parcelableUser, accessToken);
-            } else {
-
-                accessToken = getAccessTokenFromPreferences(sharedPreferences_);
-                TwitterUtil.getInstance().setTwitterFactories(accessToken);
-                //attempt to get user from DB, we should almost always get a user if we are here
-                parcelableUser = getParcelableUserFromDB(sharedPreferences_);
-                //incase we don't have a user for whatever reason, we query twitter for it
-                if(parcelableUser == null){
-                    parcelableUser = getParcelableUserFromTwitter(accessToken);
-                    Log.v(TAG, "Found user from twitter network call");
-                }
-
-                TwitterUtil.getInstance().setCurrentUser(parcelableUser);
-                user = new UserBundle(parcelableUser, accessToken);
-            }
+//            } else {
+//
+//                accessToken = getAccessTokenFromPreferences(sharedPreferences_);
+//                TwitterUtil.getInstance().setTwitterFactories(accessToken);
+//                //attempt to get user from DB, we should almost always get a user if we are here
+//                parcelableUser = getParcelableUserFromDB(sharedPreferences_);
+//                //incase we don't have a user for whatever reason, we query twitter for it
+//                if(parcelableUser == null){
+//                    parcelableUser = getParcelableUserFromTwitter(accessToken);
+//                    Log.v(TAG, "Found user from twitter network call");
+//                }
+//
+//                TwitterUtil.getInstance().setCurrentUser(parcelableUser);
+//                user = new UserBundle(parcelableUser, accessToken);
+//            }
         } catch (TwitterException e) {
+
+          //  accessToken =   twitter.getOAuthAccessToken();
+
             throw new TwitterException(e);
         }
 

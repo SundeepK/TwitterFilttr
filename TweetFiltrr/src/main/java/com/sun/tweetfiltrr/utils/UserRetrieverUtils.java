@@ -33,7 +33,7 @@ public class UserRetrieverUtils {
 
             if(loggedInUser == null){
                 try {
-                    loggedInUser = getCurrentUser(context_);
+               //     loggedInUser = getCurrentUser(context_);
                     if (loggedInUser == null) {
                         Uri uri = context_.getIntent().getData();
                         loggedInUser = getCurrentUserFromURI(uri, context_);

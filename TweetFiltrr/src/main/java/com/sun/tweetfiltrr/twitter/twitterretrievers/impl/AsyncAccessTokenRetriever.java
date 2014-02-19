@@ -14,6 +14,7 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 public class AsyncAccessTokenRetriever extends AsyncTask<String, String, ParcelableUser> {
 
@@ -23,6 +24,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 	private FriendDao _userDao;
     private AccessTokenRetriever _tokenRetriever;
     private OnTokenFinish _lis;
+    RequestToken token;
     public interface OnTokenFinish {
         public void OnTokenFinish(ParcelableUser parcelableUser);
     }
