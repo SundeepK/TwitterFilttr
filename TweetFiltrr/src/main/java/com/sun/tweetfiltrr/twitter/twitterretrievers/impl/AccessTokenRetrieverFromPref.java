@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 
 /**
@@ -32,14 +34,21 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
 
     @Override
     public Collection<UserBundle> retrieveAccessTokenFromSharedPref(SharedPreferences sharedPreferences_) {
-        final AccessToken accessToken = retrieveAccessTokenFromPreferences(sharedPreferences_);
-        TwitterUtil.getInstance().setTwitterFactories(accessToken);
-        //attempt to get user from DB, we should almost always get a user if we are here
-        final ParcelableUser parcelableUser = getParcelableUserFromDB(sharedPreferences_);
-        TwitterUtil.getInstance().setCurrentUser(parcelableUser);
-        final UserBundle user = new UserBundle(parcelableUser, accessToken);
         ArrayList<UserBundle> userBundles = new ArrayList<UserBundle>();
-        userBundles.add(user);
+        try {
+            final AccessToken accessToken = retrieveAccessTokenFromPreferences(sharedPreferences_);
+            TwitterUtil.getInstance().setTwitterFactories(accessToken);
+            Twitter twitter =    TwitterUtil.getInstance().getTwitter();
+            final ParcelableUser parcelableUserFromTwitter = new ParcelableUser(twitter.showUser(accessToken
+                    .getUserId()));
+            insertUpdatedTwitterUser(parcelableUserFromTwitter);
+            //attempt to get user from DB, we should almost always get a user if we are here
+            final ParcelableUser parcelableUser = getParcelableUserFromDB(sharedPreferences_);
+            final UserBundle user = new UserBundle(parcelableUser, accessToken);
+            userBundles.add(user);
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
         return userBundles;
     }
 
@@ -51,6 +60,17 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
                 "");
         return new AccessToken(accessTokenString,
                 accessTokenSecret);
+    }
+
+    private void insertUpdatedTwitterUser(ParcelableUser user_){
+        String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
+                FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.FOLLOWER_COUNT.s(), FriendTable.FriendColumn.FRIEND_COUNT.s(),
+                FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(),
+                FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
+                FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s()};
+        Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
+        users.add(user_);
+        _userDao.insertOrUpdate(users, cols);
     }
 
     private ParcelableUser getParcelableUserFromDB(SharedPreferences sharedPreferences_) {

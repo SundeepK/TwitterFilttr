@@ -8,6 +8,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.sun.tweetfiltrr.activity.activities.ITwitterAuthCallback;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.ITwitterAccessTokenRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TwitterAccessTokenRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
@@ -29,20 +30,16 @@ import twitter4j.auth.RequestToken;
 public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient.OnPageLoad {
     private static final String TAG = TwitterAuthView.class.getName();
 
-    private TwitterAuthCallback lis;
+    private ITwitterAuthCallback lis;
     private ExecutorService _executorService;
     private RequestToken _tempRequestToken;
     private Twitter _twitter;
-    public interface TwitterAuthCallback {
-        public void onSuccessTwitterOAuth(UserBundle userBundle);
-        public void onFailTwitterOAuth(Exception e);
-    }
 
     public void setExecutorService(ExecutorService executorService_){
         _executorService =  executorService_;
     }
 
-    public void setSuccessLis(TwitterAuthCallback lis_){
+    public void setSuccessLis(ITwitterAuthCallback lis_){
         lis = lis_;
     }
 
