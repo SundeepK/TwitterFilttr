@@ -5,10 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.CycleInterpolator;
@@ -26,17 +25,21 @@ import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
 import com.sun.tweetfiltrr.customviews.webview.AuthenticationDetails;
 import com.sun.tweetfiltrr.customviews.webview.TwitterAuthView;
+import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IAccessTokenRetrieverFromPref;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AccessTokenRetrieverFromPref;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
-import twitter4j.TwitterException;
-import twitter4j.auth.RequestToken;
+import twitter4j.auth.AccessToken;
 
 public class MainActivity extends SherlockFragmentActivity implements ImageTaskListener,
         AsyncAccessTokenRetriever.OnTokenFinish, TwitterAuthView.TwitterAuthCallback {
@@ -44,20 +47,27 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
     private static final String TAG = MainActivity.class.getName();
     private ImageView _profile;
     private TwitterAuthView _authWebView;
-
+    @Inject
+    FriendDao _friendDao;
     @Inject UrlImageLoader _sicImageLoader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login_screen);
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        boolean hasSignedIn = hasUserSignedInBefore(sharedPreferences);
+        if(!hasSignedIn){
+            setContentView(R.layout.login_screen_web_auth);
+            _authWebView = (TwitterAuthView) findViewById(R.id.twitter_auth_web_view);
+            _authWebView.setSuccessLis(this);
+        }else{
+            setContentView(R.layout.login_screen_auto_sign_in);
+        }
         ((TweetFiltrrApplication)getApplication()).getObjectGraph().inject(this);
 		if (TwitterUtil.hasInternetConnection(this)) {
-
             _profile = (ImageView) findViewById(R.id.friend_profile_image);
 			TextView userName = (TextView) findViewById(R.id.friend_name);
-            SharedPreferences sharedPreferences = PreferenceManager
-						.getDefaultSharedPreferences(this);
 			   String profileUrl = sharedPreferences.getString(
 						TwitterConstants.LOGIN_PROFILE_BG, null);
 			   String name = sharedPreferences.getString(
@@ -66,29 +76,28 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 						TwitterConstants.AUTH_USER_DESC_BG, null);
 			   userName.setText(name);
             ImageLoaderUtils.attemptLoadImage(_profile, _sicImageLoader, profileUrl, 1, this);
-            _authWebView = (TwitterAuthView) findViewById(R.id.twitter_auth_web_view);
-            _authWebView.setSuccessLis(this);
-            authenticateUser();
+            authenticateUser(hasSignedIn, sharedPreferences);
 		} else {
 			displayConnectionAlert();
 		}
 	}
 
-    public void authenticateUser() {
+    private boolean hasUserSignedInBefore(SharedPreferences sharedPreferences){
+       return   sharedPreferences.getBoolean(
+                TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, false);
+    }
 
-		SharedPreferences sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-        if (!sharedPreferences.getBoolean(
-				TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, false)) {
-			//	new TwitterAuthenticateTask().execute();
-           // new AsyncAccessTokenRetriever(this, this).execute("");
+    private void authenticateUser(boolean hasSignedInBefore_,SharedPreferences sharedPreferences_) {
+        if (!hasSignedInBefore_) {
             AuthenticationDetails details = new AuthenticationDetails(TwitterConstants.TWITTER_CONSUMER_KEY,
                     TwitterConstants.TWITTER_CONSUMER_SECRET, "https://twitterfiltrr.com");
             _authWebView.setVisibility(View.VISIBLE);
             _authWebView.startTwitterAuthentication(details);
-         //   finish();
         }else{
-            new AsyncAccessTokenRetriever(this, this).execute("");
+            IAccessTokenRetrieverFromPref tokenRetrieverFromPref = new AccessTokenRetrieverFromPref(_friendDao);
+            Collection<UserBundle> userBundles = tokenRetrieverFromPref.retrieveAccessTokenFromSharedPref(sharedPreferences_);
+            UserBundle bundle = userBundles.iterator().next();
+            finishSignIn(bundle);
         }
 
 
@@ -200,36 +209,46 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
 
     @Override
     public void onSuccessTwitterOAuth(UserBundle bundle) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        persistUserDetails(editor, bundle.getAccessToken(), bundle.getUser());
+        editor.commit();
+        finishSignIn(bundle);
+    }
+
+    private void finishSignIn(UserBundle bundle){
+        TwitterUtil.getInstance().setTwitterFactories(bundle.getAccessToken());
         TwitterUtil.getInstance().setCurrentUser(bundle.getUser());
         Intent intent = new Intent(this, TwitterFilttrLoggedInUserHome.class);
         startActivity(intent);
         finish();
     }
 
-    @Override
-    public void onFailTwitterOAuth(Exception e) {
 
+    private void persistUserDetails(SharedPreferences.Editor editor_, AccessToken accessToken_, ParcelableUser user_){
+        editor_.putString(
+                TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN,
+                accessToken_.getToken());
+        Log.v(TAG, "secrect token: " + accessToken_.getToken());
+        editor_.putString(
+                TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
+                accessToken_.getTokenSecret());
+        Log.v(TAG, "secrect secret: " + accessToken_.getTokenSecret());
+        editor_.putBoolean(
+                TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, true);
+        editor_.putString(TwitterConstants.AUTH_USER_SCREEN_BG,	user_.getProfileBackgroundImageUrl());
+        editor_.putString(TwitterConstants.LOGIN_PROFILE_BG,user_.getProfileImageUrl());
+        editor_.putString(TwitterConstants.AUTH_USER_DESC_BG,user_.getDescription());
+        editor_.putString(TwitterConstants.AUTH_USER_NAME_BG,user_.getScreenName());
+        editor_.putLong(TwitterConstants.AUTH_USER_ID,user_.getUserId());
+        editor_.putBoolean(TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, true);
     }
 
-    class TwitterAuthenticateTask extends AsyncTask<String, String, RequestToken> {
-		 
-	    @Override //TODO have a timeout here just incase we cant reach twitter and display an error message
-	    protected void onPostExecute(RequestToken requestToken) {
-	    	//Log.v("Authentication url",Uri.parse(requestToken.getAuthenticationURL()).toString());
-	        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.getAuthenticationURL()));
-	        startActivity(intent);
-	        finish();
-	    }
-	 
-	    @Override
-	    protected RequestToken doInBackground(String... params) {
-            try {
-                return TwitterUtil.getInstance().getRequestToken();
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-            return null;//TODO not return null, instead add extra handling
-        }
-	}
+    @Override
+    public void onFailTwitterOAuth(Exception e) {
+        _authWebView.setVisibility(View.GONE);
+        _authWebView.clearHistory();
+    }
 
 }

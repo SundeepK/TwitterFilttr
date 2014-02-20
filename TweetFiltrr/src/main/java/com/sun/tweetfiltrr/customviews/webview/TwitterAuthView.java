@@ -17,8 +17,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -31,7 +29,6 @@ import twitter4j.auth.RequestToken;
 public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient.OnPageLoad {
     private static final String TAG = TwitterAuthView.class.getName();
 
-    private final AtomicBoolean called = new AtomicBoolean(true);
     private TwitterAuthCallback lis;
     private ExecutorService _executorService;
     private RequestToken _tempRequestToken;
@@ -100,18 +97,6 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
         _twitter.setOAuthConsumer(authDetails_.getConsumerKey(), authDetails_.getConsumerSecrect());
         final Future<RequestToken> requestTokenFuture =
                 _executorService.submit(new RequestTokenCallable(authDetails_));
-        _executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    TwitterAuthView.this._tempRequestToken = requestTokenFuture.get(1, TimeUnit.MINUTES);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    lis.onFailTwitterOAuth(e);
-                }
-            }
-        });
-
     }
 
     private boolean isEmpty(String value_){
@@ -128,14 +113,14 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
         public RequestToken call() throws Exception {
             final Twitter twitter = _authDetails.getTwitter();
             try {
-                final RequestToken requestToken = twitter.getOAuthRequestToken();
+                TwitterAuthView.this._tempRequestToken = twitter.getOAuthRequestToken();
                 TwitterAuthView.this.post(new Runnable() {
                     @Override
                     public void run() {
-                        TwitterAuthView.this.loadUrl(requestToken.getAuthenticationURL());
+                        TwitterAuthView.this.loadUrl(_tempRequestToken.getAuthenticationURL());
                     }
                 });
-                return requestToken;
+                return _tempRequestToken;
             } catch (TwitterException e) {
                 throw new TwitterException(e);
             }
@@ -254,5 +239,7 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
 //            }
 //        }
 //    }
+
+
 
 }

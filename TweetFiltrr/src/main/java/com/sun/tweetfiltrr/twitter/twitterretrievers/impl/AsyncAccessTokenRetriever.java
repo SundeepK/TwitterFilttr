@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.utils.TwitterConstants;
 
-import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 public class AsyncAccessTokenRetriever extends AsyncTask<String, String, ParcelableUser> {
@@ -20,7 +17,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 
 	private Context _context;
 	private FriendDao _userDao;
-    private AccessTokenRetriever _tokenRetriever;
+    private AccessTokenRetrieverFromPref _tokenRetriever;
     private OnTokenFinish _lis;
     RequestToken token;
     public interface OnTokenFinish {
@@ -31,7 +28,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
         _context = context_;
         _lis = list;
         _userDao = new FriendDao(_context.getContentResolver(), new FriendToParcelable());
-        _tokenRetriever = new AccessTokenRetriever(_userDao);
+        _tokenRetriever = new AccessTokenRetrieverFromPref(_userDao);
     }
 
     @Override
@@ -45,7 +42,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
     public AsyncAccessTokenRetriever(Context context_){
 		_context = context_;
         _userDao = new FriendDao(_context.getContentResolver(), new FriendToParcelable());
-        _tokenRetriever = new AccessTokenRetriever(_userDao);
+        _tokenRetriever = new AccessTokenRetrieverFromPref(_userDao);
 	}
 	
 	@Override
@@ -67,7 +64,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
                  //       _tokenRetriever.retrieverAccessToken(sharedPreferences, params[0]);
 //                AccessToken accessToken = bundle.getAccessToken();
 //                user = bundle.getUser();
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
+
 //                setUserPreferences(editor, accessToken);
 //                persistUserDetails(editor, user);
 //                editor.commit();
@@ -98,28 +95,5 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
 //        editor_.commit();
 //    }
 	
-	private void setUserPreferences(SharedPreferences.Editor editor_, AccessToken accessToken_ ) {
-		editor_.putString(
-				TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN,
-				accessToken_.getToken());
-		Log.v(TAG, "secrect token: " + accessToken_.getToken());
 
-		editor_.putString(
-				TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
-				accessToken_.getTokenSecret());
-		Log.v(TAG, "secrect secret: " + accessToken_.getTokenSecret());
-
-		editor_.putBoolean(
-				TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, true);
-        editor_.commit();
-    }
-
-	private void persistUserDetails(SharedPreferences.Editor editor_, ParcelableUser user_){
-		editor_.putString(TwitterConstants.AUTH_USER_SCREEN_BG,	user_.getProfileBackgroundImageUrl());
-		editor_.putString(TwitterConstants.LOGIN_PROFILE_BG,user_.getProfileImageUrl());
-		editor_.putString(TwitterConstants.AUTH_USER_DESC_BG,user_.getDescription());
-		editor_.putString(TwitterConstants.AUTH_USER_NAME_BG,user_.getScreenName());
-		editor_.putLong(TwitterConstants.AUTH_USER_ID,user_.getUserId());
-        editor_.putBoolean(TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, true);
-	}
 }

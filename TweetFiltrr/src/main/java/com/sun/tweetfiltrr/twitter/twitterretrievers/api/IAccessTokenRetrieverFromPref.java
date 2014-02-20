@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Created by Sundeep on 13/02/14.
  */
-public interface IAccessTokenRetriever extends ITwitterAccessTokenRetriever{
+public interface IAccessTokenRetrieverFromPref {
 
     public Collection<UserBundle> retrieveAccessTokenFromSharedPref(SharedPreferences sharedPreferences_);
 

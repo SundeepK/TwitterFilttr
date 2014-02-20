@@ -21,6 +21,7 @@ import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AccessTokenRetrieverFromPref;
 
 import javax.inject.Singleton;
 
@@ -47,7 +48,8 @@ import dagger.Provides;
                 TimelineDao.class,
                 FriendKeywordDao.class,
                 KeywordGroupDao.class,
-                EditKeywordGroupTab.class
+                EditKeywordGroupTab.class,
+                AccessTokenRetrieverFromPref.class
         },
         complete = false
 )

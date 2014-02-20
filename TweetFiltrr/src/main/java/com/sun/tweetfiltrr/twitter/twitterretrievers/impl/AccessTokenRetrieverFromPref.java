@@ -6,7 +6,7 @@ import android.util.Log;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IAccessTokenRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IAccessTokenRetrieverFromPref;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -15,30 +15,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 
 /**
  * Created by Sundeep on 13/02/14.
  */
-public class AccessTokenRetriever implements IAccessTokenRetriever {
+public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPref {
 
-
-    private static final String TAG = AccessTokenRetriever.class.getName();
+    private static final String TAG = AccessTokenRetrieverFromPref.class.getName();
     private FriendDao _userDao;
 
-    public AccessTokenRetriever(FriendDao userDao_) {
+
+    public AccessTokenRetrieverFromPref(FriendDao userDao_) {
         _userDao = userDao_;
     }
 
-
-
-
     @Override
     public Collection<UserBundle> retrieveAccessTokenFromSharedPref(SharedPreferences sharedPreferences_) {
-        final AccessToken accessToken = getAccessTokenFromPreferences(sharedPreferences_);
+        final AccessToken accessToken = retrieveAccessTokenFromPreferences(sharedPreferences_);
         TwitterUtil.getInstance().setTwitterFactories(accessToken);
         //attempt to get user from DB, we should almost always get a user if we are here
         final ParcelableUser parcelableUser = getParcelableUserFromDB(sharedPreferences_);
@@ -49,7 +43,7 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
         return userBundles;
     }
 
-    private AccessToken getAccessTokenFromPreferences(SharedPreferences sharedPreferences_) {
+    private AccessToken retrieveAccessTokenFromPreferences(SharedPreferences sharedPreferences_) {
         String accessTokenString = sharedPreferences_.getString(
                 TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN, "");
         String accessTokenSecret = sharedPreferences_.getString(
@@ -80,9 +74,4 @@ public class AccessTokenRetriever implements IAccessTokenRetriever {
         return parcelableUser;
     }
 
-
-    @Override
-    public Collection<UserBundle> retrieverAccessTokenFromTwitter(RequestToken requestToken_, String verifier_, Twitter twitter_) throws TwitterException {
-        return null;
-    }
 }
