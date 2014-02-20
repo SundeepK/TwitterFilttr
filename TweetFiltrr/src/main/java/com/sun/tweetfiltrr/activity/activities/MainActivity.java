@@ -27,6 +27,7 @@ import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
 import com.sun.tweetfiltrr.customviews.webview.AuthenticationDetails;
 import com.sun.tweetfiltrr.customviews.webview.TwitterAuthView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
@@ -35,11 +36,10 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 import javax.inject.Inject;
 
 import twitter4j.TwitterException;
-import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 public class MainActivity extends SherlockFragmentActivity implements ImageTaskListener,
-        AsyncAccessTokenRetriever.OnTokenFinish, TwitterAuthView.OnSuccessfulTwitterOAuth {
+        AsyncAccessTokenRetriever.OnTokenFinish, TwitterAuthView.TwitterAuthCallback {
 
     private static final String TAG = MainActivity.class.getName();
     private ImageView _profile;
@@ -199,10 +199,16 @@ public class MainActivity extends SherlockFragmentActivity implements ImageTaskL
     }
 
     @Override
-    public void onSuccessTwitterOAuth(AccessToken acccessToken) {
+    public void onSuccessTwitterOAuth(UserBundle bundle) {
+        TwitterUtil.getInstance().setCurrentUser(bundle.getUser());
         Intent intent = new Intent(this, TwitterFilttrLoggedInUserHome.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onFailTwitterOAuth(Exception e) {
+
     }
 
     class TwitterAuthenticateTask extends AsyncTask<String, String, RequestToken> {

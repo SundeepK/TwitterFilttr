@@ -10,9 +10,7 @@ import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 
-import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -63,22 +61,22 @@ public class AsyncAccessTokenRetriever extends AsyncTask<String, String, Parcela
                 .getDefaultSharedPreferences(_context);
         ParcelableUser user = null;
         synchronized (this) {
-            try {
+//            try {
 
-                AccessTokenRetriever.UserBundle bundle =
-                        _tokenRetriever.retrieverAccessToken(sharedPreferences, params[0]);
-                AccessToken accessToken = bundle.getAccessToken();
-                user = bundle.getUser();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                setUserPreferences(editor, accessToken);
-                persistUserDetails(editor, user);
-                editor.commit();
-                TwitterUtil.getInstance().setCurrentUser(user);
-                TwitterUtil.getInstance().setTwitterFactories(accessToken);
-
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
+            //    UserBundle bundle =
+                 //       _tokenRetriever.retrieverAccessToken(sharedPreferences, params[0]);
+//                AccessToken accessToken = bundle.getAccessToken();
+//                user = bundle.getUser();
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                setUserPreferences(editor, accessToken);
+//                persistUserDetails(editor, user);
+//                editor.commit();
+//                TwitterUtil.getInstance().setCurrentUser(user);
+//                TwitterUtil.getInstance().setTwitterFactories(accessToken);
+//
+//            } catch (TwitterException e) {
+//                e.printStackTrace();
+//            }
         }
 
         return user;

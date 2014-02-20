@@ -22,6 +22,13 @@ public class AuthenticationDetails{
         _twitter.setOAuthConsumer(_consumerKey, _consumerSecrect);
     }
 
+    public AuthenticationDetails (String consumerKey_,String consumerSecrect, String callback_, Twitter twitter_){
+        _consumerKey = consumerKey_;
+        _consumerSecrect = consumerSecrect;
+        _callback = callback_;
+        _twitter = twitter_;
+    }
+
     public String getConsumerKey() {
         return _consumerKey;
     }
