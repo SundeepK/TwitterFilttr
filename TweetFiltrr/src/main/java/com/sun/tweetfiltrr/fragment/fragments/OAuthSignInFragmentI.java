@@ -77,6 +77,7 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         _appIcon = (ImageView) rootView_.findViewById(R.id.app_loading_image_view);
         Button showManualAuthBut = (Button) rootView_.findViewById(R.id.show_manual_authenticate_but);
         Button manualAuthBut = (Button) rootView_.findViewById(R.id.manual_authenticate);
+        final Button backToWebAuthBut = (Button) rootView_.findViewById(R.id.back_to_manual_authenticate_but);
 
         final Button authenticateBut = (Button) rootView_.findViewById(R.id.authenticate_app_but);
         authenticateBut.setOnClickListener(new View.OnClickListener() {
@@ -98,45 +99,106 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         prepareEditTextView("Secrect", _secrectEditText);
 
         manualAuthBut.setOnClickListener(getManualAuthOnClick(_tokenEditText, _secrectEditText));
+        showManualAuthBut.setOnClickListener(getManualAuthShowOnClick(authenticateBut, manualAuthView));
+        backToWebAuthBut.setOnClickListener(getGoBackOnClick(authenticateBut,manualAuthBut, manualAuthView ));
 
-        showManualAuthBut.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private View.OnClickListener getGoBackOnClick(final Button authButton_, final Button manualAuth_, final View manualAuthView_){
+        return new View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                v.post(new Runnable() {
+            public void onClick(final View view) {
+                final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        authButton_.clearAnimation();
+                        authButton_.setVisibility(View.VISIBLE);
+                        manualAuth_.clearAnimation();
+                        manualAuth_.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                };
+
+                final Animation animateOff = new TranslateAnimation(0, -800, 0, 0);
+                animateOff.setAnimationListener(animationListener);
+                animateOff.setDuration(500);
+                animateOff.setFillAfter(true);
+
+                final Animation animateOn = new TranslateAnimation(500, 0, 0, 0);
+                animateOn.setDuration(500);
+                animateOn.setFillAfter(true);
+
+                authButton_.startAnimation(animateOn);
+                authButton_.setVisibility(View.VISIBLE);
+                manualAuth_.startAnimation(animateOn);
+                manualAuth_.setVisibility(View.VISIBLE);
+
+                view.post(new Runnable() {
                     @Override
                     public void run() {
-                        Animation translate = new TranslateAnimation(0, -800, 0, 0);
-                        translate.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-                            }
+                        manualAuthView_.startAnimation(animateOff);
+                        manualAuthView_.setVisibility(View.GONE);
 
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                authenticateBut.setVisibility(View.GONE);
-                                v.setVisibility(View.GONE);
-                            }
+                    }
+                });
+            }
+        };
+    }
 
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-                            }
-                        });
-                        translate.setDuration(500);
-                        translate.setFillAfter(true);
-                        v.startAnimation(translate);
+    private View.OnClickListener getManualAuthShowOnClick(final Button authenticateButton_, final View authView_){
+       return new View.OnClickListener() {
+            @Override
+            public void onClick(final View clickedView_) {
 
-                        authenticateBut.startAnimation(translate);
+                final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        authenticateButton_.clearAnimation();
+                        authenticateButton_.setVisibility(View.GONE);
+                        clickedView_.clearAnimation();
+                        clickedView_.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                };
+                //animations for views coming/off the screen
+                final Animation animateOff = new TranslateAnimation(0, -800, 0, 0);
+                animateOff.setAnimationListener(animationListener);
+                animateOff.setDuration(500);
+                animateOff.setFillAfter(true);
+
+                final Animation animateOn = new TranslateAnimation(500, 0, 0, 0);
+                animateOn.setDuration(500);
+                animateOn.setFillAfter(true);
+
+                authView_.startAnimation(animateOn);
+                authView_.setVisibility(View.VISIBLE);
+
+                clickedView_.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        clickedView_.startAnimation(animateOff);
+                        authenticateButton_.startAnimation(animateOff);
+
                     }
                 });
 
-                Animation translate = new TranslateAnimation(500, 0, 0, 0);
-                translate.setDuration(500);
-                translate.setFillAfter(true);
-                manualAuthView.startAnimation(translate);
-                manualAuthView.setVisibility(View.VISIBLE);
-            }
-        });
 
+            }
+        };
 
     }
 

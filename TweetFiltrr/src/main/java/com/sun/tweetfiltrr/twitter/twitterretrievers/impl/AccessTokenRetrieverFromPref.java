@@ -46,9 +46,13 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
             Log.v(TAG, "got user from twitter" + parcelableUserFromTwitter);
             insertUpdatedTwitterUser(parcelableUserFromTwitter);
             //attempt to get user from DB, we should almost always get a user if we are here
-            final ParcelableUser parcelableUser = getParcelableUserFromDB(parcelableUserFromTwitter);
+            final Collection<ParcelableUser> parcelableUser = getParcelableUserFromDB(sharedPreferences_, parcelableUserFromTwitter);
+            ParcelableUser userFromDb = null;
+            if(!parcelableUser.isEmpty()){
+                userFromDb =  parcelableUser.iterator().next();
+            }
             Log.v(TAG, "user from db" + parcelableUser);
-            final UserBundle user = new UserBundle(parcelableUser, accessToken);
+            final UserBundle user = new UserBundle(userFromDb, accessToken);
             userBundles.add(user);
         } catch (TwitterException e) {
             e.printStackTrace();
@@ -78,10 +82,16 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
         _userDao.insertOrUpdate(users, cols);
     }
 
-    private ParcelableUser getParcelableUserFromDB(ParcelableUser twitterSearchedUser_) {
+    private Collection<ParcelableUser> getParcelableUserFromDB(SharedPreferences sharedPreferences_, ParcelableUser twitterSearchedUser_) {
         ParcelableUser parcelableUser = null;
-        Collection<ParcelableUser> users = new ArrayList<ParcelableUser>(1);
-        final long userId = twitterSearchedUser_.getUserId();
+        final  Collection<ParcelableUser> users = new ArrayList<ParcelableUser>(1);
+        long userId = -1l;
+        if(twitterSearchedUser_ != null){
+            userId   = twitterSearchedUser_.getUserId();
+        }else{
+            userId = sharedPreferences_.getLong(
+                    TwitterConstants.AUTH_USER_ID, -1l);
+        }
         if (userId > -1) {
             users.addAll(_userDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
                     + " = ? ", new String[]{Long.toString(userId)}, null));
@@ -93,11 +103,10 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
                 Log.w(TAG, "Found  more then 1 user from DB for some reason, picking first in collection: "
                         + Arrays.toString(users.toArray()));
             }
-            parcelableUser = users.iterator().next();
-        }else{
-            parcelableUser = twitterSearchedUser_;
         }
-        return parcelableUser;
+        return users;
     }
+
+
 
 }
