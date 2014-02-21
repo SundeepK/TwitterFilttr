@@ -39,6 +39,8 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
             final AccessToken accessToken = retrieveAccessTokenFromPreferences(sharedPreferences_);
             TwitterUtil.getInstance().setTwitterFactories(accessToken);
             Twitter twitter =    TwitterUtil.getInstance().getTwitter();
+            Log.v(TAG, "accessToken" + accessToken);
+
             final ParcelableUser parcelableUserFromTwitter = new ParcelableUser(twitter.showUser(accessToken
                     .getUserId()));
             Log.v(TAG, "got user from twitter" + parcelableUserFromTwitter);
