@@ -23,8 +23,8 @@ import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.ITwitterAuthCallback;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
@@ -44,12 +44,11 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
     private ImageView _profile;
     @Inject
     UrlImageLoader _sicImageLoader;
-    @Inject
-    FriendDao _friendDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
     }
 
     @Override
@@ -57,11 +56,12 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.login_screen_auto_sign_in, container, false);
         initView(rootView);
+        authenticateUser(this);
         return rootView;
     }
 
     protected void initView(View rootView_){
-        _profile = (ImageView) rootView_.findViewById(R.id.friend_profile_image);
+        _profile = (ImageView) rootView_.findViewById(R.id.app_loading_image_view);
         SharedPreferences sharedPreferences =  PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
         TextView userName = (TextView) rootView_.findViewById(R.id.friend_name);
@@ -69,11 +69,8 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
                 TwitterConstants.LOGIN_PROFILE_BG, null);
         String name = sharedPreferences.getString(
                 TwitterConstants.AUTH_USER_NAME_BG, null);
-        String desc = sharedPreferences.getString(
-                TwitterConstants.AUTH_USER_DESC_BG, null);
         userName.setText(name);
         ImageLoaderUtils.attemptLoadImage(_profile, _sicImageLoader, profileUrl, 1, this);
-        authenticateUser(this);
     }
 
     protected abstract void authenticateUser(ITwitterAuthCallback callback_);
@@ -91,14 +88,22 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
 
     }
 
+    protected void startLoadAnimation(View view){
+        Animation anim = getZoomAnimation(1f,1.1f, 1f, 1.1f);
+        view.startAnimation(anim);
+    }
+
     @Override
     public void onImageLoadComplete(Bitmap bitmap, ImageSettings imageSettings) {
-        CircleCroppedDrawable d = new CircleCroppedDrawable(bitmap);
-        _profile.setImageBitmap(null);
-        _profile.setImageDrawable(d);
-        _profile.setBackground(d);
-        Animation anim = getZoomAnimation(1f,1.1f, 1f, 1.1f);
-        _profile.startAnimation(anim);
+        setCircleDrawable(bitmap, _profile);
+        startLoadAnimation(_profile);
+    }
+
+    protected  void setCircleDrawable(Bitmap bitmap_, ImageView imageView_){
+        CircleCroppedDrawable d = new CircleCroppedDrawable(bitmap_);
+        imageView_.setImageBitmap(null);
+        imageView_.setImageDrawable(d);
+        imageView_.setBackground(d);
     }
 
     private Animation getZoomAnimation(float fromX_, float toX_, float fromY_, float toY_){
@@ -122,7 +127,7 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
 
     @Override
     public void onSuccessTwitterOAuth(UserBundle userBundle) {
-
+        Log.v(TAG, "auth seccess " );
         persistUserDetails(userBundle);
         finishSignIn(userBundle);
     }
@@ -138,6 +143,7 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         final AccessToken token = bundle.getAccessToken();
         final ParcelableUser user = bundle.getUser();
+        Log.v(TAG, "going to persist user " + user);
         editor.putString(
                 TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN,
                 token.getToken());
@@ -151,9 +157,8 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
         editor.putString(TwitterConstants.AUTH_USER_SCREEN_BG,	user.getProfileBackgroundImageUrl());
         editor.putString(TwitterConstants.LOGIN_PROFILE_BG,user.getProfileImageUrl());
         editor.putString(TwitterConstants.AUTH_USER_DESC_BG,user.getDescription());
-        editor.putString(TwitterConstants.AUTH_USER_NAME_BG,user.getScreenName());
-        editor.putLong(TwitterConstants.AUTH_USER_ID,user.getUserId());
-        editor.putBoolean(TwitterConstants.PREFERENCE_TWITTER_IS_LOGGED_IN, true);
+        editor.putString(TwitterConstants.AUTH_USER_NAME_BG, user.getScreenName());
+        editor.putLong(TwitterConstants.AUTH_USER_ID, user.getUserId());
         editor.commit();
     }
 

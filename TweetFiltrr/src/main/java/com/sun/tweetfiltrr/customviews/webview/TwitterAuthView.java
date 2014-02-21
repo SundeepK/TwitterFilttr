@@ -143,100 +143,30 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
             try{
             final Collection<UserBundle> userBundles =
                     _accessTokenRetriever.retrieverAccessTokenFromTwitter(_requestToken,_verifier, _twitter );
-            final UserBundle UserBundle = userBundles.iterator().next();
-            TwitterAuthView.this.post(new Runnable() {
-                @Override
-                public void run() {
-                    TwitterAuthView.this.lis.onSuccessTwitterOAuth(UserBundle);
-                }
-            });
-            return UserBundle;
+            if(!userBundles.isEmpty()){
+                final UserBundle userBundle = userBundles.iterator().next();
+                TwitterAuthView.this.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        TwitterAuthView.this.lis.onSuccessTwitterOAuth(userBundle);
+                    }
+                });
+                return userBundle;
+            }else{
+                TwitterAuthView.this.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        TwitterAuthView.this.lis.onFailTwitterOAuth(null);
+                    }
+                });
+                return null;
+            }
+
             }catch (Exception e){
                 e.printStackTrace();
                 throw new Exception(e);
             }
         }
     }
-
-//        private class AsyncTwitterAuthTask extends AsyncTask<AuthenticationDetails, Void, AccessToken>{
-//        RequestToken _requestToken;
-//        @Override
-//        protected AccessToken doInBackground(AuthenticationDetails... params) {
-//            if(params.length > 1){
-//                throw new IllegalArgumentException("Can only process one twitter authentication at a time");
-//            }
-//            final AuthenticationDetails auth = params[0];
-//
-//            publishProgress();
-//            while(called.get())
-//            {
-//            }
-//            Log.v(TAG, "passed publish " );
-//
-//            AccessToken access =  getAccessToken(twitter,_requestToken);
-//            try {
-//                ParcelableUser  parcelableUser = new ParcelableUser(twitter.showUser(access
-//                         .getUserId()));
-//                Log.v(TAG, "twitter user after oauth " + parcelableUser);
-//                TwitterUtil.getInstance().setCurrentUser(parcelableUser);
-//            } catch (TwitterException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return access;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Void... values) {
-//            //super.onProgressUpdate(values);
-//            String uri = _requestToken.getAuthenticationURL();
-//            TwitterAuthView.this.loadUrl(uri);
-//
-//
-//        }
-//
-//        @Override
-//        protected void onCancelled(AccessToken accessToken) {
-//            super.onCancelled(accessToken);
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            super.onCancelled();
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(AccessToken accessToken) {
-//            super.onPostExecute(accessToken);
-//            lis.onSuccessTwitterOAuth(accessToken);
-//
-//        }
-//
-//        private AccessToken getAccessToken(Twitter twitter, RequestToken requestToken)
-//        {
-//            try
-//            {
-//                // Get an access token. This triggers network access.
-//
-//                return token;
-//            }
-//            catch (TwitterException e)
-//            {
-//                // Failed to get an access token.
-//                e.printStackTrace();
-//                Log.e(TAG, "Failed to get an access token.", e);
-//
-//                // No access token.
-//                return null;
-//            }
-//        }
-//    }
-
-
 
 }

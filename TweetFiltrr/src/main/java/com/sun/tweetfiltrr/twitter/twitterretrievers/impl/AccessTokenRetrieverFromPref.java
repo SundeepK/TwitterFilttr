@@ -41,9 +41,11 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
             Twitter twitter =    TwitterUtil.getInstance().getTwitter();
             final ParcelableUser parcelableUserFromTwitter = new ParcelableUser(twitter.showUser(accessToken
                     .getUserId()));
+            Log.v(TAG, "got user from twitter" + parcelableUserFromTwitter);
             insertUpdatedTwitterUser(parcelableUserFromTwitter);
             //attempt to get user from DB, we should almost always get a user if we are here
             final ParcelableUser parcelableUser = getParcelableUserFromDB(sharedPreferences_);
+            Log.v(TAG, "user from db" + parcelableUser);
             final UserBundle user = new UserBundle(parcelableUser, accessToken);
             userBundles.add(user);
         } catch (TwitterException e) {

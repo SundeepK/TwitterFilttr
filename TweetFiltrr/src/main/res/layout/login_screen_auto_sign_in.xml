@@ -31,7 +31,7 @@
             />
 
         <ImageView
-            android:id="@+id/friend_profile_image"
+            android:id="@+id/app_loading_image_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal|center_vertical"

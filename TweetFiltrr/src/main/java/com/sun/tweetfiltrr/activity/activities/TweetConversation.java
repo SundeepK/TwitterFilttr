@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,9 +28,6 @@ import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.ConversationAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
-import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
@@ -41,8 +37,11 @@ import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -232,32 +231,9 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 	
 
 	private void initControl() throws InterruptedException, ExecutionException {
-		Uri uri = getIntent().getData();
-		Bundle bundle = this.getIntent().getExtras();
-
-        if(bundle != null){
-            _currentUser = bundle.getParcelable(TwitterConstants.FRIENDS_BUNDLE);
-            if(_currentUser != null){
-            Log.v(TAG, "I have parcelalbe!!" + _currentUser.getScreenName());
-            Log.v(TAG, "User has timeline size!! " + _currentUser.getUserTimeLine().size());
-               return;
-            }
-        }
-
-		if (uri != null
-				&& uri.toString().startsWith(
-						TwitterConstants.TWITTER_CALLBACK_URL)) {
-			String verifier = uri
-					.getQueryParameter(TwitterConstants.URL_PARAMETER_TWITTER_OAUTH_VERIFIER);
-			Log.v(TAG, "Verifier is " + verifier);
-			_currentUser = new AsyncAccessTokenRetriever(getApplicationContext()).execute(verifier).get();
-		}else{
-			_currentUser = new AsyncAccessTokenRetriever(getApplicationContext()).execute("").get();
-		}
-		
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
 		Log.v(TAG, "Main user for app : " + _currentUser.toString());
 
-		
 	}
 
     @Override

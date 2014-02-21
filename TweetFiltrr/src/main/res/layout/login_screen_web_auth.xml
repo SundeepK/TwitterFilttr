@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -12,46 +12,104 @@
         <!--android:layout_height="match_parent"-->
         <!--android:scaleType="centerCrop" />-->
 
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical" >
-        <!--android:background="#99000000"-->
-
         <com.sun.tweetfiltrr.customviews.views.TypeFaceView
+            android:id="@+id/app_title"
+            android:layout_marginTop="100dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
             android:text="TweetFilttr"
-             android:textSize="30sp"
+            android:textSize="30sp"
             android:textColor="#ffffff"
             custom:typeface="robotoLight"
+            android:layout_centerHorizontal="true"
             />
 
         <ImageView
-            android:id="@+id/friend_profile_image"
+            android:id="@+id/app_loading_image_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginTop="10dp"
+            android:layout_below="@+id/app_title"
             android:adjustViewBounds="true"
             android:clickable="false"
             android:focusable="false"
+            android:layout_centerHorizontal="true"
             android:scaleType="centerCrop" />
 
-        <com.sun.tweetfiltrr.customviews.views.TypeFaceView
-            android:id="@+id/friend_name"
-            android:layout_width="wrap_content"
+
+    <Button
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/show_manual_authenticate_but"
+        android:layout_below="@+id/app_loading_image_view"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        android:text="Know your token &amp; secret?"
+        />
+
+
+    <Button
+        android:id="@+id/authenticate_app_but"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="-5dp"
+        android:layout_marginRight="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:text="Authenticate"
+        android:textColor="#fff"
+
+        />
+
+    <RelativeLayout
+        android:layout_below="@+id/app_loading_image_view"
+        android:id="@+id/manual_auth_view"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        >
+
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceEditText
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/auth_token_edit"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="5dip"
-            android:textColor="#ffffff"
-            android:textSize="16sp"
+            android:layout_width="match_parent"
             custom:typeface="robotoThin"
+            android:textSize="16sp"
             />
-    </LinearLayout>
+
+        <com.sun.tweetfiltrr.customviews.views.TypeFaceEditText
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/auth_token_secret_edit"
+            android:layout_below="@+id/auth_token_edit"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            custom:typeface="robotoThin"
+            android:textSize="16sp"
+            />
+
+        <Button
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/manual_authenticate"
+            android:layout_below="@+id/auth_token_secret_edit"
+            android:layout_height="wrap_content"
+            android:text="Sign-in"
+            android:textColor="#fff"
+            android:layout_width="match_parent"
+            />
+
+        </RelativeLayout>
+
 
     <com.sun.tweetfiltrr.customviews.webview.TwitterAuthView
         android:id="@+id/twitter_auth_web_view"
@@ -61,4 +119,4 @@
 
         </com.sun.tweetfiltrr.customviews.webview.TwitterAuthView>
 
-</FrameLayout>
+</RelativeLayout>

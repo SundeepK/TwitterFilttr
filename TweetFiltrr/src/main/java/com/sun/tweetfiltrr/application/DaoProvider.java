@@ -13,11 +13,13 @@ import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
+import com.sun.tweetfiltrr.fragment.fragments.AutoSignInFragmentI;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
+import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragmentI;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
@@ -49,7 +51,9 @@ import dagger.Provides;
                 FriendKeywordDao.class,
                 KeywordGroupDao.class,
                 EditKeywordGroupTab.class,
-                AccessTokenRetrieverFromPref.class
+                AccessTokenRetrieverFromPref.class,
+                AutoSignInFragmentI.class,
+                OAuthSignInFragmentI.class
         },
         complete = false
 )

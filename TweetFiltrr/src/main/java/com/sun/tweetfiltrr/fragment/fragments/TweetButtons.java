@@ -1,8 +1,6 @@
 package com.sun.tweetfiltrr.fragment.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +9,8 @@ import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
-
-import java.util.concurrent.ExecutionException;
-
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 /**
  * Created by Sundeep on 01/01/14.
@@ -49,7 +40,6 @@ public class TweetButtons extends SherlockFragment {
         try {
             view = inflater.inflate(R.layout.tweet_buttons_convo, container, false);
         } catch (InflateException e) {
-        /* map is already there, just return view as it is */
         }
         return view;
 
@@ -67,54 +57,7 @@ public class TweetButtons extends SherlockFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        try {
-
-       // super.initControl();
-
-            Uri uri = getActivity().getIntent().getData();
-            Bundle bundle = getActivity().getIntent().getExtras();
-
-            if (_currentUser == null) {
-                _currentUser = bundle
-                        .getParcelable(TwitterConstants.FRIENDS_BUNDLE);
-
-                if (_currentUser == null) {
-                    if (uri != null
-                            && uri.toString().startsWith(
-                            TwitterConstants.TWITTER_CALLBACK_URL)) {
-                        String verifier = uri
-                                .getQueryParameter(TwitterConstants.URL_PARAMETER_TWITTER_OAUTH_VERIFIER);
-                        Log.v(TAG, "Verifier is " + verifier);
-                        _currentUser = new AsyncAccessTokenRetriever(getActivity())
-                                .execute(verifier).get();
-                    } else {
-                        _currentUser = new AsyncAccessTokenRetriever(getActivity())
-                                .execute("").get();
-                    }
-
-                }
-            }
-
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Twitter twitter = TwitterUtil.getInstance().getTwitter();
-                try {
-                    _loggedInUser = new ParcelableUser(twitter.showUser(TwitterUtil.getInstance().getCurrentLoggedInUserId(getActivity())));
-                } catch (TwitterException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        t.start();
-        t.join();
-
-        } catch (InterruptedException e2) {
-            e2.printStackTrace();
-        } catch (ExecutionException e2) {
-            e2.printStackTrace();
-        }
+        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
     }
 
 
