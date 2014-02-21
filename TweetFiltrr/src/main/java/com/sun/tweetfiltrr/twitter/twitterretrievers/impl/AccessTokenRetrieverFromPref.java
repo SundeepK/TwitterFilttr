@@ -46,7 +46,7 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
             Log.v(TAG, "got user from twitter" + parcelableUserFromTwitter);
             insertUpdatedTwitterUser(parcelableUserFromTwitter);
             //attempt to get user from DB, we should almost always get a user if we are here
-            final ParcelableUser parcelableUser = getParcelableUserFromDB(sharedPreferences_);
+            final ParcelableUser parcelableUser = getParcelableUserFromDB(parcelableUserFromTwitter);
             Log.v(TAG, "user from db" + parcelableUser);
             final UserBundle user = new UserBundle(parcelableUser, accessToken);
             userBundles.add(user);
@@ -62,6 +62,7 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
         String accessTokenSecret = sharedPreferences_.getString(
                 TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
                 "");
+        Log.v(TAG, "accessTokenString " + accessTokenString + " secret" + accessTokenSecret);
         return new AccessToken(accessTokenString,
                 accessTokenSecret);
     }
@@ -77,11 +78,10 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
         _userDao.insertOrUpdate(users, cols);
     }
 
-    private ParcelableUser getParcelableUserFromDB(SharedPreferences sharedPreferences_) {
+    private ParcelableUser getParcelableUserFromDB(ParcelableUser twitterSearchedUser_) {
         ParcelableUser parcelableUser = null;
-        long userId = sharedPreferences_.getLong(
-                TwitterConstants.AUTH_USER_ID, -1l);
         Collection<ParcelableUser> users = new ArrayList<ParcelableUser>(1);
+        final long userId = twitterSearchedUser_.getUserId();
         if (userId > -1) {
             users.addAll(_userDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
                     + " = ? ", new String[]{Long.toString(userId)}, null));
@@ -94,6 +94,8 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
                         + Arrays.toString(users.toArray()));
             }
             parcelableUser = users.iterator().next();
+        }else{
+            parcelableUser = twitterSearchedUser_;
         }
         return parcelableUser;
     }

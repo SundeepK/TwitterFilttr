@@ -5,6 +5,7 @@ import android.content.Context;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.activity.activities.MainActivity;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
+import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
@@ -46,7 +47,8 @@ import dagger.Provides;
                 TwitterPageParameter.class,
                 TwitterQueryParameter.class,
                 MainActivity.class,
-                EditKeywordGroupTab.class
+                EditKeywordGroupTab.class,
+                ASignInFragment.class
         },
         complete = false
 )

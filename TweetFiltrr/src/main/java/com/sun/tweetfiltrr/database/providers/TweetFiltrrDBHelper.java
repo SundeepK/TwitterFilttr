@@ -41,7 +41,7 @@ public class TweetFiltrrDBHelper extends SQLiteOpenHelper{
 		database_.execSQL(TimelineTable.CREATE_DATABASE);
 		database_.execSQL(KeywordGroupTable.CREATE_DATABASE);
         database_.execSQL(UsersToFollowersTable.CREATE_DATABASE);
-
+        Log.v(TAG, "created DB");
 		
 //		int key  = 1234;
 //		String sql = "INSERT INTO timelineTable (friendID, timelineText) VALUES (" + key + ",'TEST')";

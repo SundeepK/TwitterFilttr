@@ -11,8 +11,9 @@ import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
 import java.util.Collection;
 
 import twitter4j.TwitterException;
+import twitter4j.auth.AccessToken;
 
-public class AsyncAccessTokenRetriever extends AsyncTask<Void, Void, UserBundle> {
+public class AsyncAccessTokenRetriever extends AsyncTask<AccessToken, Void, UserBundle> {
 
 	private static final String TAG = AsyncAccessTokenRetriever.class.getName();
 
@@ -38,7 +39,7 @@ public class AsyncAccessTokenRetriever extends AsyncTask<Void, Void, UserBundle>
 
 	
 	@Override
-    protected UserBundle doInBackground(Void... params) {
+    protected UserBundle doInBackground(AccessToken... params) {
         try {
             Collection<UserBundle> bundles =
                     _tokenRetrieverFromPref.retrieveAccessTokenFromSharedPref(_preferences);

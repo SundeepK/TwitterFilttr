@@ -217,14 +217,15 @@ public class OAuthSignInFragmentI extends ASignInFragment {
             @Override
             public void onClick(View v) {
 
-                String token = tokenEditText_.getEditableText().toString().toLowerCase(Locale.US).trim();
-                String secrect = secrectEditText_.getEditableText().toString().toLowerCase(Locale.US).trim();
+                String token = tokenEditText_.getEditableText().toString().trim();
+                String secrect = secrectEditText_.getEditableText().toString().trim();
 
-                if (isEditTextValid(tokenEditText_, 10, 200) && isEditTextValid(secrectEditText_, 1, 200)) {
+                if (isEditTextValid(tokenEditText_, 1, 200) && isEditTextValid(secrectEditText_, 1, 200)) {
                     final SharedPreferences sharedPreferences =  PreferenceManager
                             .getDefaultSharedPreferences(OAuthSignInFragmentI.this.getActivity());
                     final AccessToken accessToken = new AccessToken(token, secrect);
                     setAccessTokenInPref(accessToken);
+                    Log.v(TAG, "accessToken +" + accessToken.getToken() + " secrect" + accessToken.getTokenSecret());
                     AsyncAccessTokenRetriever task =
                             new AsyncAccessTokenRetriever(_friendDao, OAuthSignInFragmentI.this,sharedPreferences );
                     task.execute();
