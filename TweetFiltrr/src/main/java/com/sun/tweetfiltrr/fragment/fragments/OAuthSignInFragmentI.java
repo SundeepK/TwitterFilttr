@@ -1,5 +1,7 @@
 package com.sun.tweetfiltrr.fragment.fragments;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,8 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,8 +45,6 @@ public class OAuthSignInFragmentI extends ASignInFragment {
     FriendDao _friendDao;
     private InputValidator _inputValidator;
     private ImageView _appIcon;
-    private String _token;
-    private String secrect;
     private EditText _tokenEditText;
     private EditText _secrectEditText;
     @Override
@@ -77,7 +75,7 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         _appIcon = (ImageView) rootView_.findViewById(R.id.app_loading_image_view);
         Button showManualAuthBut = (Button) rootView_.findViewById(R.id.show_manual_authenticate_but);
         Button manualAuthBut = (Button) rootView_.findViewById(R.id.manual_authenticate);
-        final Button backToWebAuthBut = (Button) rootView_.findViewById(R.id.back_to_manual_authenticate_but);
+        final Button backToWebAuthBut = (Button) rootView_.findViewById(R.id.go_back_web_but);
 
         final Button authenticateBut = (Button) rootView_.findViewById(R.id.authenticate_app_but);
         authenticateBut.setOnClickListener(new View.OnClickListener() {
@@ -99,104 +97,75 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         prepareEditTextView("Secrect", _secrectEditText);
 
         manualAuthBut.setOnClickListener(getManualAuthOnClick(_tokenEditText, _secrectEditText));
-        showManualAuthBut.setOnClickListener(getManualAuthShowOnClick(authenticateBut, manualAuthView));
-        backToWebAuthBut.setOnClickListener(getGoBackOnClick(authenticateBut,manualAuthBut, manualAuthView ));
+        showManualAuthBut.setOnClickListener(showManualAuthView(authenticateBut, manualAuthView));
+        backToWebAuthBut.setOnClickListener(hideManualAuthView(authenticateBut, showManualAuthBut, manualAuthView));
 
     }
 
-    private View.OnClickListener getGoBackOnClick(final Button authButton_, final Button manualAuth_, final View manualAuthView_){
+    private View.OnClickListener hideManualAuthView(final Button authButton_, final Button manualAuth_, final View manualAuthView_){
         return new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+                final Animator.AnimatorListener animationListener = new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {
+                    public void onAnimationStart(Animator animation) {
                     }
 
                     @Override
-                    public void onAnimationEnd(Animation animation) {
-                        authButton_.clearAnimation();
-                        authButton_.setVisibility(View.VISIBLE);
-                        manualAuth_.clearAnimation();
-                        manualAuth_.setVisibility(View.VISIBLE);
+                    public void onAnimationEnd(Animator animation) {
+                        manualAuthView_.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {
+                    public void onAnimationCancel(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
                     }
                 };
-
-                final Animation animateOff = new TranslateAnimation(0, -800, 0, 0);
-                animateOff.setAnimationListener(animationListener);
-                animateOff.setDuration(500);
-                animateOff.setFillAfter(true);
-
-                final Animation animateOn = new TranslateAnimation(500, 0, 0, 0);
-                animateOn.setDuration(500);
-                animateOn.setFillAfter(true);
-
-                authButton_.startAnimation(animateOn);
                 authButton_.setVisibility(View.VISIBLE);
-                manualAuth_.startAnimation(animateOn);
                 manualAuth_.setVisibility(View.VISIBLE);
-
-                view.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        manualAuthView_.startAnimation(animateOff);
-                        manualAuthView_.setVisibility(View.GONE);
-
-                    }
-                });
+                ObjectAnimator.ofFloat(authButton_,"translationX",-800, 0).start();
+                ObjectAnimator.ofFloat(manualAuth_,"translationX",-800,0).start();
+                ObjectAnimator offAnimation =   ObjectAnimator.ofFloat(manualAuthView_,"translationX",800);
+                offAnimation.addListener(animationListener);
+                offAnimation.start();
             }
         };
     }
 
-    private View.OnClickListener getManualAuthShowOnClick(final Button authenticateButton_, final View authView_){
+    private View.OnClickListener showManualAuthView(final Button authenticateButton_, final View authView_){
        return new View.OnClickListener() {
             @Override
             public void onClick(final View clickedView_) {
+               final Animator.AnimatorListener animationListener = new Animator.AnimatorListener() {
+                   @Override
+                   public void onAnimationStart(Animator animation) {
+                   }
 
-                final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                    }
+                   @Override
+                   public void onAnimationEnd(Animator animation) {
+                       authenticateButton_.setVisibility(View.GONE);
+                       clickedView_.setVisibility(View.GONE);
+                   }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        authenticateButton_.clearAnimation();
-                        authenticateButton_.setVisibility(View.GONE);
-                        clickedView_.clearAnimation();
-                        clickedView_.setVisibility(View.GONE);
-                    }
+                   @Override
+                   public void onAnimationCancel(Animator animation) {
+                   }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                    }
-                };
+                   @Override
+                   public void onAnimationRepeat(Animator animation) {
+                   }
+               };
                 //animations for views coming/off the screen
-                final Animation animateOff = new TranslateAnimation(0, -800, 0, 0);
-                animateOff.setAnimationListener(animationListener);
-                animateOff.setDuration(500);
-                animateOff.setFillAfter(true);
-
-                final Animation animateOn = new TranslateAnimation(500, 0, 0, 0);
-                animateOn.setDuration(500);
-                animateOn.setFillAfter(true);
-
-                authView_.startAnimation(animateOn);
                 authView_.setVisibility(View.VISIBLE);
-
-                clickedView_.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        clickedView_.startAnimation(animateOff);
-                        authenticateButton_.startAnimation(animateOff);
-
-                    }
-                });
-
-
+                ObjectAnimator offAnimation =  ObjectAnimator.ofFloat(clickedView_,"translationX",-800);
+                offAnimation.addListener(animationListener);
+                offAnimation.start();
+                ObjectAnimator.ofFloat(authenticateButton_,"translationX",-800).start();
+                ObjectAnimator.ofFloat(authView_,"translationX",800,0).start();
+                authView_.clearFocus();
             }
         };
 
@@ -207,20 +176,16 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         super.onSaveInstanceState(outState);
         outState.putString(TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN, _tokenEditText.getEditableText().toString());
         outState.putString(TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET, _secrectEditText.getEditableText().toString());
-
     }
 
     private void prepareEditTextView(final String default_, final EditText editText_){
         editText_.setTextColor(Color.GRAY);
         editText_.setText(default_);
-
         editText_.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-
                 EditText editText = (EditText) v;
-
                 if(!hasFocus && TextUtils.isEmpty(editText.getText().toString())){
                     editText.setTextColor(Color.GRAY);
                     editText.setText(default_);

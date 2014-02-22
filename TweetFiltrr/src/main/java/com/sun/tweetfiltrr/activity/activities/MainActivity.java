@@ -2,7 +2,6 @@ package com.sun.tweetfiltrr.activity.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,7 +12,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.fragment.fragments.AutoSignInFragmentI;
 import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragmentI;
-import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
@@ -46,6 +44,12 @@ public class MainActivity extends SherlockFragmentActivity {
 
 
 	}
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     private boolean hasUserSignedInBefore(SharedPreferences sharedPreferences){
        return   sharedPreferences.getBoolean(
@@ -109,12 +113,4 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	}
 
-    public void OnTokenFinish(ParcelableUser parcelableUser) {
-        Intent intent = new Intent(MainActivity.this, TwitterFilttrLoggedInUserHome.class);
-        intent.putExtra(TwitterConstants.FRIENDS_BUNDLE, parcelableUser);
-        startActivity(intent);
-   //     overridePendingTransition(0, R.anim.display_anim_top_bot_top);
-        this.finish();
-
-    }
 }

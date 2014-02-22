@@ -4,6 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#2E2D2E"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".MainActivity" >
 
     <!--<ImageView-->
@@ -113,7 +115,7 @@
             android:layout_marginLeft="70dp"
             android:layout_marginTop="3dp"
             android:id="@+id/go_back_web_but"
-            android:layout_below="@+id/back_to_manual_authenticate_but"
+            android:layout_below="@+id/manual_authenticate"
             android:layout_height="wrap_content"
             android:text="Go back"
             android:textColor="#fff"
