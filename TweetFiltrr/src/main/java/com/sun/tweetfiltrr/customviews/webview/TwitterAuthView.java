@@ -1,6 +1,9 @@
 package com.sun.tweetfiltrr.customviews.webview;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -27,13 +30,14 @@ import twitter4j.auth.RequestToken;
 /**
  * Created by Sundeep on 19/02/14.
  */
-public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient.OnPageLoad {
+public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient.OnOAuthStarted, TwitterAuthWebViewClient.OnPageLoadCallBack {
     private static final String TAG = TwitterAuthView.class.getName();
 
     private ITwitterAuthCallback lis;
     private ExecutorService _executorService;
     private RequestToken _tempRequestToken;
     private Twitter _twitter;
+    private ProgressDialog _progressDialog;
 
     public void setExecutorService(ExecutorService executorService_){
         _executorService =  executorService_;
@@ -45,23 +49,33 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
 
     public TwitterAuthView(Context context) {
         super(context);
-        init();
+        init(context, null);
 
     }
 
     public TwitterAuthView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
 
     }
 
     public TwitterAuthView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(context, attrs);
     }
 
-    private void init()
+    @Override
+    protected void onDraw(Canvas canvas) {
+
+        super.onDraw(canvas);
+
+    }
+
+    private void init(Context context_, AttributeSet attrs)
         {
+
+            _progressDialog =  new ProgressDialog(context_);
+            _progressDialog.setMessage("Loading");
             WebSettings settings = getSettings();
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
             settings.setJavaScriptEnabled(true);
@@ -69,15 +83,20 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
             setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
             requestFocus(View.FOCUS_DOWN);
             _executorService = Executors.newFixedThreadPool(2);
-            _twitter = new TwitterFactory().getInstance();
         }
 
 
     @Override
     public void onPageReceivedVerifier(WebView view_, String url_, String verifier_) {
+        if(verifier_ == null){
+            loadUrl("about:blank");
+        }else if(TextUtils.isEmpty(verifier_)){
+            loadUrl("about:blank");
+        }
         Log.v(TAG, "verifier now recived, so looking for accesstoken" + verifier_);
-                _executorService.submit(new AccessTokenCallable(_tempRequestToken,
-                        new TwitterAccessTokenRetriever(), _twitter, verifier_));
+            _executorService.submit(new AccessTokenCallable(_tempRequestToken,
+                    new TwitterAccessTokenRetriever(), _twitter, verifier_));
+
     }
 
     @Override
@@ -90,7 +109,10 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
             throw new IllegalArgumentException("AuthenticationDetails must contain valid consumer key, secrect and callback");
         }
 
-        setWebViewClient(new TwitterAuthWebViewClient(authDetails_.getCallback(), this));
+        TwitterAuthWebViewClient client = new TwitterAuthWebViewClient(authDetails_.getCallback(), this);
+        client.setOnPageListener(this);
+        setWebViewClient(client);
+        _twitter = new TwitterFactory().getInstance();
         _twitter.setOAuthConsumer(authDetails_.getConsumerKey(), authDetails_.getConsumerSecrect());
         final Future<RequestToken> requestTokenFuture =
                 _executorService.submit(new RequestTokenCallable(authDetails_));
@@ -98,6 +120,19 @@ public class TwitterAuthView extends WebView implements TwitterAuthWebViewClient
 
     private boolean isEmpty(String value_){
         return TextUtils.isEmpty(value_);
+    }
+
+    @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        if(!url.startsWith("about:blank")){
+            _progressDialog.show();
+        }
+    }
+
+    @Override
+    public void onPageFinished(WebView view, String url) {
+        _progressDialog.hide();
+
     }
 
     private class RequestTokenCallable implements Callable<RequestToken>{

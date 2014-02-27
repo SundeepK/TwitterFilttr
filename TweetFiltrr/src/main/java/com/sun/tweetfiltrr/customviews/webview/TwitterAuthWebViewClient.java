@@ -17,16 +17,26 @@ public class TwitterAuthWebViewClient extends WebViewClient {
 
     private static final String TAG = TwitterAuthWebViewClient.class.getName();
     private String _callback;
-    private OnPageLoad _pageLoadListener;
-    public TwitterAuthWebViewClient(String callback_, OnPageLoad pageLoadListener_){
+    private OnOAuthStarted _pageLoadListener;
+    private OnPageLoadCallBack _onPageListener;
+    public TwitterAuthWebViewClient(String callback_, OnOAuthStarted pageLoadListener_){
         _callback = callback_;
         _pageLoadListener = pageLoadListener_;
     }
 
 
-    public interface OnPageLoad{
+    public interface OnOAuthStarted {
         public void onPageReceivedVerifier(WebView view_, String url_, String verifier_);
         public void onPageReceivedError(WebView view_, int errorCode_, String description_, String failingUrl_);
+    }
+
+    public interface OnPageLoadCallBack {
+        public void onPageStarted(WebView view, String url, Bitmap favicon);
+        public void onPageFinished(WebView view, String url);
+    }
+
+    public void setOnPageListener(OnPageLoadCallBack pageListener){
+        _onPageListener = pageListener;
     }
 
     @Override
@@ -37,6 +47,9 @@ public class TwitterAuthWebViewClient extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        if(_onPageListener != null){
+            _onPageListener.onPageStarted(view, url, favicon);
+        }
         super.onPageStarted(view, url, favicon);
     }
 
@@ -48,6 +61,9 @@ public class TwitterAuthWebViewClient extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
+        if(_onPageListener != null){
+            _onPageListener.onPageFinished(view, url);
+        }
         super.onPageFinished(view, url);
     }
 
@@ -57,6 +73,7 @@ public class TwitterAuthWebViewClient extends WebViewClient {
             final Uri uri = Uri.parse(url);
             String verifier = uri.getQueryParameter("oauth_verifier");
             Log.v(TAG, "verifier recieved is " + verifier);
+
             _pageLoadListener.onPageReceivedVerifier(view, url, verifier);
         }else{
             view.loadUrl(url);
