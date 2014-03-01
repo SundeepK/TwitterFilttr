@@ -101,6 +101,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                 for (int i = 0; i < 4; i++) {
                     int lenght = 100;
                     currentIndex += 100;
+                    //TODO use current friend index instead of array index
                     int diff = totalCachedFriendCount - currentIndex;
                     if (currentIndex <= 5000) {
                         if (diff < 100) {
@@ -152,7 +153,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                         _currentUser.setLastFriendIndex(index);
                         _friends.add(_currentUser);
                         Log.v(TAG, "finished waiting for 4 tasks with total size: " + _friends.size());
-                        Log.v(TAG, "finished waiting for 4 tasks with total size: " + _friends.size());
+                        Log.v(TAG, "last array index " + _currentUser.getLastFriendIndex());
 
                         for (IDatabaseUpdater updater : _dbUpdaters) {
                             updater.updateUsersToDB(_friends);
