@@ -102,7 +102,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                     int lenght = 100;
                     currentIndex += 100;
                     //TODO use current friend index instead of array index
-                    int diff = totalCachedFriendCount - currentIndex;
+                    int diff = totalCachedFriendCount - _currentFriendCount.get();
                     if (currentIndex <= 5000) {
                         if (diff < 100) {
                             lenght = diff;
@@ -113,6 +113,12 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
                     }
 
                     Log.v(TAG, "current array index is: " + currentIndex + " with total frnd count " + totalCachedFriendCount + " and length " + lenght);
+
+                    if(lenght <=0){
+                        _onLoadFinishCallback.onBulkFriendLoadFinish(_currentUser);
+                        Log.v(TAG, "reuting becauase we cant search for friends, current array index is: " + currentIndex + " with lenght " + lenght );
+                        return;
+                    }
 
                     long[] ids = new long[lenght];
                     System.arraycopy(friendIDs, currentIndex, ids, 0, lenght);
