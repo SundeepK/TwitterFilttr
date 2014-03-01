@@ -5,12 +5,8 @@ import android.animation.ObjectAnimator;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +25,6 @@ import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetrie
 import com.sun.tweetfiltrr.utils.InputValidator;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import twitter4j.auth.AccessToken;
@@ -38,8 +32,8 @@ import twitter4j.auth.AccessToken;
 /**
  * Created by Sundeep.Kahlon on 20/02/14.
  */
-public class OAuthSignInFragmentI extends ASignInFragment {
-    private static final String TAG = OAuthSignInFragmentI.class.getName();
+public class OAuthSignInFragment extends ASignInFragment {
+    private static final String TAG = OAuthSignInFragment.class.getName();
     private TwitterAuthView _authWebView;
     @Inject
     FriendDao _friendDao;
@@ -81,7 +75,7 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         authenticateBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticateUser(OAuthSignInFragmentI.this);
+                authenticateUser(OAuthSignInFragment.this);
             }
         });
 
@@ -90,11 +84,12 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         setCircleDrawable(bm, _appIcon);
 
         _tokenEditText = (EditText) rootView_.findViewById(R.id.auth_token_edit);
-        _tokenEditText.addTextChangedListener(getGroupNameTextWatcher(_tokenEditText));
-        prepareEditTextView("Token", _tokenEditText);
+        _tokenEditText.addTextChangedListener(_inputValidator.getEditTextWatcher(_tokenEditText, 1, 200));
+        _inputValidator.prepareEditTextView("Token", _tokenEditText);
 
         _secrectEditText = (EditText) rootView_.findViewById(R.id.auth_token_secret_edit);
-        prepareEditTextView("Secrect", _secrectEditText);
+        _secrectEditText.addTextChangedListener(_inputValidator.getEditTextWatcher(_secrectEditText, 1, 200));
+        _inputValidator.prepareEditTextView("Secrect", _secrectEditText);
 
         manualAuthBut.setOnClickListener(getManualAuthOnClick(_tokenEditText, _secrectEditText));
         showManualAuthBut.setOnClickListener(showManualAuthView(authenticateBut, manualAuthView));
@@ -178,64 +173,6 @@ public class OAuthSignInFragmentI extends ASignInFragment {
         outState.putString(TwitterConstants.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET, _secrectEditText.getEditableText().toString());
     }
 
-    private void prepareEditTextView(final String default_, final EditText editText_){
-        editText_.setTextColor(Color.GRAY);
-        editText_.setText(default_);
-        editText_.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                EditText editText = (EditText) v;
-                if(!hasFocus && TextUtils.isEmpty(editText.getText().toString())){
-                    editText.setTextColor(Color.GRAY);
-                    editText.setText(default_);
-                    return;
-                } else if (hasFocus && editText.getText().toString().equals(default_)){
-                    editText.setText("");
-                    return;
-                }
-            }
-        });
-    }
-
-    private TextWatcher getGroupNameTextWatcher(final EditText groupName_){
-        return new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                isEditTextValid(groupName_, s , 1, 200);
-            }
-        };
-    }
-
-    private boolean isEditTextValid(EditText editTextToValidate_,  int wordCount, int maxLenght_) {
-        final Editable editableText = editTextToValidate_.getEditableText();
-        return isEditTextValid(editTextToValidate_, editableText, wordCount, maxLenght_);
-    }
-
-    private boolean isEditTextValid(EditText editTextToValidate_, Editable editableText_,  int wordCount, int maxLenght_) {
-        boolean isValid = false;
-        String inputString = editableText_.toString().toLowerCase(Locale.US);
-        if(_inputValidator.compareWordCount(inputString, wordCount)){
-            editTextToValidate_.setError("Must use less than " + wordCount + " keywords");
-            isValid = false;
-        }else if (_inputValidator.checkNullInput(inputString)) {
-            editTextToValidate_.setError("Input cannot be empty");
-            isValid = false;
-        }else if ((inputString.length() > maxLenght_)) {
-            editTextToValidate_.setError("Input is too big");
-            isValid = false;
-        }else {
-            editTextToValidate_.setError(null);
-            isValid = true;
-        }
-        return isValid;
-    }
-
 
     private View.OnClickListener getManualAuthOnClick(
                                                   final EditText tokenEditText_, final EditText secrectEditText_) {
@@ -247,16 +184,17 @@ public class OAuthSignInFragmentI extends ASignInFragment {
                 String token = tokenEditText_.getEditableText().toString().trim();
                 String secrect = secrectEditText_.getEditableText().toString().trim();
 
-                if (isEditTextValid(tokenEditText_, 1, 200) && isEditTextValid(secrectEditText_, 1, 200)) {
+                if (_inputValidator.isEditTextValid(tokenEditText_, 1, 200) &&
+                        _inputValidator.isEditTextValid(secrectEditText_, 1, 200)) {
                     final SharedPreferences sharedPreferences =  PreferenceManager
-                            .getDefaultSharedPreferences(OAuthSignInFragmentI.this.getActivity());
+                            .getDefaultSharedPreferences(OAuthSignInFragment.this.getActivity());
                     final AccessToken accessToken = new AccessToken(token, secrect);
                     setAccessTokenInPref(accessToken);
                     Log.v(TAG, "accessToken +" + accessToken.getToken() + " secrect" + accessToken.getTokenSecret());
                     AsyncAccessTokenRetriever task =
-                            new AsyncAccessTokenRetriever(_friendDao, OAuthSignInFragmentI.this,sharedPreferences );
+                            new AsyncAccessTokenRetriever(_friendDao, OAuthSignInFragment.this,sharedPreferences );
                     task.execute();
-                    startLoadAnimation(OAuthSignInFragmentI.this._appIcon);
+                    startLoadAnimation(OAuthSignInFragment.this._appIcon);
                 }
 
             }
@@ -279,6 +217,7 @@ public class OAuthSignInFragmentI extends ASignInFragment {
 
     @Override
     protected void authenticateUser(ITwitterAuthCallback callback_) {
+
         _authWebView.setSuccessLis(callback_);
         AuthenticationDetails details = new AuthenticationDetails(TwitterConstants.TWITTER_CONSUMER_KEY,
                 TwitterConstants.TWITTER_CONSUMER_SECRET, "https://twitterfiltrr.com");

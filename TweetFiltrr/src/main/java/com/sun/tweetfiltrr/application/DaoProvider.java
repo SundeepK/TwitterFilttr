@@ -16,11 +16,11 @@ import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.AutoSignInFragmentI;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
-import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
+import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
-import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragmentI;
+import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragment;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
@@ -54,7 +54,7 @@ import dagger.Provides;
                 EditKeywordGroupTab.class,
                 AccessTokenRetrieverFromPref.class,
                 AutoSignInFragmentI.class,
-                OAuthSignInFragmentI.class,
+                OAuthSignInFragment.class,
                 ASignInFragment.class
         },
         complete = false

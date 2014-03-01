@@ -36,7 +36,9 @@ public class AccessTokenRetrieverFromPref implements IAccessTokenRetrieverFromPr
     public Collection<UserBundle> retrieveAccessTokenFromSharedPref(SharedPreferences sharedPreferences_) {
         ArrayList<UserBundle> userBundles = new ArrayList<UserBundle>();
         try {
-            final AccessToken accessToken = retrieveAccessTokenFromPreferences(sharedPreferences_);
+            final AccessToken accessToken = new AccessToken(TwitterConstants.TWITTER_OAUTH_KEY, TwitterConstants.TWITTER_OAUTH_SECRET);
+            //TODO THE ABOVE LINE NEEDS TO BE REMOVED, ONLY SUED THIS FOR DEBUGGING
+           // final AccessToken accessToken = retrieveAccessTokenFromPreferences(sharedPreferences_);
             TwitterUtil.getInstance().setTwitterFactories(accessToken);
             Twitter twitter =    TwitterUtil.getInstance().getTwitter();
             Log.v(TAG, "accessToken" + accessToken);

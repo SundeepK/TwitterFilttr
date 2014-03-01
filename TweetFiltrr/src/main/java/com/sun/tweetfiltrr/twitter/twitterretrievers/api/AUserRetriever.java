@@ -67,7 +67,7 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
         user_.setLastPageNumber(ids.getNextCursor());
         int currentIndex = user_.getLastArrayIndex();
         if(currentIndex > 5000){ //TODO this number needs to be fixed and not be 5000
-            user_.setLastArrayIndex((currentIndex - 5000));
+            user_.setLastArrayIndex((currentIndex % 5000));
         }
 
         Log.v(TAG, "load friend ids called");

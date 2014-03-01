@@ -73,14 +73,12 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private ParcelableUser _currentUser ;
     private Collection<IDatabaseUpdater> _userDaoUpdaters;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
-    private boolean _tabHasBeenSelected = false;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private boolean _isCursorReady;
 
     @Inject TweetRetrieverWrapper _tweetRetriver;
     @Inject FriendDao _friendDao;
-    @Inject
-    TimelineDao _timelineDao;
+    @Inject TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
 
     @Override

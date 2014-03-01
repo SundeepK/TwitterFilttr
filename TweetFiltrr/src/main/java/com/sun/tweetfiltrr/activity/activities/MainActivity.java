@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.fragment.fragments.AutoSignInFragmentI;
-import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragmentI;
+import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragment;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
@@ -26,22 +26,22 @@ public class MainActivity extends SherlockFragmentActivity {
 
         if (!TwitterUtil.hasInternetConnection(this)) {
             displayConnectionAlert();
-        }
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        boolean hasSignedIn = hasUserSignedInBefore(sharedPreferences);
-        Fragment loginFragment;
-        if(!hasSignedIn){
-            loginFragment = new OAuthSignInFragmentI();
         }else{
-            loginFragment = new AutoSignInFragmentI();
+            SharedPreferences sharedPreferences = PreferenceManager
+                    .getDefaultSharedPreferences(this);
+            boolean hasSignedIn = hasUserSignedInBefore(sharedPreferences);
+            Fragment loginFragment;
+            if(!hasSignedIn){
+                loginFragment = new OAuthSignInFragment();
+            }else{
+                loginFragment = new AutoSignInFragmentI();
+            }
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.replaceable_fragment, loginFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.replaceable_fragment, loginFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
 
 	}
 

@@ -9,7 +9,7 @@ import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
-import com.sun.tweetfiltrr.fragment.fragments.EditKeywordGroupTab;
+import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;

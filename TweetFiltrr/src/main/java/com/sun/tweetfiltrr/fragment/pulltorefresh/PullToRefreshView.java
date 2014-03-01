@@ -14,16 +14,9 @@ import android.widget.ListView;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
 import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
-import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.views.ZoomListView;
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.fragment.api.IFragmentCallback;
-import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -47,19 +40,16 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         OnAsyncTaskPostExecute<T>, IProgress{
 
     private static final String TAG = PullToRefreshView.class.getName();
-    protected PullToRefreshLayout _pullToRefreshView;
-    protected ZoomListView _pullToRefreshListView;
-    protected Activity _activity;
-    protected AdapterView.OnItemClickListener _onItemClick;
-    protected SimpleCursorAdapter _cursorAdapter;
-    protected AbsListView.OnScrollListener _onscOnScrollListener;
-    protected ParcelableUser _currentUser;
-    protected IDBDao<ParcelableTweet> _timelineDao;
-    protected IDBDao<ParcelableUser> _friendDao;
-    protected ThreadPoolExecutor _threadExecutor;
-    protected IDBUpdater<ParcelableTweet> _timelineBufferedDBUpdater;
-    protected int _timelineCount = 50;
-    protected OnNewTweetRefreshListener<T> _pullToRefreshLis;
+    private PullToRefreshLayout _pullToRefreshView;
+    private ZoomListView _pullToRefreshListView;
+    private Activity _activity;
+    private AdapterView.OnItemClickListener _onItemClick;
+    private SimpleCursorAdapter _cursorAdapter;
+    private AbsListView.OnScrollListener _onscOnScrollListener;
+    private ParcelableUser _currentUser;
+    private ThreadPoolExecutor _threadExecutor;
+    private int _timelineCount = 50;
+    private OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
     private Collection<IDatabaseUpdater> _updaters;
     private ZoomListView.OnItemFocused _itemDisabledLis;
@@ -94,14 +84,6 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         _currentUser = currentUser_;
         _onItemClick = onItemClick_;
         _cursorAdapter = cursorAdapter_;
-        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
-                .getInstance(_activity.getContentResolver());
-        //init the Dao object using the flyweight so that we can share the Dao's between different fragments
-        _timelineDao = new TimelineDao(_activity.getContentResolver(), new TimelineToParcelable());
-        _friendDao = (IDBDao<ParcelableUser>) flyWeight.getDao(
-                DaoFlyWeightFactory.DaoFactory.FRIEND_DAO, _currentUser);
-        _timelineBufferedDBUpdater =
-                new SimpleDBUpdater<ParcelableTweet>();
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _pullToRefreshLis = pullToRefreshLis_;
         _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
