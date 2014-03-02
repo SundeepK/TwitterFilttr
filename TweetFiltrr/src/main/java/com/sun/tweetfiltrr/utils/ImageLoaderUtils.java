@@ -29,6 +29,7 @@ public final class ImageLoaderUtils {
         } catch (NullPointerException nu) {
             Log.e(TAG, "Null pointer detected while loading image, using default");
             setDefaultDrawable(imageView_);
+            nu.printStackTrace();
         } catch (URISyntaxException e) {
             Log.e(TAG, "Error in background image display");
             setDefaultDrawable(imageView_);

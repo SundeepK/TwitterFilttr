@@ -56,9 +56,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     private int _currentFriendLimit = 50;
     private static final String TAG = AUsersFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
-    private static final int LIST_LOADER = 0x05;
     private long _currentLoggedInUserId;
-    private boolean _isCurrentFriendDisplayed = true;
     private ITwitterAPICall<Collection<ParcelableUser>>  _userRetriever;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading;
@@ -212,7 +210,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                                                      ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener,Collection<IDatabaseUpdater> updaters_ ){
         return new PullToRefreshView<Collection<ParcelableUser>>
-                (getActivity(), currentUser_, this, adapter_ ,this, this, listener, updaters_, _sicImageLoader);
+                (getActivity(), currentUser_, this, adapter_ ,this, this, listener, updaters_, _sicImageLoader, R.layout.generic_empty_custom_timeline_layout);
     }
 
 

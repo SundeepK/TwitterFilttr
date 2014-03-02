@@ -29,18 +29,16 @@ import com.sun.tweetfiltrr.cursorToParcelable.TimelineToParcelable;
 import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
@@ -65,9 +63,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     private static final String TAG = ATimelineFragment.class.getName();
     private SimpleCursorAdapter _dataAdapter;
-    private static final int TUTORIAL_LIST_LOADER = 0x04;
     private int _currentLimitCount = 50;
-    private IDBUpdater<ParcelableTweet> _timeLineDBUpdater;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
@@ -88,11 +84,14 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         initAdapter();
     }
 
+    protected abstract int getLoaderID();
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = _pullToRefreshHandler.onCreateViewCallback(inflater, container, savedInstanceState);
-
-        getActivity().getSupportLoaderManager().initLoader(TUTORIAL_LIST_LOADER, null, this);
+       // _pullToRefreshHandler.setEmptyView(getEmptyView(inflater, container));
+        getActivity().getSupportLoaderManager().initLoader(getLoaderID(), null, this);
         return rootView;
     }
 
@@ -114,9 +113,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
             _currentUser = _userQueue.get(_userQueue.size()-1);
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
-
-        _timeLineDBUpdater =
-                new SimpleDBUpdater<ParcelableTweet>();
 
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
         _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
@@ -169,7 +165,8 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> userDaoUpdaters_){
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_, userDaoUpdaters_, _sicImageLoader );
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_,
+                userDaoUpdaters_, _sicImageLoader , 0);
     }
 
     @Override
@@ -203,7 +200,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     }
 
     private void restartCursor() {
-        getActivity().getSupportLoaderManager().restartLoader(TUTORIAL_LIST_LOADER, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(getLoaderID(), null, this);
         _dataAdapter.notifyDataSetChanged();
     }
 
@@ -214,7 +211,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         Log.v(TAG, "loadfinished" + cursor.getCount());
         _dataAdapter.swapCursor(cursor);
         _isCursorReady = true;
-
+        _pullToRefreshHandler.setEmptyView(cursor);
     }
 
     @Override

@@ -41,4 +41,9 @@ public class MentionsTab extends ATimelineFragment {
         return callables;
     }
 
+    @Override
+    protected int getLoaderID() {
+        return 0x55;
+    }
+
 }

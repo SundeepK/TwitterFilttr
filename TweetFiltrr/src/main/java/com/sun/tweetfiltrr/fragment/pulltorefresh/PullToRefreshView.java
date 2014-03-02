@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.fragment.pulltorefresh;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -37,7 +38,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  * Created by Sundeep on 12/01/14.
  */
 public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListener,
-        OnAsyncTaskPostExecute<T>, IProgress{
+        OnAsyncTaskPostExecute<T>, IProgress {
 
     private static final String TAG = PullToRefreshView.class.getName();
     private PullToRefreshLayout _pullToRefreshView;
@@ -53,10 +54,12 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     private int _headerLayout;
     private Collection<IDatabaseUpdater> _updaters;
     private ZoomListView.OnItemFocused _itemDisabledLis;
-
+    private View _emptyView;
+    private int _emptyLayout;
 
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
+
         public Collection<Callable<T>> getUsersRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
 
     }
@@ -67,10 +70,10 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              OnNewTweetRefreshListener pullToRefreshLis_,
                              LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_,
                              int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_,
-                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_ ){
-       this(activity_, currentUser_,onItemClick_, cursorAdapter_,  pullToRefreshLis_,
-               loadMoreLis_, itemDisabledLis_, dbUpdaters_, scrollListener_);
-        _headerLayout =headerLayout_;
+                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_, int emptyLayout_) {
+        this(activity_, currentUser_, onItemClick_, cursorAdapter_, pullToRefreshLis_,
+                loadMoreLis_, itemDisabledLis_, dbUpdaters_, scrollListener_, emptyLayout_);
+        _headerLayout = headerLayout_;
 
     }
 
@@ -79,24 +82,27 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                              SimpleCursorAdapter cursorAdapter_,
                              OnNewTweetRefreshListener pullToRefreshLis_,
                              LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemFocused itemDisabledLis_,
-                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_ ){
+                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_,
+                             int emptyLayout_) {
         _activity = activity_;
         _currentUser = currentUser_;
         _onItemClick = onItemClick_;
         _cursorAdapter = cursorAdapter_;
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
         _pullToRefreshLis = pullToRefreshLis_;
-        _onscOnScrollListener =   new LoadMoreOnScrollListener<T>(_threadExecutor,
-        _pullToRefreshLis, loadMoreLis_, 5, scrollListener_);
+        _onscOnScrollListener = new LoadMoreOnScrollListener<T>(_threadExecutor,
+                _pullToRefreshLis, loadMoreLis_, 5, scrollListener_);
         _updaters = dbUpdaters_;
 //        _updaters  = new ArrayList<IDatabaseUpdater>();
 //        _updaters.add(new TimelineDatabaseUpdater(_timelineDao));
-        _itemDisabledLis =  itemDisabledLis_;
+        _itemDisabledLis = itemDisabledLis_;
+        _emptyLayout = emptyLayout_;
         Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
     }
 
     /**
      * No-op
+     *
      * @param savedInstanceState
      */
     @Override
@@ -118,15 +124,29 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
                         .build())
                 .setup(_pullToRefreshView);
 
-
         _pullToRefreshListView = (ZoomListView) rootView.findViewById(R.id.refreshable_listview);
         _pullToRefreshListView.setOnItemClickListener(_onItemClick);
         _pullToRefreshListView.setOnItemDisableListener(_itemDisabledLis);
-        if(_headerLayout > 0){
+        if (_headerLayout > 0) {
             View headerView = inflater.inflate(_headerLayout, null);
-            if(headerView != null){
+            if (headerView != null) {
                 _pullToRefreshListView.addHeaderView(headerView);
             }
+        }
+
+
+        if(_emptyLayout > 0){
+            _emptyView = inflater.inflate(_emptyLayout, null);
+//            LinearLayout.LayoutParams layoutParams =
+//                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, AbsListView.LayoutParams.FILL_PARENT);
+//            param.addRule(RelativeLayout.CENTER_IN_PARENT);
+//            param.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//            param.addRule(RelativeLayout.CENTER_VERTICAL);
+//            layoutParams.gravity= Gravity.CENTER;
+            _emptyView.setVisibility(View.GONE);
+//            ((ViewGroup) rootView).addView(_emptyView, layoutParams);
+            _pullToRefreshListView.addFooterView(_emptyView);
+
         }
 
         _pullToRefreshListView.setAdapter(_cursorAdapter);
@@ -134,31 +154,37 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
         return rootView;
     }
 
+    public void setEmptyView(Cursor cursor) {
+        int totalCount = cursor.getCount();
+        if(_emptyView != null){
+            if (totalCount <= 0) {
+                _emptyView.setVisibility(View.VISIBLE);
+            }else{
+                _emptyView.setVisibility(View.GONE);
+            }
+        }
+    }
 
-    public void startRefresh(){
+
+    public void startRefresh() {
         Log.v(TAG, "We are looking for friends tweets because pull to refresh was done");
         Log.v(TAG, "is friend : " + _currentUser.isFriend());
-        final   Collection<Future<T>> futures = new ArrayList<Future<T>>();
+        final Collection<Future<T>> futures = new ArrayList<Future<T>>();
         final Collection<Callable<T>> callables = _pullToRefreshLis.getUsersRetriever(true, false);
-        for(Callable<T> callabe : callables){
+        for (Callable<T> callabe : callables) {
             futures.add(_threadExecutor.submit(callabe));
         }
-
-        if(!futures.isEmpty()){
-            AsyncUserDBUpdateTask< Integer> _updaterTask;
-            _updaterTask = new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,_updaters, this);
-
-            _updaterTask.execute(futures.toArray(new Future[futures.size()]));
-        }
-
+        AsyncUserDBUpdateTask<Integer> _updaterTask;
+        _updaterTask = new AsyncUserDBUpdateTask<Integer>(3, TimeUnit.MINUTES, _updaters, this);
+        _updaterTask.execute(futures.toArray(new Future[futures.size()]));
 
     }
+
 
     @Override
     public void onRefreshStarted(View view) {
         startRefresh();
     }
-
 
 
     @Override
@@ -168,10 +194,11 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
     @Override
     public void onPostExecute(T postExecute_) {
-//        Log.v(TAG, "size of timeline onpostexecute " +  postExecute_.getUserTimeLine().size());
-//        _timelineCount += postExecute_.getUserTimeLine().size();
-        Log.v(TAG, "in post execute");
         _pullToRefreshView.setRefreshComplete();
+        int totalCount = _pullToRefreshListView.getAdapter().getCount();
+//        if (totalCount <= 0) {
+//            _emptyView.setVisibility(View.VISIBLE);
+//        }
         _pullToRefreshLis.OnRefreshComplete(postExecute_);
     }
 

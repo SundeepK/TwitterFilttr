@@ -35,4 +35,8 @@ public class UserTimelineTab extends ATimelineFragment {
         return null;
     }
 
+    @Override
+    protected int getLoaderID() {
+        return 0x50;
+    }
 }

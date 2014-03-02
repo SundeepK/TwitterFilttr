@@ -56,7 +56,8 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
     @Override
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> updaters_) {
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment, listener_,updaters_, TwitterUtil.getInstance().getGlobalImageLoader(getActivity()));
+        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment,
+                listener_,updaters_, TwitterUtil.getInstance().getGlobalImageLoader(getActivity()), 0);
     }
 
     @Override
@@ -75,6 +76,11 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
         Collection<Callable<Collection<ParcelableUser>>> callables = new ArrayList<Callable<Collection<ParcelableUser>>>();
         callables.add(getTweetRetriver().getTimeLineRetriever(getCurrentUser(), shouldRunOnce_, shouldLookForOldTweets, this));
         return callables;
+    }
+
+    @Override
+    protected int getLoaderID() {
+        return 0x53;
     }
 
 

@@ -6,6 +6,14 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent" >
 
+
+    <ImageView
+        android:id="@+id/actionbar_icon_imageview"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:scaleType="centerCrop"
+        />
+
     <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/action_bar_title"
         android:layout_width="wrap_content"
@@ -13,9 +21,12 @@
         android:textSize="20dp"
         android:maxLines="1"
         android:ellipsize="end"
+        android:layout_toRightOf="@+id/actionbar_icon_imageview"
         android:textColor="#9E9E9E"
         custom:typeface="robotoLight"
-        android:layout_centerVertical="true"
         />
+
+
+
 
 </RelativeLayout>

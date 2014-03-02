@@ -9,7 +9,6 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFriendRetriever;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 /**
@@ -34,7 +32,6 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
 
     private static final String TAG = BulkFriendRetriever.class.getName();
     private ParcelableUser _currentUser;
-    private Twitter _twitter = TwitterUtil.getInstance().getTwitter();
     private UsersFriendRetriever _userRetriver;
     private Collection<ParcelableUser> _friends;
     private ExecutorService _executorService;

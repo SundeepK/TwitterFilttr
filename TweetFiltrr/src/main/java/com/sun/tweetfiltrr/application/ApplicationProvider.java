@@ -3,13 +3,14 @@ package com.sun.tweetfiltrr.application;
 import android.content.Context;
 
 import com.sun.imageloader.core.UrlImageLoader;
+import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.activity.activities.MainActivity;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
+import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
-import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
@@ -48,7 +49,8 @@ import dagger.Provides;
                 TwitterQueryParameter.class,
                 MainActivity.class,
                 EditKeywordGroupTab.class,
-                ASignInFragment.class
+                ASignInFragment.class,
+                ATwitterActivity.class
         },
         complete = false
 )

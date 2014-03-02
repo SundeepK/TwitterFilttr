@@ -24,8 +24,8 @@
     <style name="MyActionBarTheme" parent="@style/Widget.Sherlock.ActionBar">
         <item name="android:background">#000</item>
         <item name = "background">#000</item>
-        <item name="android:height">45dip</item>
-        <item name="height">45dip</item>
+        <!--<item name="android:height">45dip</item>-->
+        <!--<item name="height">45dip</item>-->
     </style>
 
 

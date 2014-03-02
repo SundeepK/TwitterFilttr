@@ -54,6 +54,10 @@ import java.util.concurrent.TimeoutException;
         protected Collection<ParcelableUser> doInBackground(Future<Collection<ParcelableUser>>... params) {
             Collection<ParcelableUser> futureResults  = new ArrayList<ParcelableUser>();
 
+            if(params.length <= 0){
+                return futureResults;
+            }
+
             //TODO add exception handling
             for(Future<Collection<ParcelableUser>> future : params){
                 try {
