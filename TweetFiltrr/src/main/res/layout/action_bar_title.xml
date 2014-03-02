@@ -12,6 +12,7 @@
         android:layout_height="40dp"
         android:layout_width="40dp"
         android:scaleType="centerCrop"
+        android:layout_centerVertical="true"
         />
 
     <com.sun.tweetfiltrr.customviews.views.TypeFaceView
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:maxLines="1"
+        android:layout_centerVertical="true"
         android:ellipsize="end"
         android:layout_toRightOf="@+id/actionbar_icon_imageview"
         android:textColor="#9E9E9E"
