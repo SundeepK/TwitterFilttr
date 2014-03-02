@@ -26,6 +26,7 @@
         android:layout_toRightOf="@+id/actionbar_icon_imageview"
         android:textColor="#9E9E9E"
         custom:typeface="robotoLight"
+        android:layout_marginLeft="5dp"
         />
 
 
