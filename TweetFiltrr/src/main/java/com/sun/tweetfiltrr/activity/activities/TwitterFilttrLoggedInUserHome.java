@@ -72,7 +72,7 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements
         Intent i = null;
         switch (position) {
             case 0:
-                i = new Intent(TwitterFilttrLoggedInUserHome.this, TwitterUserProfileHome.class);
+                i = new Intent(TwitterFilttrLoggedInUserHome.this, UserProfileHome.class);
                 i.putExtra(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
                 startActivity(i);
 

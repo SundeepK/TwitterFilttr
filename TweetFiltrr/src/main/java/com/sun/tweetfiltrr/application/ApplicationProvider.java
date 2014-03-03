@@ -7,6 +7,7 @@ import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.activity.activities.MainActivity;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
 import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
+import com.sun.tweetfiltrr.activity.activities.UserProfileHome;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
@@ -52,7 +53,8 @@ import dagger.Provides;
                 EditKeywordGroupTab.class,
                 ASignInFragment.class,
                 ATwitterActivity.class,
-                TwitterUserProfileHome.class
+                TwitterUserProfileHome.class,
+                UserProfileHome.class
         },
         complete = false
 )

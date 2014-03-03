@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
+import com.sun.tweetfiltrr.activity.activities.UserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
@@ -237,7 +237,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        if(_tabHasBeenSelected && _isCursorReady){
+        if(_isCursorReady){
             if (_currentFriendLimit < _currentUser.getCurrentFriendCount()) {
                 Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount());
                 int diff = _currentUser.getCurrentFriendCount()-  _currentFriendLimit;
@@ -280,7 +280,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
             break;
         }
         //start new activity for the clicked user
-        Intent i = new Intent(getActivity(), TwitterUserProfileHome.class);
+        Intent i = new Intent(getActivity(), UserProfileHome.class);
         i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
         _userQueue.add(newFriend);
         i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);

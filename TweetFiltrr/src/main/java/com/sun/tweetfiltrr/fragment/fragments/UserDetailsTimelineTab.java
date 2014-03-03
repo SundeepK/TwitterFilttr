@@ -2,7 +2,6 @@ package com.sun.tweetfiltrr.fragment.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -12,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sun.tweetfiltrr.R;
+import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
@@ -20,8 +20,6 @@ import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;
@@ -40,16 +38,16 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, getCurrentUser());
-        Log.v(TAG, "current user is " + getCurrentUser().getScreenName());
-
-        Fragment frag = new UserProfileFragment();
-        frag.setArguments(bundle);
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.user_details_fragment, frag, getCurrentUser().getScreenName())
-        .commit();
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, getCurrentUser());
+//        Log.v(TAG, "current user is " + getCurrentUser().getScreenName());
+//
+//        Fragment frag = new UserProfileFragment();
+//        frag.setArguments(bundle);
+//        getActivity().getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.user_details_fragment, frag, getCurrentUser().getScreenName())
+//        .commit();
         return rootView;
     }
 
