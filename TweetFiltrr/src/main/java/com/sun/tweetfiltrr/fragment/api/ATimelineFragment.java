@@ -224,24 +224,28 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-        Log.v(TAG, "col names from cursor: " + Arrays.toString(cursor.getColumnNames())) ;
-        int rowId =
-                cursor.getInt(cursor.getColumnIndexOrThrow(FriendColumn._ID.s()));
-        int tweetID =
-                cursor.getInt(cursor.getColumnIndexOrThrow(TimelineColumn._ID.a()));
-        Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
-        Collection<ParcelableTweet> tweets = _timelineDao.getEntry(tweetID);
-        //we should only retrieve 1 friend since rowId is unique, so we iterate once
-        ParcelableUser user = friends.iterator().next();
-        ParcelableTweet tweet = tweets.iterator().next();
-        user.setRowId(rowId);
-        user.addTimeLineEntry(tweet);
-        Log.v(TAG, "user queroed is :" + user.toString());
-        Log.v(TAG, "user's timeline size is :" + user.getUserTimeLine().size());
+       if (cursor != null) {
+           if (cursor.getCount() > 0) {
+               Log.v(TAG, "col names from cursor: " + Arrays.toString(cursor.getColumnNames()));
+               int rowId =
+                       cursor.getInt(cursor.getColumnIndexOrThrow(FriendColumn._ID.s()));
+               int tweetID =
+                       cursor.getInt(cursor.getColumnIndexOrThrow(TimelineColumn._ID.a()));
+               Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
+               Collection<ParcelableTweet> tweets = _timelineDao.getEntry(tweetID);
+               //we should only retrieve 1 friend since rowId is unique, so we iterate once
+               ParcelableUser user = friends.iterator().next();
+               ParcelableTweet tweet = tweets.iterator().next();
+               user.setRowId(rowId);
+               user.addTimeLineEntry(tweet);
+               Log.v(TAG, "user queroed is :" + user.toString());
+               Log.v(TAG, "user's timeline size is :" + user.getUserTimeLine().size());
 
-        Intent tweetConvo = new Intent(getActivity(), TweetConversation.class);
-        tweetConvo.putExtra(TwitterConstants.FRIENDS_BUNDLE, user);
-        getActivity().startActivity(tweetConvo);
+               Intent tweetConvo = new Intent(getActivity(), TweetConversation.class);
+               tweetConvo.putExtra(TwitterConstants.FRIENDS_BUNDLE, user);
+               getActivity().startActivity(tweetConvo);
+           }
+       }
     }
 
     @Override

@@ -229,10 +229,15 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
     @Override
     public View onItemFocused(View focusedView_, int listViewPosition_, long uniqueId_) {
         Cursor cursor = getCursor();
-        cursor.moveToPosition(listViewPosition_);
-        ParcelableTweet tweet = getParcelable(cursor).getUserTimeLine().iterator().next();
-        Log.v(TAG,  "item pos " +  listViewPosition_ +" onlonglick tweet is: " + tweet);
-        return focusedView_.findViewById(R.id.tweet_operation_buttons);
+        if(cursor != null){
+            if(cursor.getCount() > 0){
+                cursor.moveToPosition(listViewPosition_);
+                ParcelableTweet tweet = getParcelable(cursor).getUserTimeLine().iterator().next();
+                Log.v(TAG,  "item pos " +  listViewPosition_ +" onlonglick tweet is: " + tweet);
+                return focusedView_.findViewById(R.id.tweet_operation_buttons);
+            }
+        }
+        return null;
     }
 
     private View.OnClickListener getReplyOnClick(final ParcelableUser user_, final SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ){

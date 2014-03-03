@@ -261,7 +261,8 @@ public class ZoomListView extends ListView implements AdapterView.OnItemLongClic
                 int position = pointToPosition(_xPos, _yPos);
                 int childNum = (position != INVALID_POSITION) ? position - getFirstVisiblePosition() : -1;
                 View itemView = (childNum >= 0) ? getChildAt(childNum) : null;
-                if (itemView != null) {
+                int itemCount = getAdapter().getCount();
+                if (itemView != null && itemCount > 0) {
                     _viewBounds = getChildViewRect(this, itemView, childNum);
                 }
 
