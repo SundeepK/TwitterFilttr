@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -54,7 +55,7 @@ public class UserProfileHome extends ATwitterActivity implements
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private FragmentState _currentFragmentState = FragmentState.TWEETS;
     private Bundle _userBundle;
-    private LinkedList<String> _fragmentTags;
+    private LinkedList<String> _fragmentTags = new LinkedList<String>();
     @Inject UrlImageLoader _imageloader;
 
     @Override
@@ -191,12 +192,26 @@ public class UserProfileHome extends ATwitterActivity implements
     }
 
     private void changeFragment(Fragment fragment_){
+        String currentFragmentID = Integer.toString(fragment_.hashCode());
         FragmentManager fragmentManager = getSupportFragmentManager();
-          fragmentManager.beginTransaction()
-                .replace(R.id.menu_frame, fragment_)
-              //  .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack(null)
-                .commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if(!_fragmentTags.isEmpty()){
+            String previousTag = _fragmentTags.pop();
+            Fragment previousFragment = fragmentManager.findFragmentByTag(previousTag);
+            fragmentTransaction.hide(previousFragment);
+        }
+        // fragmentTransaction.replace(R.id.menu_frame, fragment_);
+//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+       // fragmentTransaction.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
+        Fragment currentFragment = fragmentManager.findFragmentByTag(currentFragmentID);
+        if(currentFragment == null){
+            fragmentTransaction.add(R.id.menu_frame, fragment_, currentFragmentID);
+        }else{
+            fragmentTransaction.show(currentFragment);
+        }
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        _fragmentTags.push(currentFragmentID);
     }
 
     private Fragment getFragmentToCommit(){
