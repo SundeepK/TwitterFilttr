@@ -30,7 +30,7 @@ import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.callables.FriendsRetriever;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFriendRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.UsersFriendRetriever;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;

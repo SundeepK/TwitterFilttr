@@ -8,7 +8,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFriendRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.UsersFriendRetriever;
 
 import java.util.ArrayList;
 import java.util.Collection;

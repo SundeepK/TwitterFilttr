@@ -21,7 +21,7 @@ import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.callables.FollowersRetriever;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UsersFollowerRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.UsersFollowerRetriever;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +57,7 @@ public class FollowersTab extends AUsersFragment {
         Collection<IDatabaseUpdater> updaters = new ArrayList<IDatabaseUpdater>();
         DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
-                FriendColumn.FRIEND_COUNT.s(),
+                FriendColumn.FRIEND_COUNT.s(),  FriendColumn.TWEET_COUNT.s(),
                 FriendColumn.FOLLOWER_COUNT.s(), FriendColumn.LAST_FOLLOWER_PAGE_NO.s(),
                 FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.s(), FriendColumn.LAST_FOLLOWER_PAGE_NO.s(),
                 FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),

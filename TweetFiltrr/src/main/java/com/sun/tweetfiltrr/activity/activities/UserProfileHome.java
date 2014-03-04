@@ -2,16 +2,15 @@ package com.sun.tweetfiltrr.activity.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,7 +23,6 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
-import com.sun.tweetfiltrr.fragment.fragments.BlankFragment;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.SettingsScreen;
@@ -35,6 +33,7 @@ import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.inject.Inject;
@@ -50,22 +49,13 @@ public class UserProfileHome extends ATwitterActivity implements
 
 	private static final String TAG = UserProfileHome.class.getName();
     private ParcelableUser _currentUser;
-    private UserDetailsTimelineTab _userDetailsFrag;
-    private FriendsTab _userFriendFrag;
-    private FollowersTab _userFollowerFrag;
-    private Fragment _blankFragment;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private FragmentState _currentFragmentState = FragmentState.TWEETS;
     private Bundle _userBundle;
-    private LinkedList<String> _fragmentTags = new LinkedList<String>();
+    private HashMap<String, FragmentInfo> _fragInfoMap = new HashMap<String, FragmentInfo>();
+    private LinkedList<FragmentInfo> _fragmentTags = new LinkedList<FragmentInfo>();
     @Inject UrlImageLoader _imageloader;
-    private static Interpolator interp = new Interpolator() {
-        @Override
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            return t * t * t + 1.0f;
-        }
-    };
+
     @Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -93,7 +83,6 @@ public class UserProfileHome extends ATwitterActivity implements
         userName.setText(_currentUser.getUserName());
         userDesc.setText(_currentUser.getDescription());
 
-        _blankFragment = new BlankFragment();
         final SlidingMenu menu = new SlidingMenu(this);
         _userBundle = new Bundle();
         _userBundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
@@ -110,13 +99,7 @@ public class UserProfileHome extends ATwitterActivity implements
         menu.setOnOpenedListener(this);
         menu.setOnClosedListener(this);
 
-        menu.setBehindCanvasTransformer( new SlidingMenu.CanvasTransformer() {
-            @Override
-            public void transformCanvas(Canvas canvas, float percentOpen) {
-                canvas.translate(0, canvas.getHeight()*(1-interp.getInterpolation(percentOpen)));
-            }
-        });
-
+        showTweetsBut.setText("Tweets    \t \t" + _currentUser.getTotalTweetCount());
         showTweetsBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +108,7 @@ public class UserProfileHome extends ATwitterActivity implements
             }
         });
 
+        showFriendsBut.setText("Following \t" + _currentUser.getTotalFriendCount());
         showFriendsBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,6 +117,7 @@ public class UserProfileHome extends ATwitterActivity implements
             }
         });
 
+        showFollowersBut.setText("Followers \t" + _currentUser.getTotalFollowerCount());
         showFollowersBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,66 +182,98 @@ public class UserProfileHome extends ATwitterActivity implements
 
     @Override
     public void onOpened() {
-        Fragment fragmentToDisplay = getFragmentToCommit();
-        changeFragment(fragmentToDisplay);
+        changeFragment(getFragmentToCommit());
     }
 
     @Override
     public void onClosed() {
-        changeFragment(_blankFragment);
     }
 
-    private void changeFragment(Fragment fragment_){
-        String currentFragmentID = Integer.toString(fragment_.hashCode());
+    private Fragment createFragment(FragmentInfo fragmentInfo_){
+        return Fragment.instantiate(this, fragmentInfo_._fragmentClass.getName(), fragmentInfo_._bundle);
+    }
+
+    private void showNewFragment(FragmentManager fragmentManager_, FragmentTransaction fragmentTransac_,
+                                 FragmentInfo fragmentInfo_){
+        String  currentFragmentTag =fragmentInfo_.getTag();
+        Fragment currentFragment = fragmentManager_.findFragmentByTag(currentFragmentTag);
+        if(currentFragment == null){
+            Fragment replacementFragment = createFragment(fragmentInfo_);
+            fragmentTransac_.add(R.id.menu_frame, replacementFragment, currentFragmentTag);
+        }else{
+            fragmentTransac_.show(currentFragment);
+        }
+        _fragmentTags.push(fragmentInfo_);
+    }
+
+    private void hidePreviousFragment(FragmentManager fragmentManager_, FragmentTransaction fragmentTransac_,
+                                      FragmentInfo fragmentInfo_){
+        if(!_fragmentTags.isEmpty()){
+            FragmentInfo previousFragInfo  = _fragmentTags.pop();
+            if(previousFragInfo != null){
+                if(!TextUtils.equals(previousFragInfo.getTag(), fragmentInfo_.getTag())){
+                    fragmentTransac_.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
+                }
+            }
+            Fragment previousFragment = fragmentManager_.findFragmentByTag(previousFragInfo.getTag());
+            fragmentTransac_.hide(previousFragment);
+        }else{
+            fragmentTransac_.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
+        }
+    }
+
+    private void changeFragment(FragmentInfo fragmentInfo_){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if(!_fragmentTags.isEmpty()){
-            String previousTag = _fragmentTags.pop();
-            Fragment previousFragment = fragmentManager.findFragmentByTag(previousTag);
-            fragmentTransaction.hide(previousFragment);
-        }
-        // fragmentTransaction.replace(R.id.menu_frame, fragment_);
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-       fragmentTransaction.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
-        Fragment currentFragment = fragmentManager.findFragmentByTag(currentFragmentID);
-        if(currentFragment == null){
-            fragmentTransaction.add(R.id.menu_frame, fragment_, currentFragmentID);
-        }else{
-            fragmentTransaction.show(currentFragment);
-        }
         fragmentTransaction.addToBackStack(null);
+        hidePreviousFragment(fragmentManager,fragmentTransaction, fragmentInfo_);
+        showNewFragment(fragmentManager, fragmentTransaction, fragmentInfo_);
         fragmentTransaction.commit();
-        _fragmentTags.push(currentFragmentID);
     }
 
-    private Fragment getFragmentToCommit(){
-        Fragment fragment = null;
+    private FragmentInfo getFragmentToCommit(){
+        FragmentInfo fragment = null;
         switch (_currentFragmentState){
             case TWEETS:
-                if(_userDetailsFrag == null){
-                    _userDetailsFrag = new UserDetailsTimelineTab();
-                    _userDetailsFrag.setArguments(_userBundle);
-                }
-                fragment =_userDetailsFrag;
+                fragment = getFragmentInfo(UserDetailsTimelineTab.class, _userBundle);
                 break;
             case FOLLOWING:
-                if(_userFriendFrag == null){
-                    _userFriendFrag = new FriendsTab();
-                    _userFriendFrag.setArguments(_userBundle);
-                }
-                fragment = _userFriendFrag;
+                fragment = getFragmentInfo(FriendsTab.class, _userBundle);
                 break;
             case FOLLOWERS:
-                if(_userFollowerFrag == null){
-                    _userFollowerFrag = new FollowersTab();
-                    _userFollowerFrag.setArguments(_userBundle);
-                }
-                fragment =_userFollowerFrag;
+
+                fragment = getFragmentInfo(FollowersTab.class, _userBundle);
                 break;
             default:
-                fragment = _blankFragment;
-                break;
+                throw new IllegalStateException("A unknown fragment was requested");
         }
         return fragment;
     }
+
+    private FragmentInfo getFragmentInfo(Class<?> fragmentClass_, Bundle bundle_){
+        FragmentInfo fragment;
+        String key = fragmentClass_.getName();
+        if(_fragInfoMap.containsKey(key)){
+            fragment = _fragInfoMap.get(key);
+        }else{
+            fragment = new FragmentInfo(fragmentClass_, bundle_);
+            _fragInfoMap.put(fragmentClass_.getName(), fragment);
+        }
+        return fragment;
+    }
+
+    private class FragmentInfo{
+        private Class<?> _fragmentClass;
+        private Bundle _bundle;
+
+        public FragmentInfo(Class<?> fragmentClass_, Bundle bundle_){
+            _fragmentClass = fragmentClass_;
+            _bundle  = bundle_;
+        }
+
+        public String getTag(){
+            return Integer.toString(this.hashCode()) + _fragmentClass.getName();
+        }
+    }
+
 }

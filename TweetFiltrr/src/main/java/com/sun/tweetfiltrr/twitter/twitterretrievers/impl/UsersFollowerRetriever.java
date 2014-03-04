@@ -1,7 +1,8 @@
-package com.sun.tweetfiltrr.twitter.twitterretrievers.api;
+package com.sun.tweetfiltrr.twitter.twitterretrievers.impl;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.AUserRetriever;
 
 import twitter4j.IDs;
 import twitter4j.Twitter;

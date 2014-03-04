@@ -160,7 +160,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
             Log.v(TAG, "Twitter search limit remaining:" + maxRemaining);
 //            for (Map.Entry<String, RateLimitStatus> limit : limits
 //                    .entrySet()) {
-//                Log.v(TAG, "Key for limi: " + limit.getKey());
+//                Log.v(TAG, "Key for limi: " + limit.getTag());
 //                Log.v(TAG, "Value for limi: " + limit.getValue());
 //
 //            }
