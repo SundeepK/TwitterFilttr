@@ -3,6 +3,7 @@ package com.sun.tweetfiltrr.activity.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
+import com.sun.tweetfiltrr.fragment.fragments.BlankFragment;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.SettingsScreen;
@@ -32,24 +34,29 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 public class UserProfileHome extends ATwitterActivity implements
-        ListView.OnItemClickListener {
+        ListView.OnItemClickListener, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener {
 
+    public enum FragmentState{
+        TWEETS,
+        FOLLOWING,
+        FOLLOWERS
+    }
 
 	private static final String TAG = UserProfileHome.class.getName();
     private ParcelableUser _currentUser;
     private UserDetailsTimelineTab _userDetailsFrag;
-    private FriendsTab _userFriedFrag;
+    private FriendsTab _userFriendFrag;
     private FollowersTab _userFollowerFrag;
+    private Fragment _blankFragment;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
-
+    private FragmentState _currentFragmentState = FragmentState.TWEETS;
+    private Bundle _userBundle;
     @Inject UrlImageLoader _imageloader;
 
     @Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
         setContentView(R.layout.user_profile_home);
-
-
         _userQueue = UserRetrieverUtils.getUserQueue(this);
 
         if(_userQueue.isEmpty()){
@@ -73,13 +80,13 @@ public class UserProfileHome extends ATwitterActivity implements
         userName.setText(_currentUser.getUserName());
         userDesc.setText(_currentUser.getDescription());
 
-
+        _blankFragment = new BlankFragment();
         final SlidingMenu menu = new SlidingMenu(this);
-        final Bundle bundle = new Bundle();
-        bundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
+        _userBundle = new Bundle();
+        _userBundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
+
         Log.v(TAG, "current user is " + _currentUser.getScreenName());
 
-       // Fragment frag = new UserProfileFragment();
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
         menu.setMenu(R.layout.sliding_menu_fragment);
@@ -87,58 +94,33 @@ public class UserProfileHome extends ATwitterActivity implements
         menu.setMode(SlidingMenu.RIGHT);
         menu.setBehindOffset(100);
         menu.setFadeEnabled(true);
-
-        final  FragmentManager fragmentManager = getSupportFragmentManager();
-
+        menu.setOnOpenedListener(this);
+        menu.setOnClosedListener(this);
 
         showTweetsBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(_userDetailsFrag == null){
-                    _userDetailsFrag = new UserDetailsTimelineTab();
-                    _userDetailsFrag.setArguments(bundle);
-                }
-                fragmentManager.beginTransaction()
-                        .replace(R.id.menu_frame, _userDetailsFrag)
-                        .addToBackStack(null)
-                        .commit();
                 menu.showMenu();
+                _currentFragmentState = FragmentState.TWEETS;
             }
         });
 
         showFriendsBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(_userFriedFrag == null){
-                    _userFriedFrag = new FriendsTab();
-                    _userFriedFrag.setArguments(bundle);
-                }
-                fragmentManager.beginTransaction()
-                        .replace(R.id.menu_frame, _userFriedFrag)
-                        .addToBackStack(null)
-                        .commit();
                 menu.showMenu();
+                _currentFragmentState = FragmentState.FOLLOWING;
             }
         });
 
         showFollowersBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(_userFollowerFrag == null){
-                    _userFollowerFrag = new FollowersTab();
-                    _userFollowerFrag.setArguments(bundle);
-                }
-                fragmentManager.beginTransaction()
-                        .replace(R.id.menu_frame,_userFollowerFrag)
-                        .addToBackStack(null)
-                     .commit();
                 menu.showMenu();
+                _currentFragmentState = FragmentState.FOLLOWERS;
             }
         });
-
-
 	}
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -180,9 +162,7 @@ public class UserProfileHome extends ATwitterActivity implements
 
     @Override
     public void onBackPressed() {
-
         if(!_userQueue.isEmpty()){
-
             ParcelableUser user = _userQueue.remove(_userQueue.size()-1);
             Log.v(TAG, "_userQueue is not empty, removing user " + user.getScreenName());
             Intent i = new Intent(UserProfileHome.this, UserProfileHome.class);
@@ -191,10 +171,57 @@ public class UserProfileHome extends ATwitterActivity implements
             i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, users);
             this.startActivity(i);
         }
-
         super.onBackPressed();
         this.finish();
-
     }
 
+    @Override
+    public void onOpened() {
+        Fragment fragmentToDisplay = getFragmentToCommit();
+        changeFragment(fragmentToDisplay);
+    }
+
+    @Override
+    public void onClosed() {
+        changeFragment(_blankFragment);
+    }
+
+    private void changeFragment(Fragment fragment_){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+          fragmentManager.beginTransaction()
+                .replace(R.id.menu_frame, fragment_ )
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private Fragment getFragmentToCommit(){
+        Fragment fragment = null;
+        switch (_currentFragmentState){
+            case TWEETS:
+                if(_userDetailsFrag == null){
+                    _userDetailsFrag = new UserDetailsTimelineTab();
+                    _userDetailsFrag.setArguments(_userBundle);
+                }
+                fragment =_userDetailsFrag;
+                break;
+            case FOLLOWING:
+                if(_userFriendFrag == null){
+                    _userFriendFrag = new FriendsTab();
+                    _userFriendFrag.setArguments(_userBundle);
+                }
+                fragment = _userFriendFrag;
+                break;
+            case FOLLOWERS:
+                if(_userFollowerFrag == null){
+                    _userFollowerFrag = new FollowersTab();
+                    _userFollowerFrag.setArguments(_userBundle);
+                }
+                fragment =_userFollowerFrag;
+                break;
+            default:
+                fragment = _blankFragment;
+                break;
+        }
+        return fragment;
+    }
 }
