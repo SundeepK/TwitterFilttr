@@ -2,6 +2,7 @@ package com.sun.tweetfiltrr.activity.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,7 +59,13 @@ public class UserProfileHome extends ATwitterActivity implements
     private Bundle _userBundle;
     private LinkedList<String> _fragmentTags = new LinkedList<String>();
     @Inject UrlImageLoader _imageloader;
-
+    private static Interpolator interp = new Interpolator() {
+        @Override
+        public float getInterpolation(float t) {
+            t -= 1.0f;
+            return t * t * t + 1.0f;
+        }
+    };
     @Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -101,6 +109,13 @@ public class UserProfileHome extends ATwitterActivity implements
         menu.setFadeEnabled(true);
         menu.setOnOpenedListener(this);
         menu.setOnClosedListener(this);
+
+        menu.setBehindCanvasTransformer( new SlidingMenu.CanvasTransformer() {
+            @Override
+            public void transformCanvas(Canvas canvas, float percentOpen) {
+                canvas.translate(0, canvas.getHeight()*(1-interp.getInterpolation(percentOpen)));
+            }
+        });
 
         showTweetsBut.setOnClickListener(new View.OnClickListener() {
             @Override
