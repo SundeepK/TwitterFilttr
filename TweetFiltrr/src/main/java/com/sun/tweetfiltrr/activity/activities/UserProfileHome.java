@@ -202,7 +202,7 @@ public class UserProfileHome extends ATwitterActivity implements
         }
         // fragmentTransaction.replace(R.id.menu_frame, fragment_);
 //        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-       // fragmentTransaction.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
+       fragmentTransaction.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
         Fragment currentFragment = fragmentManager.findFragmentByTag(currentFragmentID);
         if(currentFragment == null){
             fragmentTransaction.add(R.id.menu_frame, fragment_, currentFragmentID);
