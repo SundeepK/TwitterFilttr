@@ -2,6 +2,8 @@ package com.sun.tweetfiltrr.activity.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,6 +32,7 @@ import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.inject.Inject;
 
@@ -51,6 +54,7 @@ public class UserProfileHome extends ATwitterActivity implements
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private FragmentState _currentFragmentState = FragmentState.TWEETS;
     private Bundle _userBundle;
+    private LinkedList<String> _fragmentTags;
     @Inject UrlImageLoader _imageloader;
 
     @Override
@@ -86,7 +90,7 @@ public class UserProfileHome extends ATwitterActivity implements
         _userBundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
 
         Log.v(TAG, "current user is " + _currentUser.getScreenName());
-
+        menu.setBackground(new ColorDrawable(Color.BLACK));
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
         menu.setMenu(R.layout.sliding_menu_fragment);
@@ -189,7 +193,8 @@ public class UserProfileHome extends ATwitterActivity implements
     private void changeFragment(Fragment fragment_){
         FragmentManager fragmentManager = getSupportFragmentManager();
           fragmentManager.beginTransaction()
-                .replace(R.id.menu_frame, fragment_ )
+                .replace(R.id.menu_frame, fragment_)
+              //  .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack(null)
                 .commit();
     }
