@@ -1,7 +1,6 @@
 package com.sun.tweetfiltrr.activity.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -127,9 +126,6 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
                 = new TweetOperationController(smoothProgressBarWrapper, _timelineDao);
 
         _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
-        _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
-
-
         _blurredImageProcessor = new BlurredImageGenerator(this);
         _convoAdapter = new ConversationAdapter(this, R.layout.timeline_list_view, _convoUsers);
         _conversationDisplayer = new UserConversationDisplayer("Select Friends", this,
@@ -222,13 +218,6 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 		imageView_.setImageDrawable(new ColorDrawable(Color.BLACK));
     }
 	
-	protected void onBroadCastReceive(Intent intent_) {
-		
-		   _currentUser = intent_.getExtras().getParcelable(TwitterConstants.FRIENDS_BUNDLE);
-		    Log.d(TAG, "Got message: " + _currentUser.toString());
-//			setTweetDetails();
-	}
-	
 
 	private void initControl() throws InterruptedException, ExecutionException {
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
@@ -248,7 +237,6 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
         Bitmap blurredBitmap = tryLoadImage(imageFilePath, bitmap);
         Log.v(TAG, "Image file path is " + imageFilePath);
        _blurredBackground.setImageBitmap(blurredBitmap);
-
     }
 
 

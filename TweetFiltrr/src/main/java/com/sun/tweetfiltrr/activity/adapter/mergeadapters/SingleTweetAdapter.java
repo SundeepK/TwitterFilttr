@@ -98,7 +98,7 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTweetOperationLis_.onReplyTweet(v,user_);
+                onTweetOperationLis_.onReTweet(v,user_);
            }
         };
     }

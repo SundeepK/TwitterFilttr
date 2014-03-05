@@ -214,9 +214,9 @@ public class UserProfileHome extends ATwitterActivity implements
                 if(!TextUtils.equals(previousFragInfo.getTag(), fragmentInfo_.getTag())){
                     fragmentTransac_.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
                 }
+                Fragment previousFragment = fragmentManager_.findFragmentByTag(previousFragInfo.getTag());
+                fragmentTransac_.hide(previousFragment);
             }
-            Fragment previousFragment = fragmentManager_.findFragmentByTag(previousFragInfo.getTag());
-            fragmentTransac_.hide(previousFragment);
         }else{
             fragmentTransac_.setCustomAnimations(R.anim.slide_open_anim, R.anim.slide_close_anim);
         }

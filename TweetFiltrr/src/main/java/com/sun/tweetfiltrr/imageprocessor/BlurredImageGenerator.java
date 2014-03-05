@@ -51,7 +51,7 @@ public class BlurredImageGenerator implements IImageProcessor {
     }
 
     // taken from http://incubator.quasimondo.com/processing/superfast_blur.php which shows a fast implementation of blur
-    //TODO have a look optimising this fuher and using gaussian blur rather than box blur
+    //TODO have a look optimising this further and using gaussian blur rather than box blur
     private void fastblur(Bitmap img, int radius){
 
         if (radius<1){
