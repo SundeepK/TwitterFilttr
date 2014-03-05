@@ -144,6 +144,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
                             }else{
                                 task.getView().setEnabled(false);
                             }
+                            task.getView().setBackgroundColor(Color.rgb(71,71,71));
                             task.getView().setTag(null);
                         }
                         Log.v(TAG, "task removed");
