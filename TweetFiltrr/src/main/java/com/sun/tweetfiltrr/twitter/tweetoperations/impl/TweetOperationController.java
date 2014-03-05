@@ -71,6 +71,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
             view_.setTag(tweet);
             view_.setBackgroundColor(Color.rgb(71,71,71));
             view_.setEnabled(true);
+            tweet.setIsRetweeted(true);
             submitTask(view_, (user_), _retweet);
         }
     }
@@ -134,29 +135,25 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
             final Iterator<ITwitterOperationTask<ITwitterAPICall>> itr = operations.iterator();
             while (itr.hasNext()) {
                 ITwitterOperationTask<ITwitterAPICall> task = itr.next();
-                if (task.isRunning()) {
-                    if (!task.isFailed()) {
-                         ParcelableTweet isFavView = (ParcelableTweet) task.getView().getTag();
-                        if(isFavView != null){
-                            if(apiCallType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE){
-                                Log.v(TAG, "view should be fav a view");
-                                task.getView().setEnabled(true);
-                            }else{
-                                task.getView().setEnabled(false);
-                            }
-                            task.getView().setBackgroundColor(Color.rgb(71,71,71));
-                            task.getView().setTag(null);
+                if (task.isRunning() && !task.isFailed()) {
+                    ParcelableTweet isFavView = (ParcelableTweet) task.getView().getTag();
+                    if (isFavView != null) {
+                        if (apiCallType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE) {
+                            task.getView().setEnabled(true);
+                        } else {
+                            task.getView().setEnabled(false);
                         }
-                        Log.v(TAG, "task removed");
-                        itr.remove();
+                        task.getView().setBackgroundColor(Color.rgb(71, 71, 71));
+                        task.getView().setTag(null);
                     }
+                    itr.remove();
                 }
             }
         } else {
             _twitterOperationsMap.remove(tweet);
         }
 
-        if(_listener != null){
+        if (_listener != null) {
             _listener.onTwitterApiCallSuccess(user_, apiCallType_);
         }
     }
@@ -165,42 +162,35 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
     public void onTwitterApiCallFail(ParcelableUser failedUser_, TwitterException exception_, ITwitterAPICall tweetType_) {
         ParcelableTweet tweet = getTweet(failedUser_);
         Collection<ITwitterOperationTask<ITwitterAPICall>> operations = _twitterOperationsMap.get(tweet);
-        Log.v(TAG, "on task failed");
-
         if (!operations.isEmpty()) {
             final Iterator<ITwitterOperationTask<ITwitterAPICall>> itr = operations.iterator();
             while (itr.hasNext()) {
                 ITwitterOperationTask<ITwitterAPICall> task = itr.next();
-                if (task.isRunning()) {
-                    Log.v(TAG, "task complete");
-                    if (task.isFailed()) {
-                        Log.v(TAG, "task is failed");
-                        ParcelableTweet taggedTweet = (ParcelableTweet) task.getView().getTag();
-                        if(taggedTweet != null){
-                            Log.v(TAG, "view should be fav a view");
-                            if(tweetType_.getTweetOperationType() ==  ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE){
-                                taggedTweet.setIsFavourite(false);
-                                task.getView().setEnabled(true);
-                            }else if(tweetType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_RETWEET){
-                                if(exception_.getStatusCode() != 403){
+                if (task.isRunning() && task.isFailed()) {
+                    ParcelableTweet taggedTweet = (ParcelableTweet) task.getView().getTag();
+                    if (taggedTweet != null) {
+                        if (tweetType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE) {
+                            taggedTweet.setIsFavourite(false);
+                            task.getView().setEnabled(true);
+                        } else if (tweetType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_RETWEET) {
+                            if (exception_.getStatusCode() != 403) {
                                 taggedTweet.setIsRetweeted(false);
                                 task.getView().setEnabled(true);
-                                }
                             }
-                            task.getView().setTag(null);
                         }
-                        itr.remove();
-                        View v = task.getView();
-                        v.setEnabled(true);
-                        v.setBackgroundColor(Color.BLACK);
+                        task.getView().setTag(null);
                     }
+                    itr.remove();
+                    View v = task.getView();
+                    v.setEnabled(true);
+                    v.setBackgroundColor(Color.BLACK);
                 }
             }
         } else {
             _twitterOperationsMap.remove(tweet);
         }
 
-        if(_listener != null){
+        if (_listener != null) {
             _listener.onTwitterApiCallFail(failedUser_, exception_, tweetType_);
         }
     }

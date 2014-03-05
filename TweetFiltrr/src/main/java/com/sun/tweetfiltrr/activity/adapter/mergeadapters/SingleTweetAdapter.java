@@ -74,8 +74,8 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         }
 
         if(tweet.isRetweeted()){
-            viewHolder._retweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
             viewHolder._retweetBut.setEnabled(false);
+            viewHolder._retweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
         }else{
             viewHolder._retweetBut.setEnabled(true);
             viewHolder._retweetBut.setBackgroundColor(Color.rgb(0, 0, 0));
