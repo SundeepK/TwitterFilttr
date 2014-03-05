@@ -81,6 +81,7 @@ public class ParcelableTweet implements IParcelableTwitter {
         _inReplyToTweetId = tweet.getInReplyToStatusId();
         _isFavourite = tweet.isFavorited();
         _isRetweeted = tweet.isRetweetedByMe();
+        Log.v(TAG, "is reteeted by me is :"  + _isRetweeted);
         _photoUrl =getPhotoUrl(tweet.getMediaEntities());
         _isKeyWordSearedTweet = false;
         _isMention = false;

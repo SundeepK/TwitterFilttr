@@ -34,8 +34,8 @@ public  class RetweetTweet implements ITwitterAPICall<ParcelableTweet> {
             ParcelableTweet tweetToProcess =  user_.getUser().getUserTimeLine().iterator().next();
             twitter4j.Status status = twitter.retweetStatus(tweetToProcess.getTweetID());
             tweet = new ParcelableTweet(status, format.format(status.getCreatedAt()), status.getUser().getId());
-            tweet.setIsRetweeted(status.isRetweeted());
-            tweetToProcess.setIsRetweeted(tweet.isRetweeted());
+            tweet.setIsRetweeted(true);
+            tweetToProcess.setIsRetweeted(true);
         } catch (TwitterException e) {
             e.printStackTrace();
             Log.v(TAG, "Error occured whilst trying to re-tweet");
