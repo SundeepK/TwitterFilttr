@@ -1,8 +1,6 @@
 package com.sun.tweetfiltrr.twitter.api;
 
-import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 
 import twitter4j.TwitterException;
 
@@ -11,7 +9,7 @@ import twitter4j.TwitterException;
  */
 public interface ITwitterAPICallStatus {
 
-    public void onTwitterApiCallSuccess(ParcelableUser user_);
+    public void onTwitterApiCallSuccess(ParcelableUser user_,  ITwitterAPICall apiCallType_);
     public void onTwitterApiCallFail(ParcelableUser failedTweet_,
                                      TwitterException exception_, ITwitterAPICall apiCallType_);
 

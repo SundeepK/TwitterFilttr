@@ -217,7 +217,7 @@ public class BulkFriendRetriever implements Runnable, ITwitterAPICallStatus {
     }
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
 
         _currentFriendCount.addAndGet(user_.getCurrentFriendCount());
         Log.v(TAG, "SUCCESS with current count: " + user_.getCurrentFriendCount() + " current index " + user_.getLastFriendIndex() +

@@ -322,7 +322,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     }
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
 //        ITwitterAPICall.TwitterAPICallType twitterApiCallType = tweetType_.getTweetOperationType();
 //        String message;
 //        switch (twitterApiCallType){

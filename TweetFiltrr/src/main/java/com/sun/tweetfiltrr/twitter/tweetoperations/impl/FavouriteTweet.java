@@ -36,8 +36,10 @@ public  class FavouriteTweet implements ITwitterAPICall<ParcelableTweet> {
             twitter4j.Status status = null;
             if(!tweetToProcess.isFavourite()){
                 status = twitter.createFavorite(tweetToProcess.getTweetID());
+                tweetToProcess.setIsFavourite(true);
             }else{
                 status  = twitter.destroyFavorite(tweetToProcess.getTweetID());
+                tweetToProcess.setIsFavourite(false);
             }
             newTweet = new ParcelableTweet(status, format.format(status.getCreatedAt()), status.getUser().getId());
 

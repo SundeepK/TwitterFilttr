@@ -2,6 +2,7 @@ package com.sun.tweetfiltrr.application;
 
 import android.content.ContentResolver;
 
+import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
@@ -55,7 +56,8 @@ import dagger.Provides;
                 AccessTokenRetrieverFromPref.class,
                 AutoSignInFragmentI.class,
                 OAuthSignInFragment.class,
-                ASignInFragment.class
+                ASignInFragment.class,
+                TweetConversation.class
         },
         complete = false
 )

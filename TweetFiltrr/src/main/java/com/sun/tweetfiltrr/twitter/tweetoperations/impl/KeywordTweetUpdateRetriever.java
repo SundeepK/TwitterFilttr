@@ -180,7 +180,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
 
     }
 

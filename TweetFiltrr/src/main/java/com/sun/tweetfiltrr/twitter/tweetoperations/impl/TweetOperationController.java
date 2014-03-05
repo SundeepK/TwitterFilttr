@@ -51,8 +51,10 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
         ParcelableTweet tweet = getTweet(user_);
         if(!tweet.isFavourite()){
             view_.setBackgroundColor(Color.rgb(71,71,71));
+//            tweet.setIsFavourite(false);
         }else{
             view_.setBackgroundColor(Color.rgb(0,0,0));
+//            tweet.setIsFavourite(true);
         }
         view_.setEnabled(false);
         view_.setTag(tweet);
@@ -61,9 +63,16 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
 
     @Override
     public void onReTweet(View view_,ParcelableUser user_) {
-        view_.setEnabled(false);
-        view_.setBackgroundColor(Color.rgb(71,71,71));
-        submitTask(view_, (user_), _retweet);
+        ParcelableTweet tweet = getTweet(user_);
+        if(tweet.isRetweeted()){
+            view_.setBackgroundColor(Color.rgb(0,0,0));
+            view_.setEnabled(false);
+        }else{
+            view_.setTag(tweet);
+            view_.setBackgroundColor(Color.rgb(71,71,71));
+            view_.setEnabled(true);
+            submitTask(view_, (user_), _retweet);
+        }
     }
 
     @Override
@@ -117,7 +126,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
     }
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
         ParcelableTweet tweet = getTweet(user_);
         Collection<ITwitterOperationTask<ITwitterAPICall>> operations = _twitterOperationsMap.get(tweet);
         Log.v(TAG, "success called");
@@ -129,8 +138,12 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
                     if (!task.isFailed()) {
                          ParcelableTweet isFavView = (ParcelableTweet) task.getView().getTag();
                         if(isFavView != null){
-                            Log.v(TAG, "view should be fav a view");
-                            task.getView().setEnabled(true);
+                            if(apiCallType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE){
+                                Log.v(TAG, "view should be fav a view");
+                                task.getView().setEnabled(true);
+                            }else{
+                                task.getView().setEnabled(false);
+                            }
                             task.getView().setTag(null);
                         }
                         Log.v(TAG, "task removed");
@@ -143,7 +156,7 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
         }
 
         if(_listener != null){
-            _listener.onTwitterApiCallSuccess(user_);
+            _listener.onTwitterApiCallSuccess(user_, apiCallType_);
         }
     }
 
@@ -159,10 +172,22 @@ public class TweetOperationController implements SingleTweetAdapter.OnTweetOpera
                 ITwitterOperationTask<ITwitterAPICall> task = itr.next();
                 if (task.isRunning()) {
                     Log.v(TAG, "task complete");
-
                     if (task.isFailed()) {
                         Log.v(TAG, "task is failed");
-
+                        ParcelableTweet taggedTweet = (ParcelableTweet) task.getView().getTag();
+                        if(taggedTweet != null){
+                            Log.v(TAG, "view should be fav a view");
+                            if(tweetType_.getTweetOperationType() ==  ITwitterAPICall.TwitterAPICallType.POST_FAVOURITE){
+                                taggedTweet.setIsFavourite(false);
+                                task.getView().setEnabled(true);
+                            }else if(tweetType_.getTweetOperationType() == ITwitterAPICall.TwitterAPICallType.POST_RETWEET){
+                                if(exception_.getStatusCode() != 403){
+                                taggedTweet.setIsRetweeted(false);
+                                task.getView().setEnabled(true);
+                                }
+                            }
+                            task.getView().setTag(null);
+                        }
                         itr.remove();
                         View v = task.getView();
                         v.setEnabled(true);

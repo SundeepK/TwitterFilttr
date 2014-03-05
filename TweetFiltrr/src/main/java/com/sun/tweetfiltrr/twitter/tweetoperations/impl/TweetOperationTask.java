@@ -24,7 +24,7 @@ import twitter4j.TwitterException;
 /**
  * Created by Sundeep on 01/01/14.
  */
-public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICall<ParcelableTweet>, Void, Collection<ParcelableTweet>>
+public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICall<ParcelableTweet>, Void, Collection<TweetOperationTask.TwitterResult>>
         implements ISubmittable<ITwitterAPICall> ,  ITwitterAPICallStatus {
 
     private static final String TAG = TweetOperationTask.class.getName() ;
@@ -55,7 +55,7 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
 
 
     @Override
-    protected void onPostExecute( Collection<ParcelableTweet> status) {
+    protected void onPostExecute( Collection<TwitterResult> status) {
         if(!_exceptions.isEmpty()){
             Log.v(TAG, "exceptions are not empty so calling fail listener");
             _isFailed = true;
@@ -70,25 +70,29 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
 
         }else{
             Log.v(TAG, "Updating database");
-            _listener.onTwitterApiCallSuccess(_user);
+            for(TwitterResult result : status){
+                _listener.onTwitterApiCallSuccess(_user, result._apiCallType);
+            }
         }
 
         super.onPostExecute(status);
     }
 
     @Override
-    protected Collection<ParcelableTweet> doInBackground(ITwitterAPICall<ParcelableTweet>... params) {
-        Collection<ParcelableTweet> timeLineEntries = new ArrayList<ParcelableTweet>();
+    protected Collection<TwitterResult> doInBackground(ITwitterAPICall<ParcelableTweet>... params) {
+        Collection<TwitterResult> timeLineEntries = new ArrayList<TwitterResult>();
+        Collection<ParcelableTweet> tweets = new ArrayList<ParcelableTweet>();
         addArryToCollection(_operations, params);
         for (ITwitterAPICall<ParcelableTweet> twitterOperation : _operations) {
             ParcelableTweet tweet = twitterOperation.retrieveTwitterData(new CachedFriendDetails(_user), this);
             if(tweet != null){
                 Log.v(TAG, "Fav tweet was: " + tweet.toString());
-                timeLineEntries.add(tweet);
+                timeLineEntries.add(new TwitterResult(tweet, twitterOperation));
+                tweets.add(tweet);
             }
         }
 
-        _timelineDao.insertOrUpdate(timeLineEntries, new String[]{TimelineTable.TimelineColumn.TWEET_ID.s(),
+        _timelineDao.insertOrUpdate(tweets, new String[]{TimelineTable.TimelineColumn.TWEET_ID.s(),
                 TimelineTable.TimelineColumn.IS_FAVOURITE.s(),
                 TimelineTable.TimelineColumn.IS_MENTION.s(), TimelineTable.TimelineColumn.IS_RETWEETED.s()} );
         return timeLineEntries;
@@ -149,7 +153,7 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
 
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_,  ITwitterAPICall apiCallType_) {
 
     }
 
@@ -157,5 +161,14 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
     public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall tweetType_) {
         _exceptions.put(tweetType_, exception_);
 
+    }
+
+    public class TwitterResult{
+        private ParcelableTweet _user;
+        private ITwitterAPICall _apiCallType;
+        public TwitterResult(ParcelableTweet user_, ITwitterAPICall apiCallType_){
+            _user = user_;
+            _apiCallType = apiCallType_;
+        }
     }
 }

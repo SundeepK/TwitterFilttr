@@ -64,7 +64,6 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
     private ImageView _backgroundImage;
     private UrlImageLoader  _sicImageLoader;
     private ConversationAdapter _convoAdapter;
-    private IDBDao<ParcelableTweet> _timelineDao;
     private Handler _currentHandler;
     private List<ParcelableUser> _convoUsers;
     private UserConversationDisplayer _conversationDisplayer;
@@ -76,6 +75,8 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
     private View _headerView;
     private ListView _listView;
     private int _screenWidth;
+
+    private IDBDao<ParcelableTweet> _timelineDao;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {

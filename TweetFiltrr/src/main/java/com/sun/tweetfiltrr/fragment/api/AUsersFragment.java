@@ -312,7 +312,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     }
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
     }
 
     @Override

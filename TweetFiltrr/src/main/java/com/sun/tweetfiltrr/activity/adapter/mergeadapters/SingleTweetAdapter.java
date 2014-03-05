@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.activity.adapter.mergeadapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,8 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
@@ -57,21 +58,33 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
         final ViewHolder viewHolder = getViewHolder(view);
         final ParcelableUser currentUser = getItem(position);
 
-
         ParcelableTweet tweet = currentUser.getUserTimeLine().iterator().next();
         viewHolder._friendName.setText(currentUser.getUserName());
         viewHolder._tweetText.setText(tweet.getTweetDate());
         viewHolder._tweetText.setText(tweet.getTweetText());
-        try {
-            _sicUrlImageLoader.displayImage(currentUser.getProfileImageUrl(), viewHolder._profileImage, 1);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+
+        ImageLoaderUtils.attemptLoadImage(viewHolder._profileImage,_sicUrlImageLoader, currentUser.getProfileImageUrl(),1, null);
+
+        if(tweet.isFavourite()){
+            viewHolder._favouriteBut.setEnabled(true);
+            viewHolder._favouriteBut.setBackgroundColor(Color.rgb(71, 71, 71));
+        }else{
+            viewHolder._favouriteBut.setEnabled(true);
+            viewHolder._favouriteBut.setBackgroundColor(Color.rgb(0, 0, 0));
         }
 
-        viewHolder._retweetBut.setOnClickListener(getReTweetOnClick(currentUser, _onTweetOperationLis));
-        viewHolder._favouriteBut.setOnClickListener(getFavOnClick(currentUser, _onTweetOperationLis));
+        if(tweet.isRetweeted()){
+            viewHolder._retweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
+            viewHolder._retweetBut.setEnabled(false);
+        }else{
+            viewHolder._retweetBut.setEnabled(true);
+            viewHolder._retweetBut.setBackgroundColor(Color.rgb(0, 0, 0));
+            viewHolder._retweetBut.setOnClickListener(getReTweetOnClick(currentUser, _onTweetOperationLis));
+        }
+
         viewHolder._quoteBut.setOnClickListener(getQuoteOnClick(currentUser, _onTweetOperationLis));
         viewHolder._replyBut.setOnClickListener(getReplyOnClick(currentUser, _onTweetOperationLis));
+        viewHolder._favouriteBut.setOnClickListener(getFavOnClick(currentUser, _onTweetOperationLis));
 
         return view;
     }
@@ -108,39 +121,28 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
            @Override
            public void onClick(View v) {
                onTweetOperationLis_.onTweetFav(v,user_);
-//               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
-//                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
-//                               new ParcelableTweet[]{tweetToFav_});
            }
        };
     }
 
     private View getWorkingView(final View convertView) {
-
         View workingView = null;
-
         if(null == convertView) {
             final Context context = getContext();
             final LayoutInflater inflater = (LayoutInflater)context.getSystemService
                     (Context.LAYOUT_INFLATER_SERVICE);
-
             workingView = inflater.inflate(_userTweetsListView, null);
         } else {
             workingView = convertView;
         }
-
-        return workingView;
+      return workingView;
     }
 
     private ViewHolder getViewHolder(final View workingView) {
-
         final Object tag = workingView.getTag();
         ViewHolder viewHolder = null;
-
-
         if(null == tag || !(tag instanceof ViewHolder)) {
             viewHolder = new ViewHolder();
-
             viewHolder._friendName = (TextView) workingView.findViewById(R.id.friend_name);
             viewHolder._tweetText = (TextView) workingView.findViewById(R.id.timeline_entry);
             viewHolder._tweetDate = (TextView) workingView.findViewById(R.id.timeline_date_time);
@@ -150,8 +152,6 @@ public class SingleTweetAdapter extends ArrayAdapter<ParcelableUser> {
             viewHolder._favouriteBut = (ImageButton) workingView.findViewById(R.id.favourite_but);
             viewHolder._quoteBut = (ImageButton) workingView.findViewById(R.id.copy_tweet_but);
             viewHolder._replyBut = (ImageButton) workingView.findViewById(R.id.reply_but);
-
-
             workingView.setTag(viewHolder);
             Log.v("decodePairArray", workingView.getTag().toString());
         } else {

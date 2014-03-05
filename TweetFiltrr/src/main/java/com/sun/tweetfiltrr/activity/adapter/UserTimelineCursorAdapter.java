@@ -42,8 +42,6 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
     private FriendTimeLineToParcelable _friendTimeLineToParcelable;
     private SparseArray<Boolean> _enabledItems;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
-    private int _lastPosition = 0;
-    private final Animation _scaleAnimation;
     public UserTimelineCursorAdapter(Context context, int layout, Cursor c,
                                      String[] from, int[] to, int flags,
                                      FriendTimeLineToParcelable friendTimeLineToParcelable_, UrlImageLoader imageLoader_,
@@ -55,7 +53,6 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         _imageLoader = imageLoader_;
         _enabledItems = new SparseArray<Boolean>();
         _onTweetOperationLis = onTweetOperationLis_;
-        _scaleAnimation = getZoomAnimation(0.8f,1f,0.8f,1f);
 	}
 
 
@@ -87,32 +84,30 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
 
         TextView tweetTextView =(TextView)view_.findViewById(R.id.timeline_entry);
         tweetTextView.setText(tweet.getTweetText());
-
+        ImageButton quoteTweetBut = (ImageButton) view_.findViewById(R.id.copy_tweet_but);
+        ImageButton replyTweet = (ImageButton) view_.findViewById(R.id.reply_but);
         ImageButton favBut = (ImageButton) view_.findViewById(R.id.favourite_but);
+        ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
+
         if(tweet.isFavourite()){
             favBut.setEnabled(true);
             favBut.setBackgroundColor(Color.rgb(71, 71, 71));
-            favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         }else{
             favBut.setEnabled(true);
             favBut.setBackgroundColor(Color.rgb(0, 0, 0));
-            favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         }
-
-        ImageButton reTweetBut = (ImageButton) view_.findViewById(R.id.retweet_but);
 
         if(tweet.isRetweeted()){
             reTweetBut.setBackgroundColor(Color.rgb(71, 71, 71));
+            reTweetBut.setEnabled(false);
         }else{
             reTweetBut.setEnabled(true);
             reTweetBut.setBackgroundColor(Color.rgb(0, 0, 0));
             reTweetBut.setOnClickListener(getReTweetOnClick(user, _onTweetOperationLis));
         }
 
-        ImageButton replyTweet = (ImageButton) view_.findViewById(R.id.reply_but);
+        favBut.setOnClickListener(getFavOnClick(user, _onTweetOperationLis));
         replyTweet.setOnClickListener(getReplyOnClick(user, _onTweetOperationLis));
-
-        ImageButton quoteTweetBut = (ImageButton) view_.findViewById(R.id.copy_tweet_but);
         quoteTweetBut.setOnClickListener(getQuoteOnClick(user, _onTweetOperationLis));
         //Log.v(TAG, "bindview called for tweet :" + tweet + " with fav bool as: "+ tweet.isFavourite());
 	}
@@ -271,12 +266,7 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-               // v.setVisibility(View.GONE);
                 onTweetOperationLis_.onTweetFav(v,user_);
-//               new FavouriteTweet(_smoothProgressBarWrapper, _timelineDao)
-//                       .executeOnExecutor(TwitterUtil.getInstance().getGlobalExecutor(),
-//                               new ParcelableTweet[]{tweetToFav_});
             }
         };
     }

@@ -140,7 +140,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
 	};
 
     @Override
-    public void onTwitterApiCallSuccess(ParcelableUser user_) {
+    public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
         Toast.makeText(this, "Tweet posted", 2).show();
     }
 
