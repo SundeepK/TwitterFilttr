@@ -21,8 +21,8 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.imageloader.core.api.FailedTaskReason;
 import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.ITwitterAuthCallback;
-import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
+import com.sun.tweetfiltrr.customviews.webview.api.ITwitterAuthCallback;
+import com.sun.tweetfiltrr.activity.activities.UserHomeActivity;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
@@ -78,7 +78,7 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
     private void finishSignIn(UserBundle bundle){
         TwitterUtil.getInstance().setTwitterFactories(bundle.getAccessToken());
         TwitterUtil.getInstance().setCurrentUser(bundle.getUser());
-        Intent intent = new Intent(getActivity(), TwitterFilttrLoggedInUserHome.class);
+        Intent intent = new Intent(getActivity(), UserHomeActivity.class);
         startActivity(intent);
         getActivity().finish();
     }

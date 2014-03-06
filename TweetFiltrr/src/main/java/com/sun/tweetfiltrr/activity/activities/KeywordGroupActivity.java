@@ -42,12 +42,12 @@ import java.util.Locale;
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
 
 
-public class KeywordGroupScreen extends SherlockFragmentActivity implements
+public class KeywordGroupActivity extends SherlockFragmentActivity implements
 						LoaderManager.LoaderCallbacks<Cursor>, OnTextViewLoad<ParcelableUser>, AdapterView.OnItemClickListener {
 	
 	private CursorAdapter _groupAdapter;
 	private static final int TUTORIAL_LIST_LOADER = 0x02;
-	private static final String TAG = KeywordGroupScreen.class.getName();
+	private static final String TAG = KeywordGroupActivity.class.getName();
 	private IDBDao<ParcelableKeywordGroup> _keywordGroupDao;
 	private InputValidator _inputValidator;
     private ParcelableUser _currentUser;
@@ -183,7 +183,7 @@ public class KeywordGroupScreen extends SherlockFragmentActivity implements
 
         ParcelableKeywordGroup group = _keywordGroupDao.getEntry(id).iterator().next();
         Log.v(TAG, "sending group " + group.getGroupName());
-        Intent intent = new Intent(this, EditKeywordGroupTab.class);
+        Intent intent = new Intent(this, EditKeywordGroupActivity.class);
         intent.putExtra(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE, group);
         this.startActivity(intent);
     }

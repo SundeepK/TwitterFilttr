@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
+import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
@@ -38,7 +38,7 @@ public class FollowersTab extends AUsersFragment {
     private final static int ID = 0x011;
 
     @Inject FriendDao _friendDao;
-
+    @Inject FriendToParcelable _friendToParcelable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +55,6 @@ public class FollowersTab extends AUsersFragment {
     @Override
     protected Collection<IDatabaseUpdater> getDBUpdaters() {
         Collection<IDatabaseUpdater> updaters = new ArrayList<IDatabaseUpdater>();
-        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getActivity().getContentResolver());
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
                 FriendColumn.FRIEND_COUNT.s(),  FriendColumn.TWEET_COUNT.s(),
                 FriendColumn.FOLLOWER_COUNT.s(), FriendColumn.LAST_FOLLOWER_PAGE_NO.s(),
@@ -63,8 +62,9 @@ public class FollowersTab extends AUsersFragment {
                 FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
                 FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
                 FriendColumn.DESCRIPTION.s()};
-        IDBDao<ParcelableUser> followersDao=   (IDBDao<ParcelableUser>)
-                flyWeight.getDao(DaoFlyWeightFactory.DaoFactory.USER_FOLLOWER_DAO, getCurrentUser());
+        IDBDao<ParcelableUser> followersDao= new UserFollowersDao(getActivity().getContentResolver()
+                , _friendToParcelable,getCurrentUser());
+
         updaters.add(new DatabaseUpdater(_friendDao, cols));
         updaters.add(new DatabaseUpdater(followersDao));
         return updaters;

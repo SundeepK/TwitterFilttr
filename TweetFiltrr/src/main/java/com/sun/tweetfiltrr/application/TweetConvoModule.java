@@ -1,6 +1,6 @@
 package com.sun.tweetfiltrr.application;
 
-import com.sun.tweetfiltrr.activity.activities.TweetConversation;
+import com.sun.tweetfiltrr.activity.activities.TweetConversationActivity;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 
@@ -16,7 +16,7 @@ import dagger.Provides;
        addsTo = ApplicationProvider.class,
        complete=false,
        injects = {
-                TweetConversation.class
+                TweetConversationActivity.class
         }
 )
 public class TweetConvoModule {

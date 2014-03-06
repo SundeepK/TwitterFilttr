@@ -17,12 +17,12 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
-public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements
+public class UserHomeActivity extends ATwitterActivity implements
         ListView.OnItemClickListener {
 
 	private ViewPager _asyncBackgroundViewPager;
 	private TwitterUserHomeTabsAdapter _tabsAdapter;
-	private static final String TAG = TwitterFilttrLoggedInUserHome.class.getName();
+	private static final String TAG = UserHomeActivity.class.getName();
     private ParcelableUser _currentUser;
 
 	@Override
@@ -72,17 +72,17 @@ public class TwitterFilttrLoggedInUserHome extends ATwitterActivity implements
         Intent i = null;
         switch (position) {
             case 0:
-                i = new Intent(TwitterFilttrLoggedInUserHome.this, UserProfileHome.class);
+                i = new Intent(UserHomeActivity.this, UserProfileHomeActivity.class);
                 i.putExtra(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
                 startActivity(i);
 
                 break;
             case 1:
-                i = new Intent(TwitterFilttrLoggedInUserHome.this, KeywordGroupScreen.class);
+                i = new Intent(UserHomeActivity.this, KeywordGroupActivity.class);
                 startActivity(i);
                 break;
             case 2:
-                i = new Intent(TwitterFilttrLoggedInUserHome.this, SettingsScreen.class);
+                i = new Intent(UserHomeActivity.this, SettingsScreen.class);
                 startActivity(i);
                 break;
             default:

@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.UserProfileHome;
+import com.sun.tweetfiltrr.activity.activities.UserProfileHomeActivity;
 import com.sun.tweetfiltrr.activity.adapter.FriendsCursorAdapter;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
@@ -280,7 +280,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
             break;
         }
         //start new activity for the clicked user
-        Intent i = new Intent(getActivity(), UserProfileHome.class);
+        Intent i = new Intent(getActivity(), UserProfileHomeActivity.class);
         i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
         _userQueue.add(newFriend);
         i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);

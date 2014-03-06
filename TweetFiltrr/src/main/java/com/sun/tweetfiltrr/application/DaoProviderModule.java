@@ -2,8 +2,8 @@ package com.sun.tweetfiltrr.application;
 
 import android.content.ContentResolver;
 
-import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
-import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
+import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupActivity;
+import com.sun.tweetfiltrr.activity.activities.UserHomeActivity;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordToParcelable;
@@ -24,6 +24,7 @@ import com.sun.tweetfiltrr.fragment.fragments.OAuthSignInFragment;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.KeywordTweetUpdateRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AccessTokenRetrieverFromPref;
 
 import javax.inject.Singleton;
@@ -37,7 +38,7 @@ import dagger.Provides;
 @Module(
         injects = {
                 ATimelineFragment.class,
-                TwitterFilttrLoggedInUserHome.class,
+                UserHomeActivity.class,
                 TweetFiltrrApplication.class,
                 CustomKeywordTimelineTab.class,
                 MentionsTab.class,
@@ -51,12 +52,13 @@ import dagger.Provides;
                 TimelineDao.class,
                 FriendKeywordDao.class,
                 KeywordGroupDao.class,
-                EditKeywordGroupTab.class,
+                EditKeywordGroupActivity.class,
                 AccessTokenRetrieverFromPref.class,
                 AutoSignInFragmentI.class,
                 OAuthSignInFragment.class,
                 ASignInFragment.class,
-//                TweetConversation.class
+                KeywordTweetUpdateRetriever.class
+//                TweetConversationActivity.class
         },
         complete = false
 )
@@ -93,8 +95,5 @@ public class DaoProviderModule {
         return new  KeywordFriendToParcelable(provideFriendToParcelable(), provideKeywordToParcelable());
     }
 
-//    @Provides @Named("blurred") public IImageProcessor provideBlurredImageProcessor() {
-//        return new BlurredImageGenerator();
-//    }
 
 }

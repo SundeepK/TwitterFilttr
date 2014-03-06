@@ -4,19 +4,21 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IKeywordUpdateRetriever;
-import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.DBUtils;
+import com.sun.tweetfiltrr.database.dao.FriendDao;
+import com.sun.tweetfiltrr.database.dao.FriendKeywordDao;
 import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
+import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IKeywordUpdateRetriever;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +32,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import twitter4j.RateLimitStatus;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -40,30 +44,18 @@ import twitter4j.TwitterException;
 public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITwitterAPICallStatus {
 
     private static final String TAG = KeywordTweetUpdateRetriever.class.getName();
-    private IDBDao<ParcelableUser> _keywordFriendDao;
     private static final String SEARCH_RESOURCE_KEY = "/users/search";
     private TweetRetrieverWrapper _tweetRetriever;
     private ExecutorService _taskExecutor;
     private IDBUpdater<ParcelableUser> _dbUserUpdater;
     private IDBUpdater<ParcelableTweet> _dbTimelineUpdater;
-    private ContentResolver _resolver;
-    private IDBDao<ParcelableUser> _friendDao;
-    IDBDao<ParcelableTweet> _timelineDao;
+
+    @Inject FriendDao _friendDao;
+    @Inject TimelineDao _timelineDao;
+    @Inject FriendKeywordDao _keywordFriendDao;
+
     public KeywordTweetUpdateRetriever(ExecutorService taskExecutor_, ContentResolver resolver_) {
         _taskExecutor = taskExecutor_;
-        _resolver = resolver_;
-
-        DaoFlyWeightFactory daoFlyWeightFactory = DaoFlyWeightFactory.getInstance(_resolver);
-
-        _keywordFriendDao = (IDBDao<ParcelableUser>)
-                daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.FRIEND_KEYWORD_DAO, null);
-
-        _timelineDao = (IDBDao<ParcelableTweet>)
-                daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.TIMELINE_DAO, null);
-
-        _friendDao = (IDBDao<ParcelableUser>)
-                daoFlyWeightFactory.getDao(DaoFlyWeightFactory.DaoFactory.FRIEND_DAO, null);
-
         _dbTimelineUpdater = new SimpleDBUpdater<ParcelableTweet>();
         _dbUserUpdater = new SimpleDBUpdater<ParcelableUser>();
 
@@ -71,8 +63,6 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
             Log.v(TAG, "DB columns for timeline: " +s );
 
         }
-
-
 
         ThreadLocal<SimpleDateFormat> simpleDateFormatThreadLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
         _tweetRetriever = new TweetRetrieverWrapper(_taskExecutor, simpleDateFormatThreadLocal);
@@ -131,7 +121,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
         Collection<ParcelableTweet> timeLines = new ArrayList<ParcelableTweet>();
         Collection<IDBDao<ParcelableUser>> userDao = new ArrayList<IDBDao<ParcelableUser>>();
         Collection<IDBDao<ParcelableTweet>> timelineDao = new ArrayList<IDBDao<ParcelableTweet>>();
-
+        timelineDao.add(_timelineDao);
         userDao.add(_friendDao);
         for(Future<Collection<ParcelableUser>> futureUser : updatedFutures_){
             Collection<ParcelableUser> user = futureUser.get();

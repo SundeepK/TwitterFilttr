@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.customviews.webview;
+package com.sun.tweetfiltrr.customviews.webview.impl;
 
 import android.graphics.Bitmap;
 import android.net.Uri;

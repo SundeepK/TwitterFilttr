@@ -23,8 +23,8 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.imageloader.core.api.FailedTaskReason;
 import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.KeywordGroupScreen;
-import com.sun.tweetfiltrr.activity.activities.UserProfileHome;
+import com.sun.tweetfiltrr.activity.activities.KeywordGroupActivity;
+import com.sun.tweetfiltrr.activity.activities.UserProfileHomeActivity;
 import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
@@ -121,13 +121,13 @@ public class SlidingMenuFragment extends ATwitterFragment implements
         Intent i = null;
         switch (position) {
             case 0:
-                i = new Intent(getActivity(), UserProfileHome.class);
+                i = new Intent(getActivity(), UserProfileHomeActivity.class);
                 i.putExtra(TwitterConstants.FRIENDS_BUNDLE, getCurrentUser());
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(i);
                 break;
             case 1:
-                i = new Intent(getActivity(), KeywordGroupScreen.class);
+                i = new Intent(getActivity(), KeywordGroupActivity.class);
                 startActivity(i);
                 break;
             case 2:

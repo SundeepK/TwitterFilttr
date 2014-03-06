@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.activities.TwitterUserProfileHome;
 import com.sun.tweetfiltrr.activity.adapter.UserTwitterDetails;
 import com.sun.tweetfiltrr.animation.ExpandingAnimation;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
@@ -118,17 +116,6 @@ public class UserProfileFragment extends SherlockFragment {
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
 
-    private AdapterView.OnItemClickListener getOnClickForTwitterHome(){
-        return new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v(TAG, "on item is clicked on the user twitter home");
-                Intent intent = new Intent(getActivity(), TwitterUserProfileHome.class);
-                startActivity(intent);
-            }
-        };
-    }
 
     private List<UserTwitterDetails> getUserTwitterDetails(){
 		List<UserTwitterDetails> details = new ArrayList<UserTwitterDetails>();

@@ -73,18 +73,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
                     tweetEditTxt.setText("@" + _user.getScreenName());
                 }
             }
-
-//        ImageView mediaPhoto =(ImageView)findViewById(R.id.media_photo);
-//        if(!TextUtils.isEmpty(photoUrl)){
-//            mediaPhoto.setVisibility(View.VISIBLE);
-//            ImageLoaderUtils.attemptLoadImage(mediaPhoto, urlImageLoader, photoUrl,1, null);
-//        }else{
-//            mediaPhoto.setVisibility(View.GONE);
-//        }
-
             ImageLoaderUtils.attemptLoadImage(profilePic, urlImageLoader, _user.getProfileImageUrl(),1, null);
-
-
         }
 
         int initailCount = _initailCount -tweetEditTxt.getEditableText().length();
@@ -92,7 +81,6 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
         tweetEditTxt.addTextChangedListener(getTweetTextLis(charCountView));
 
         postTweetBut.setOnClickListener(getOnClickPostTweet(tweetEditTxt, _timelineDao, this));
-
 
     }
 

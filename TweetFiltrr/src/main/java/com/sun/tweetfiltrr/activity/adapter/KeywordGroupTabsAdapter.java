@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sun.tweetfiltrr.activity.activities.KeywordGroupScreen;
+import com.sun.tweetfiltrr.activity.activities.KeywordGroupActivity;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
 
@@ -29,7 +29,7 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
 //        Bundle bundle = new Bundle();
 //        bundle.putParcelable(TwitterConstants.PARCELABLE_KEYWORDGROUP_BUNDLE, group_);
 //        Log.v(TAG, "inside keywordgroup dater with group " + group_.getGroupName());
-//       // Fragment frag =  new EditKeywordGroupTab();
+//       // Fragment frag =  new EditKeywordGroupActivity();
 //        frag.setArguments(bundle);
 //        _currentFragment = frag;
 //        notifyDataSetChanged();
@@ -44,14 +44,14 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
 //	        case 0:
 //
 //                if(_first == null){
-//                    _first =  new KeywordGroupScreen();
+//                    _first =  new KeywordGroupActivity();
 //                }
 //
 //                return _first;
 //	        case 1:
 //
 //                if(_currentFragment==null){
-//                    _currentFragment = new EditKeywordGroupTab();
+//                    _currentFragment = new EditKeywordGroupActivity();
 //                Log.v(TAG, "current tab name" + _currentFragment.toString());
 //                }
 //
@@ -72,7 +72,7 @@ public class KeywordGroupTabsAdapter extends FragmentPagerAdapter {
     @Override
     public int getItemPosition(Object object)
     {
-        if (object instanceof KeywordGroupScreen)
+        if (object instanceof KeywordGroupActivity)
             return POSITION_UNCHANGED;
 
         return POSITION_NONE;

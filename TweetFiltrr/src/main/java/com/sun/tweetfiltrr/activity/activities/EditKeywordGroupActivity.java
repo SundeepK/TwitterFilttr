@@ -16,12 +16,12 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.EditKeywordGroupAdapter;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
+import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
 import com.sun.tweetfiltrr.database.DBUtils;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
 import com.sun.tweetfiltrr.database.dao.KeywordGroupDao;
+import com.sun.tweetfiltrr.database.dao.UserFriendsDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
@@ -42,16 +42,17 @@ import javax.inject.Inject;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 
-public class EditKeywordGroupTab extends SherlockFragmentActivity implements
+public class EditKeywordGroupActivity extends SherlockFragmentActivity implements
 						LoaderManager.LoaderCallbacks<Cursor>,BulkFriendRetriever.OnFriendLoadFinish {
 	
 	private EditKeywordGroupAdapter _groupAdapter;
 	private static final int TUTORIAL_LIST_LOADER = 0x07;
-	private static final String TAG = EditKeywordGroupTab.class.getName();
+	private static final String TAG = EditKeywordGroupActivity.class.getName();
     private ParcelableUser _currentUser;
     private ParcelableKeywordGroup _group;
     private  SmoothProgressBarWrapper smoothProgressBarWrapper;
     @Inject FriendDao _friendDao;
+    @Inject FriendToParcelable _friendToParcelable;
     @Inject KeywordFriendToParcelable _cursorToParcelable;
     @Inject UrlImageLoader _simpleImageLoader;
     @Inject ExecutorService _threadPool;
@@ -68,7 +69,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
         smoothProgressBarWrapper = new SmoothProgressBarWrapper(progressBar);
         ListView listView = (ListView) findViewById(android.R.id.list);
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
-        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory.getInstance(getContentResolver());
+
         String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
                 FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(),
                 FriendTable.FriendColumn.FOLLOWER_COUNT.s(), FriendTable.FriendColumn.FRIEND_COUNT.s(),
@@ -81,13 +82,12 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
         //TODO this is for testing purposes and needs to be changed to current user instead
         Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
                 + " = ? ", new String[]{Long.toString(15670515l)}, null));
-        final ParcelableUser user = users.iterator().next();
 
-        final IDBDao<ParcelableUser> _usersToFriendDao=   (IDBDao<ParcelableUser>)
-                flyWeight.getDao(DaoFlyWeightFactory.DaoFactory.USERS_FRIEND_DAO, user);
+        final ParcelableUser user = users.iterator().next();
+        final UserFriendsDao usersToFriendDao= new UserFriendsDao(getContentResolver() , _friendToParcelable,user);
         final Collection<IDatabaseUpdater> _dbUpdaters = new ArrayList<IDatabaseUpdater>();
         _dbUpdaters.add(new DatabaseUpdater(_friendDao, cols));
-        _dbUpdaters.add(new DatabaseUpdater(_usersToFriendDao));
+        _dbUpdaters.add(new DatabaseUpdater(usersToFriendDao));
 
 
         Button loadFriends = (Button) findViewById(R.id.load_friends_but);
@@ -99,10 +99,10 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
                 Log.v(TAG, "onclicked for load friends");
                 if(!BulkFriendRetriever.isLoadingFriends()){
                     smoothProgressBarWrapper.startRefreshAnimation();
-                    BulkFriendRetriever r = new BulkFriendRetriever(user, _dbUpdaters,EditKeywordGroupTab.this );
-                    EditKeywordGroupTab.this._threadPool.submit(r);
+                    BulkFriendRetriever r = new BulkFriendRetriever(user, _dbUpdaters,EditKeywordGroupActivity.this );
+                    EditKeywordGroupActivity.this._threadPool.submit(r);
                 }else{
-                    Toast.makeText(EditKeywordGroupTab.this, "Already loading friends", 1).show();
+                    Toast.makeText(EditKeywordGroupActivity.this, "Already loading friends", 1).show();
                 }
             }
         });
@@ -115,7 +115,7 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
                 Collection<ParcelableUser> users = _groupAdapter.getChangedGroupIdsForUsers(_group.getGroupId());
                 _friendDao.insertOrUpdate(users ,
                         new String[]{FriendTable.FriendColumn.FRIEND_ID.s(), FriendTable.FriendColumn.COLUMN_GROUP_ID.s()});
-                Toast.makeText(EditKeywordGroupTab.this, "Updated " + users.size() + " friends ", 2).show();
+                Toast.makeText(EditKeywordGroupActivity.this, "Updated " + users.size() + " friends ", 2).show();
                 finish();
             }
         });
@@ -192,14 +192,14 @@ public class EditKeywordGroupTab extends SherlockFragmentActivity implements
 
     @Override
     public void onBulkFriendLoadFinish(final ParcelableUser user_) {
-        final int newFriendCount = EditKeywordGroupTab.this._currentUser.getCurrentFriendCount() -
+        final int newFriendCount = EditKeywordGroupActivity.this._currentUser.getCurrentFriendCount() -
                 user_.getCurrentFriendCount();
-        EditKeywordGroupTab.this.runOnUiThread(new Runnable() {
+        EditKeywordGroupActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
                 smoothProgressBarWrapper.setRefreshAnimationFinish();
-                Toast.makeText(EditKeywordGroupTab.this, "Found " + newFriendCount + " new friends", 2).show();
+                Toast.makeText(EditKeywordGroupActivity.this, "Found " + newFriendCount + " new friends", 2).show();
             }
         });
         //switch users to this

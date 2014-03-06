@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.activity.activities;
+package com.sun.tweetfiltrr.customviews.webview.api;
 
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
 

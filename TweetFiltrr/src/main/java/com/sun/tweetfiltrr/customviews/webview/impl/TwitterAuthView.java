@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.customviews.webview;
+package com.sun.tweetfiltrr.customviews.webview.impl;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.sun.tweetfiltrr.activity.activities.ITwitterAuthCallback;
+import com.sun.tweetfiltrr.customviews.webview.api.ITwitterAuthCallback;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.ITwitterAccessTokenRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TwitterAccessTokenRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;

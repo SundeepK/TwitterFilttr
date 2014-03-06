@@ -18,7 +18,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.PostTweetActivity;
-import com.sun.tweetfiltrr.activity.activities.TweetConversation;
+import com.sun.tweetfiltrr.activity.activities.TweetConversationActivity;
 import com.sun.tweetfiltrr.activity.adapter.UserTimelineCursorAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
@@ -165,7 +165,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> userDaoUpdaters_){
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_ ,this, this,listener_,
+        return new PullToRefreshView<Collection<ParcelableUser>>(getActivity(), currentUser_, this, adapter_ ,this, this,listener_,
                 userDaoUpdaters_, _sicImageLoader , 0);
     }
 
@@ -241,7 +241,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                Log.v(TAG, "user queroed is :" + user.toString());
                Log.v(TAG, "user's timeline size is :" + user.getUserTimeLine().size());
 
-               Intent tweetConvo = new Intent(getActivity(), TweetConversation.class);
+               Intent tweetConvo = new Intent(getActivity(), TweetConversationActivity.class);
                tweetConvo.putExtra(TwitterConstants.FRIENDS_BUNDLE, user);
                getActivity().startActivity(tweetConvo);
            }
@@ -312,13 +312,11 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
         String message  = "Tweet successful";
-        Toast.makeText(getActivity(), message, 2).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITwitterAPICall.TwitterAPICallType tweetType_) {
         String message ;
-
-
     }
 
     @Override
@@ -342,7 +340,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 //                message = "Tweet failed";
 //                break;
 //        }
-        Toast.makeText(getActivity(), "Successfully posted tweet", 2).show();
+        Toast.makeText(getActivity(), "Successfully posted tweet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -367,6 +365,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                 break;
         }
 
-        Toast.makeText(getActivity(), message, 2).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

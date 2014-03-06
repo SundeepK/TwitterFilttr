@@ -134,12 +134,12 @@
         </RelativeLayout>
 
 
-    <com.sun.tweetfiltrr.customviews.webview.TwitterAuthView
+    <com.sun.tweetfiltrr.customviews.webview.impl.TwitterAuthView
         android:id="@+id/twitter_auth_web_view"
         android:visibility="gone"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-        </com.sun.tweetfiltrr.customviews.webview.TwitterAuthView>
+        </com.sun.tweetfiltrr.customviews.webview.impl.TwitterAuthView>
 
 </RelativeLayout>

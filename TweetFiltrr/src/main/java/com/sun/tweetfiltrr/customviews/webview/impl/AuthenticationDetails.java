@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.customviews.webview;
+package com.sun.tweetfiltrr.customviews.webview.impl;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;

@@ -45,8 +45,8 @@ import dagger.ObjectGraph;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 
-public class TweetConversation extends SherlockFragmentActivity implements ImageTaskListener {
-	private static final String TAG = TweetConversation.class.getName();
+public class TweetConversationActivity extends SherlockFragmentActivity implements ImageTaskListener {
+	private static final String TAG = TweetConversationActivity.class.getName();
     private static final int TOP_HEIGHT = 500;
     private static final String BLURRED_IMAGE_PREFIX = "blurred_";
     private ParcelableUser _currentUser;

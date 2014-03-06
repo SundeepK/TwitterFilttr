@@ -38,7 +38,7 @@ import java.util.LinkedList;
 
 import javax.inject.Inject;
 
-public class UserProfileHome extends ATwitterActivity implements
+public class UserProfileHomeActivity extends ATwitterActivity implements
         ListView.OnItemClickListener, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener {
 
     public enum FragmentState{
@@ -47,7 +47,7 @@ public class UserProfileHome extends ATwitterActivity implements
         FOLLOWERS
     }
 
-	private static final String TAG = UserProfileHome.class.getName();
+	private static final String TAG = UserProfileHomeActivity.class.getName();
     private ParcelableUser _currentUser;
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private FragmentState _currentFragmentState = FragmentState.TWEETS;
@@ -133,17 +133,17 @@ public class UserProfileHome extends ATwitterActivity implements
         Intent i = null;
         switch (position) {
             case 0:
-                i = new Intent(UserProfileHome.this, TwitterUserProfileHome.class);
+                i = new Intent(UserProfileHomeActivity.this, UserProfileHomeActivity.class);
                 i.putExtra(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
                 startActivity(i);
 
                 break;
             case 1:
-                i = new Intent(UserProfileHome.this, KeywordGroupScreen.class);
+                i = new Intent(UserProfileHomeActivity.this, KeywordGroupActivity.class);
                 startActivity(i);
                 break;
             case 2:
-                i = new Intent(UserProfileHome.this, SettingsScreen.class);
+                i = new Intent(UserProfileHomeActivity.this, SettingsScreen.class);
                 startActivity(i);
                 break;
             default:
@@ -170,7 +170,7 @@ public class UserProfileHome extends ATwitterActivity implements
         if(!_userQueue.isEmpty()){
             ParcelableUser user = _userQueue.remove(_userQueue.size()-1);
             Log.v(TAG, "_userQueue is not empty, removing user " + user.getScreenName());
-            Intent i = new Intent(UserProfileHome.this, UserProfileHome.class);
+            Intent i = new Intent(UserProfileHomeActivity.this, UserProfileHomeActivity.class);
             ArrayList<ParcelableUser> users = new ArrayList<ParcelableUser>();
             users.addAll(_userQueue);
             i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, users);
