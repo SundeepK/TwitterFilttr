@@ -13,15 +13,15 @@ import dagger.Provides;
  * Created by Sundeep on 11/02/14.
  */
 @Module(
-        addsTo = ApplicationProvider.class,
+       addsTo = ApplicationProvider.class,
        complete=false,
-        injects = {
+       injects = {
                 TweetConversation.class
         }
 )
-public class ImageProcessorModule {
+public class TweetConvoModule {
 
-    private static final String TAG = ImageProcessorModule.class.getName();
+    private static final String TAG = TweetConvoModule.class.getName();
 
        @Provides @Named("blurred") public IImageProcessor provideBlurredImageProcessor() {
             return new BlurredImageGenerator();

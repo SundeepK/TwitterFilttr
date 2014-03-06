@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.utils;
+package com.sun.tweetfiltrr.validator;
 
 import android.graphics.Color;
 import android.text.Editable;

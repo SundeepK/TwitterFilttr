@@ -22,7 +22,7 @@ import com.sun.tweetfiltrr.customviews.webview.TwitterAuthView;
 import com.sun.tweetfiltrr.database.dao.FriendDao;
 import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
-import com.sun.tweetfiltrr.utils.InputValidator;
+import com.sun.tweetfiltrr.validator.InputValidator;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 import javax.inject.Inject;

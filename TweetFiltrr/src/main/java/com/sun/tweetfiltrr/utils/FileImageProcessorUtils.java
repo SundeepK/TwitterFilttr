@@ -1,9 +1,11 @@
-package com.sun.tweetfiltrr.imageprocessor;
+package com.sun.tweetfiltrr.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -15,11 +17,11 @@ import java.io.OutputStream;
 /**
  * Created by Sundeep.Kahlon on 05/03/14.
  */
-public class FileImageProcessor {
+public class FileImageProcessorUtils {
 
-    private static final String TAG = FileImageProcessor.class.getName();
+    private static final String TAG = FileImageProcessorUtils.class.getName();
 
-    public Bitmap loadImage(String filePath_, Bitmap bitmap, IImageProcessor imageProcessor_,
+    public static Bitmap loadImage(String filePath_, Bitmap bitmap, IImageProcessor imageProcessor_,
                                Bitmap.CompressFormat format_, int quality_, Context context_) {
         File blurredImage = new File(filePath_);
         Bitmap bmp = null;
@@ -32,7 +34,7 @@ public class FileImageProcessor {
     }
 
 
-    private Bitmap processImage(File blurredImage, Bitmap bitmap, IImageProcessor imageProcessor_,
+    private static Bitmap processImage(File blurredImage, Bitmap bitmap, IImageProcessor imageProcessor_,
                                 Bitmap.CompressFormat format_, int quality_, Context context_){
         OutputStream out = null;
         Bitmap bmp = null;
