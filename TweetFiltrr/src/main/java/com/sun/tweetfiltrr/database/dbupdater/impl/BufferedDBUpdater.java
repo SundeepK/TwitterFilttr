@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.database.dbupdater.impl;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.concurrent.RetryingCallable;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 
 import java.util.Arrays;

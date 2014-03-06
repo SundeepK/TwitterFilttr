@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.database;
+package com.sun.tweetfiltrr.database.utils;
 
 import android.text.TextUtils;
 import android.util.Log;

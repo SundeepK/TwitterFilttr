@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.database.dao;
+package com.sun.tweetfiltrr.database.dao.api;
 
 import android.database.Cursor;
 

@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.sun.tweetfiltrr.customviews.webview.api.ITwitterAuthCallback;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IAccessTokenRetrieverFromPref;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.UserBundle;
 

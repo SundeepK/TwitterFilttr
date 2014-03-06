@@ -20,7 +20,7 @@ import com.sun.tweetfiltrr.activity.adapter.mergeadapters.ConversationAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.application.TweetConvoModule;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.merge.MergeAdapter;
 import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;

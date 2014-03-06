@@ -3,8 +3,8 @@ package com.sun.tweetfiltrr.twitter.twitterretrievers.impl;
 import android.os.Handler;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
+import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.TwitterConstants;

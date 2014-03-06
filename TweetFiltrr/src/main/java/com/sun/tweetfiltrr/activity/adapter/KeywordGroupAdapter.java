@@ -12,7 +12,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;

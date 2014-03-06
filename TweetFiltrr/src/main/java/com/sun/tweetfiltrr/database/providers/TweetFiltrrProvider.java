@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.database.DBUtils;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
 
 import java.util.HashMap;
 import java.util.Map;

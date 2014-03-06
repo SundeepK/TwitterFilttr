@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.sun.tweetfiltrr.customviews.webview.api.ITwitterAuthCallback;
 import com.sun.tweetfiltrr.customviews.webview.impl.TwitterAuthView;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
 import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AsyncAccessTokenRetriever;
 

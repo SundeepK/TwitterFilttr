@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.utils;
 
 import android.app.Activity;
 
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 

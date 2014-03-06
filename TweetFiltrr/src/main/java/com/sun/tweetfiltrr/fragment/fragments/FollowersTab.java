@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
-import com.sun.tweetfiltrr.database.DBUtils;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.UserFollowersDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.UserFollowersDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
+import com.sun.tweetfiltrr.database.tables.FriendTable;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
@@ -55,16 +56,9 @@ public class FollowersTab extends AUsersFragment {
     @Override
     protected Collection<IDatabaseUpdater> getDBUpdaters() {
         Collection<IDatabaseUpdater> updaters = new ArrayList<IDatabaseUpdater>();
-        String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
-                FriendColumn.FRIEND_COUNT.s(),  FriendColumn.TWEET_COUNT.s(),
-                FriendColumn.FOLLOWER_COUNT.s(), FriendColumn.LAST_FOLLOWER_PAGE_NO.s(),
-                FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.s(), FriendColumn.LAST_FOLLOWER_PAGE_NO.s(),
-                FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
-                FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
-                FriendColumn.DESCRIPTION.s()};
+        String[] cols = FriendTable.UPDATE_FOLLOWER_COLUMNS;
         IDBDao<ParcelableUser> followersDao= new UserFollowersDao(getActivity().getContentResolver()
                 , _friendToParcelable,getCurrentUser());
-
         updaters.add(new DatabaseUpdater(_friendDao, cols));
         updaters.add(new DatabaseUpdater(followersDao));
         return updaters;

@@ -10,10 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
-import com.sun.tweetfiltrr.database.DBUtils;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.UserFriendsDao;
+import com.sun.tweetfiltrr.database.tables.FriendTable;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
+import com.sun.tweetfiltrr.database.dao.impl.UserFriendsDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
@@ -51,13 +52,7 @@ public class FriendsTab extends AUsersFragment {
     @Override
     protected Collection<IDatabaseUpdater> getDBUpdaters() {
         Collection<IDatabaseUpdater> updaters = new ArrayList<IDatabaseUpdater>();
-       String[] cols = new String[]{FriendColumn.FRIEND_ID.s(), FriendColumn.FRIEND_NAME.s(), FriendColumn.FRIEND_SCREENNAME.s(),
-                FriendColumn.FOLLOWER_COUNT.s(), FriendColumn.TWEET_COUNT.s(),
-                FriendColumn.FRIEND_COUNT.s(), FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(),
-                FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(), FriendColumn.LAST_FRIEND_PAGE_NO.s(),
-                FriendColumn.IS_FRIEND.s(), FriendColumn.PROFILE_IMAGE_URL.s(), FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
-                FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
-                FriendColumn.DESCRIPTION.s()};
+       String[] cols = FriendTable.UPDATE_FRIEND_COLUMNS;
          IDBDao<ParcelableUser> _usersToFriendDao= new UserFriendsDao(getActivity().getContentResolver(),
                  _friendToParcelable,getCurrentUser());
         updaters.add(new DatabaseUpdater(_friendDao, cols));

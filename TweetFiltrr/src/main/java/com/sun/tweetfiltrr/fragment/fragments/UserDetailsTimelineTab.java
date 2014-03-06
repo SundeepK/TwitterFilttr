@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.customviews.views.ZoomListView;
-import com.sun.tweetfiltrr.database.DBUtils;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;

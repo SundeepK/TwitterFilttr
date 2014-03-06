@@ -1,9 +1,37 @@
 package com.sun.tweetfiltrr.database.tables;
 
 
+import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 public class FriendTable {
+
+    private static final String[] COMMON_COLUMNS = new String[]{
+            FriendColumn.FRIEND_ID.s(),
+            FriendColumn.FRIEND_NAME.s(),
+            FriendColumn.FRIEND_SCREENNAME.s(),
+            FriendColumn.FRIEND_COUNT.s(),
+            FriendColumn.TWEET_COUNT.s(),
+            FriendColumn.FOLLOWER_COUNT.s(),
+            FriendColumn.IS_FRIEND.s(),
+            FriendColumn.PROFILE_IMAGE_URL.s(),
+            FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
+            FriendColumn.BANNER_PROFILE_IMAE_URL.s(),
+            FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
+            FriendColumn.DESCRIPTION.s()
+    };
+
+    public static final String[] UPDATE_FOLLOWER_COLUMNS = DBUtils.concatColumns(new String[]{
+            FriendColumn.LAST_FOLLOWER_PAGE_NO.s(),
+            FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.s(),
+    }, COMMON_COLUMNS);
+
+    public static final String[] UPDATE_FRIEND_COLUMNS = DBUtils.concatColumns(new String[]{
+            FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(),
+            FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(),
+            FriendColumn.LAST_FRIEND_PAGE_NO.s()
+    }, COMMON_COLUMNS);
+
 
     public enum FriendColumn implements FriendKeywordDBColumn {
         FRIEND_TABLE("friendTable"),

@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.database.dao;
+package com.sun.tweetfiltrr.database.dao.impl;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -7,7 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
-import com.sun.tweetfiltrr.database.DBUtils;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.api.ADBDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.database.tables.FriendKeywordColumn;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;

@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.twitter.twitterretrievers.impl;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.database.dao.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IAccessTokenRetrieverFromPref;

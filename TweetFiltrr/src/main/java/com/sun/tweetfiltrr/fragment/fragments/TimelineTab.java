@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import com.sun.tweetfiltrr.database.DBUtils;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;

@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.twitter.tweetoperations.impl;
 
 import android.util.Log;
 
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.fragment.pulltorefresh.IProgress;
 import com.sun.tweetfiltrr.parcelable.CachedFriendDetails;

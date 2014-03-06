@@ -1,7 +1,7 @@
 package com.sun.tweetfiltrr.database.dbupdater.api;
 
 
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
 
 import java.util.Collection;

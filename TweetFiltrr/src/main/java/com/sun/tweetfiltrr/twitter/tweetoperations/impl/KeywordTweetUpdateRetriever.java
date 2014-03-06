@@ -4,11 +4,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.database.DBUtils;
-import com.sun.tweetfiltrr.database.dao.FriendDao;
-import com.sun.tweetfiltrr.database.dao.FriendKeywordDao;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
-import com.sun.tweetfiltrr.database.dao.TimelineDao;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
+import com.sun.tweetfiltrr.database.dao.impl.FriendKeywordDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
+import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
 import com.sun.tweetfiltrr.database.tables.FriendTable;

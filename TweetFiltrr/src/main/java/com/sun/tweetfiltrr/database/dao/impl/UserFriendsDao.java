@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.database.dao;
+package com.sun.tweetfiltrr.database.dao.impl;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -8,26 +8,28 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.CursorToParcelable;
-import com.sun.tweetfiltrr.database.DBUtils;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.api.ADBDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
 
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
-import static com.sun.tweetfiltrr.database.tables.UsersToFollowersTable.UsersToFollowersColumn;
-public class UserFollowersDao extends  ADBDao<ParcelableUser> {
+import static com.sun.tweetfiltrr.database.tables.UsersToFriendsTable.UsersToFriendsColumn;
 
+public class UserFriendsDao extends ADBDao<ParcelableUser> {
 
-	private static final String TAG = UserFollowersDao.class.getName();
-    public static final String[] PROJECTIONS = DBUtils.getprojections(UsersToFollowersColumn.values());
-	public static final String[] FULLY_QUALIFIED_PROJECTIONS = DBUtils.getFullyQualifiedProjections(UsersToFollowersColumn.values());
-
-	Uri _usersTofriendUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_USER_TO_FOLLOWERS + "/" + 110);
+	
+	private static final String TAG = UserFriendsDao.class.getName();
+    public static final String[] PROJECTIONS = DBUtils.getprojections(UsersToFriendsColumn.values());
+	public static final String[] FULLY_QUALIFIED_PROJECTIONS = DBUtils.getFullyQualifiedProjections(UsersToFriendsColumn.values());
+	
+	Uri _usersTofriendUri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_USER_TO_FRIEND + "/" + 110);
 
 	ParcelableUser _currentFriend;
-
-	public UserFollowersDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableUser> cusorToFriend_, ParcelableUser currentFriend_) {
+	
+	public UserFriendsDao(ContentResolver contentResolver_, CursorToParcelable<ParcelableUser> cusorToFriend_, ParcelableUser currentFriend_) {
 		super(contentResolver_, cusorToFriend_);
 		_currentFriend = currentFriend_;
 	}
@@ -39,7 +41,7 @@ public class UserFollowersDao extends  ADBDao<ParcelableUser> {
 			String[] selectionArgs_, String sortOrder_) {
 
 		Cursor cursorFriend = _contentResolver.query(
-				TweetFiltrrProvider.CONTENT_URI_USER_TO_FOLLOWERS, FULLY_QUALIFIED_PROJECTIONS, selection_,
+				TweetFiltrrProvider.CONTENT_URI_USER_TO_FRIEND, FULLY_QUALIFIED_PROJECTIONS, selection_,
 				selectionArgs_, sortOrder_);
 		return processCursor(cursorFriend);
 	}
@@ -47,14 +49,14 @@ public class UserFollowersDao extends  ADBDao<ParcelableUser> {
 	@Override
 	public Cursor getCursor(String selection_, String[] selectionArgs_, String sortOrder_) {
 		return _contentResolver.query(
-				TweetFiltrrProvider.CONTENT_URI_USER_TO_FOLLOWERS, FULLY_QUALIFIED_PROJECTIONS, selection_,
+				TweetFiltrrProvider.CONTENT_URI_USER_TO_FRIEND, FULLY_QUALIFIED_PROJECTIONS, selection_,
 				selectionArgs_, sortOrder_);
 	}
 
 	@Override
 	public Collection<ParcelableUser> getEntry(long rowID_, String selection_,
 			String[] selectionArgs_, String sortOrder_) {
-		Uri uri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_USER_TO_FOLLOWERS + "/"
+		Uri uri = Uri.parse(TweetFiltrrProvider.CONTENT_URI_USER_TO_FRIEND + "/"
 				+ rowID_);
 		Cursor cursorFriend = _contentResolver.query(uri, FULLY_QUALIFIED_PROJECTIONS, selection_,
 				selectionArgs_, sortOrder_);
@@ -79,15 +81,14 @@ public class UserFollowersDao extends  ADBDao<ParcelableUser> {
             }
 
             if(_currentFriend.getUserId() == friend_.getUserId()){
-                //user cannot follower themselves so skip
+                //user cannot be friends themselves so skip
                 continue;
             }
 
-
-            if (TextUtils.equals(column, UsersToFollowersColumn.FOLLOWER_ID.s())) {
-                contentValue.put(UsersToFollowersColumn.FOLLOWER_ID.s(),friend_.getUserId());
-            } else if (TextUtils.equals(column, UsersToFollowersColumn.USER_ID.s())) {
-                contentValue.put(UsersToFollowersColumn.USER_ID.s(),_currentFriend.getUserId());
+            if (TextUtils.equals(column, UsersToFriendsColumn.FRIEND_ID.s())) {
+                contentValue.put(UsersToFriendsColumn.FRIEND_ID.s(),friend_.getUserId());
+            } else if (TextUtils.equals(column, UsersToFriendsColumn.USER_ID.s())) {
+                contentValue.put(UsersToFriendsColumn.USER_ID.s(),_currentFriend.getUserId());
             }
 
 		}

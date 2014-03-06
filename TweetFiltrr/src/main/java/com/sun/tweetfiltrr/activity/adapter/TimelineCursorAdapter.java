@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.imageprocessor.IOnImageProcessCallback;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;

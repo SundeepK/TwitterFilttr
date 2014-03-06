@@ -1,4 +1,4 @@
-package com.sun.tweetfiltrr.database.dao;
+package com.sun.tweetfiltrr.database.dao.impl;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -8,7 +8,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordToParcelable;
-import com.sun.tweetfiltrr.database.DBUtils;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
+import com.sun.tweetfiltrr.database.dao.api.ADBDao;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.parcelable.ParcelableKeywordGroup;
 
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
 import static com.sun.tweetfiltrr.database.tables.FriendTable.FriendColumn;
 import static com.sun.tweetfiltrr.database.tables.KeywordGroupTable.KeywordGroupColumn;
 @Singleton
-public class KeywordGroupDao extends ADBDao<ParcelableKeywordGroup>{
+public class KeywordGroupDao extends ADBDao<ParcelableKeywordGroup> {
 	private static final String TAG = KeywordGroupDao.class.getName();
 	
 	public static final String[] FULLY_QUALIFIED_PROJECTIONS = DBUtils.getFullyQualifiedProjections(KeywordGroupColumn.values());
