@@ -1,5 +1,6 @@
 package com.sun.tweetfiltrr.imageprocessor;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 /**
@@ -8,6 +9,6 @@ import android.graphics.Bitmap;
 public interface IImageProcessor {
 
 
-    public Bitmap processImage(Bitmap inputBitmap_);
+    public Bitmap processImage(Bitmap inputBitmap_,  Context context_);
 
 }

@@ -70,7 +70,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
         _slidingMenuListView.setOnItemClickListener(this);
         ImageView background = (ImageView) rootView.findViewById(R.id.sliding_menu_background_image);
         _blurredBackground = (ImageView) rootView.findViewById(R.id.sliding_menu__blurred_background_image);
-        _blurredImageProcessor = new BlurredImageGenerator(getActivity());
+        _blurredImageProcessor = new BlurredImageGenerator();
         //set up animations
         _opacityCloseAnimation.setDuration(0);
         _opacityCloseAnimation.setFillAfter(true);
@@ -167,7 +167,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
             if (bmp == null) {
                 try {
                     Log.v(TAG, "Bitmap null so attempting to generate a new one");
-                    bmp = _blurredImageProcessor.processImage(bitmap);
+                    bmp = _blurredImageProcessor.processImage(bitmap, getActivity());
                     out = new FileOutputStream(blurredImage);
                     bmp.compress(Bitmap.CompressFormat.JPEG, 80, out);
                     out.flush();

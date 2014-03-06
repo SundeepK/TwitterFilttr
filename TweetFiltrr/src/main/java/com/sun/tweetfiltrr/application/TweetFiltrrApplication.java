@@ -24,7 +24,7 @@ public class TweetFiltrrApplication   extends Application {
     protected List<Object> getModules() {
         return Arrays.<Object>asList(
                 new ApplicationProvider(this),
-                new DaoProvider(getContentResolver())
+                new DaoProviderModule(getContentResolver())
         );
     }
 

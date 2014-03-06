@@ -1,5 +1,6 @@
 package com.sun.tweetfiltrr.imageprocessor;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -19,11 +20,11 @@ public class FileImageProcessor {
     private static final String TAG = FileImageProcessor.class.getName();
 
     public Bitmap loadImage(String filePath_, Bitmap bitmap, IImageProcessor imageProcessor_,
-                               Bitmap.CompressFormat format_, int quality_) {
+                               Bitmap.CompressFormat format_, int quality_, Context context_) {
         File blurredImage = new File(filePath_);
         Bitmap bmp = null;
         if(!blurredImage.exists()){
-            bmp =  processImage(blurredImage,bitmap, imageProcessor_, format_, quality_);
+            bmp =  processImage(blurredImage,bitmap, imageProcessor_, format_, quality_, context_);
         }else{
             bmp = BitmapFactory.decodeFile(filePath_);
         }
@@ -32,12 +33,12 @@ public class FileImageProcessor {
 
 
     private Bitmap processImage(File blurredImage, Bitmap bitmap, IImageProcessor imageProcessor_,
-                                Bitmap.CompressFormat format_, int quality_){
+                                Bitmap.CompressFormat format_, int quality_, Context context_){
         OutputStream out = null;
         Bitmap bmp = null;
         try {
             Log.v(TAG, "Bitmap null so attempting to generate a new one");
-            bmp = imageProcessor_.processImage(bitmap);
+            bmp = imageProcessor_.processImage(bitmap, context_);
             out =  new BufferedOutputStream(new FileOutputStream(blurredImage));
             bmp.compress(format_, quality_, out);
             out.flush();

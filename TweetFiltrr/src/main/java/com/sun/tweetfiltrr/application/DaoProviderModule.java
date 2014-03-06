@@ -61,15 +61,15 @@ import dagger.Provides;
         },
         complete = false
 )
-public class DaoProvider {
+public class DaoProviderModule {
 
     private ContentResolver _contentResolver;
 
-    public DaoProvider(ContentResolver contentResolver_){
+    public DaoProviderModule(ContentResolver contentResolver_){
          _contentResolver = contentResolver_;
     }
 
-    private static final String TAG = DaoProvider.class.getName();
+    private static final String TAG = DaoProviderModule.class.getName();
 
 
     @Provides @Singleton ContentResolver provideExecutorService(){

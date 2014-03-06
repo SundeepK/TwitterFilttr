@@ -16,14 +16,12 @@ public class BlurredImageGenerator implements IImageProcessor {
 
     private static final String TAG = BlurredImageGenerator.class.getName();
     private final float _radius = 10;
-    private Context _context;
 
-    public BlurredImageGenerator(Context context_){
-        _context = context_;
+    public BlurredImageGenerator(){
     }
 
     @Override
-    public Bitmap processImage(Bitmap inputBitmap_) {
+    public Bitmap processImage(Bitmap inputBitmap_, Context context_) {
 
         Bitmap bmp = null;
 
@@ -31,7 +29,7 @@ public class BlurredImageGenerator implements IImageProcessor {
             Log.v(TAG, "Generatoruing blurred image");
             bmp = inputBitmap_.copy(inputBitmap_.getConfig(), true);
 
-            final RenderScript rs = RenderScript.create(_context);
+            final RenderScript rs = RenderScript.create(context_);
             final Allocation input = Allocation.createFromBitmap(rs, inputBitmap_, Allocation.MipmapControl.MIPMAP_NONE,
                     Allocation.USAGE_SCRIPT);
             final Allocation output = Allocation.createTyped(rs, input.getType());

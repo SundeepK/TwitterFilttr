@@ -1,18 +1,14 @@
 package com.sun.tweetfiltrr.activity.activities;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -27,10 +23,10 @@ import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.ConversationAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
-import com.sun.tweetfiltrr.daoflyweigth.impl.DaoFlyWeightFactory;
-import com.sun.tweetfiltrr.database.dao.IDBDao;
+import com.sun.tweetfiltrr.application.ImageProcessorModule;
+import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
+import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
-import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.merge.MergeAdapter;
 import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
@@ -49,9 +45,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
+import javax.inject.Inject;
+
+import dagger.ObjectGraph;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 
@@ -59,62 +57,41 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 	private static final String TAG = TweetConversation.class.getName();
     private static final int TOP_HEIGHT = 500;
     private ParcelableUser _currentUser;
-	private ThreadPoolExecutor _threadExecutor;
     private ImageView _blurredBackground;
     private ImageView _backgroundImage;
-    private UrlImageLoader  _sicImageLoader;
-    private ConversationAdapter _convoAdapter;
     private Handler _currentHandler;
-    private List<ParcelableUser> _convoUsers;
     private UserConversationDisplayer _conversationDisplayer;
-    private IImageProcessor _blurredImageProcessor;
-    private static String BLURRED_IMAGE_PREFIX = "blurred_";
-    private MergeAdapter _mergeAdapter;
-    private ArrayAdapter<ParcelableUser> _singleTweetAdapter;
     private float alpha;
     private View _headerView;
-    private ListView _listView;
-    private int _screenWidth;
 
-    private IDBDao<ParcelableTweet> _timelineDao;
+    @Inject TimelineDao _timelineDao;
+    @Inject UrlImageLoader _sicImageLoader;
+    @Inject ExecutorService _threadExecutor;
+    @Inject  BlurredImageGenerator _blurredImageProcessor;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tweet_conversation_layout);
 
-		try {
-			initControl();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		} catch (ExecutionException e1) {
-			e1.printStackTrace();
-		}
+        ObjectGraph appObjectGraph = ((TweetFiltrrApplication) getApplication()).getObjectGraph();
+        ObjectGraph objectGraph = appObjectGraph.plus(new ImageProcessorModule());
+        objectGraph.inject(this);
 
-        _screenWidth = getScreenWidth(this);
-
-        _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
-
-        _sicImageLoader = TwitterUtil.getInstance().getGlobalImageLoader(this);
-
+		initControl();
         _blurredBackground = (ImageView) findViewById(R.id.blurred_user_background_image);
         _backgroundImage = (ImageView) findViewById(R.id.user_background_image);
 
         _headerView = new View(this);
         _headerView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, TOP_HEIGHT));
 
-        _listView  = (ListView) findViewById(android.R.id.list);
-
-        DaoFlyWeightFactory flyWeight = DaoFlyWeightFactory
-                .getInstance(this.getContentResolver());
+        ListView _listView = (ListView) findViewById(android.R.id.list);
 
         _currentHandler = new Handler();
         _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
 
         //init the Dao object using the flyweight so that we can share the Dao's between different fragments
-        _timelineDao = (IDBDao<ParcelableTweet>) flyWeight
-                .getDao(DaoFlyWeightFactory.DaoFactory.TIMELINE_DAO, _currentUser);
-        _convoUsers = new ArrayList<ParcelableUser>();
+        List<ParcelableUser> _convoUsers = new ArrayList<ParcelableUser>();
 
         List<ParcelableUser> friends = new ArrayList<ParcelableUser>();
         friends.add(_currentUser);
@@ -126,13 +103,13 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
         SingleTweetAdapter.OnTweetOperation onTweetOperationListener
                 = new TweetOperationController(smoothProgressBarWrapper, _timelineDao);
 
-        _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,friends, _sicImageLoader ,onTweetOperationListener);
-        _blurredImageProcessor = new BlurredImageGenerator(this);
-        _convoAdapter = new ConversationAdapter(this, R.layout.timeline_list_view, _convoUsers);
+        ArrayAdapter<ParcelableUser> _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row, friends, _sicImageLoader, onTweetOperationListener);
+        _blurredImageProcessor = new BlurredImageGenerator();
+        ConversationAdapter _convoAdapter = new ConversationAdapter(this, R.layout.timeline_list_view, _convoUsers);
         _conversationDisplayer = new UserConversationDisplayer("Select Friends", this,
                 R.layout.conversation_listview
-                ,  _convoAdapter);
-        _mergeAdapter = new MergeAdapter();
+                , _convoAdapter);
+        MergeAdapter _mergeAdapter = new MergeAdapter();
 
         _mergeAdapter.addAdapter(_singleTweetAdapter);
         _mergeAdapter.addAdapter(_convoAdapter);
@@ -156,11 +133,11 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
                 if (alpha > 1) {
                     alpha = 1;
                 }
-                alpha*=4;
+                alpha *= 4;
                 Log.v(TAG, "alpha value is: " + alpha);
                 _blurredBackground.setAlpha(alpha);
-               _blurredBackground.setTop(_headerView.getTop() / 2);
-               _backgroundImage.setTop(_headerView.getTop() / 2);
+                _blurredBackground.setTop(_headerView.getTop() / 2);
+                _backgroundImage.setTop(_headerView.getTop() / 2);
 
             }
         });
@@ -176,7 +153,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
             public void onFocusChange(View v, boolean hasFocus) {
                 Bitmap bitmap = ((BitmapDrawable)_backgroundImage.getDrawable()).getBitmap();
 
-                _backgroundImage.setImageBitmap(_blurredImageProcessor.processImage(bitmap));
+                _backgroundImage.setImageBitmap(_blurredImageProcessor.processImage(bitmap,TweetConversation.this ));
             }
         };
     }
@@ -220,9 +197,9 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
     }
 	
 
-	private void initControl() throws InterruptedException, ExecutionException {
+	private void initControl() {
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
-		Log.v(TAG, "Main user for app : " + _currentUser.toString());
+        Log.v(TAG, "Main user for app : " + _currentUser.toString());
 
 	}
 
@@ -233,8 +210,9 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 
     @Override
     public void onImageLoadComplete(Bitmap bitmap, ImageSettings imageSettings) {
+        String BLURRED_IMAGE_PREFIX = "blurred_";
         String imageFilePath = TwitterConstants.SIC_SAVE_DIRECTORY+"/"
-                +BLURRED_IMAGE_PREFIX+imageSettings.getFinalFileName();
+                + BLURRED_IMAGE_PREFIX +imageSettings.getFinalFileName();
         Bitmap blurredBitmap = tryLoadImage(imageFilePath, bitmap);
         Log.v(TAG, "Image file path is " + imageFilePath);
        _blurredBackground.setImageBitmap(blurredBitmap);
@@ -264,7 +242,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
             if (bmp == null) {
                 try {
                    Log.v(TAG, "Bitmap null so attempting to generate a new one");
-                    bmp = _blurredImageProcessor.processImage(bitmap);
+                    bmp = _blurredImageProcessor.processImage(bitmap, this);
                     out = new FileOutputStream(blurredImage);
                     bmp.compress(Bitmap.CompressFormat.JPEG, 80, out);
                     out.flush();
@@ -303,17 +281,4 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
         imageview.setImageBitmap(bmpBlurred);
 
     }
-
-    public static int getScreenWidth(Activity context) {
-
-        Display display = context.getWindowManager().getDefaultDisplay();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Point size = new Point();
-            display.getSize(size);
-            return size.x;
-        }
-        return display.getWidth();
-    }
-
-
 }
