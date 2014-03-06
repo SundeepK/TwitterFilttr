@@ -31,14 +31,6 @@ public class LoadMoreOnScrollListener<T> implements AbsListView.OnScrollListener
         public void onLoad(Collection<Future<T>> futureTask_);
     }
 
-    public LoadMoreOnScrollListener(ExecutorService executorService_,Collection<Callable<T>> callablesToExectue_ ,
-                                    LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_ ){
-        _executorService = executorService_;
-        _loadMoreLitener = loadMoreLitener_;
-        _executingTasks = new ArrayList<Future<T>>();
-        _callablesToExecute = callablesToExectue_;
-        _itemThresHoldBeforeLoadingMore = itemThresHoldBeforeLoadingMore_;
-    }
 
     public LoadMoreOnScrollListener(ExecutorService executorService_,PullToRefreshView.OnNewTweetRefreshListener refreshLis_ ,
                                     LoadMoreListener loadMoreLitener_, int itemThresHoldBeforeLoadingMore_, AbsListView.OnScrollListener scrollListener_ ){

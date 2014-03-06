@@ -4,21 +4,15 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 
-import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.customviews.views.ZoomListView;
-import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
 import com.sun.tweetfiltrr.database.dao.impl.FriendKeywordDao;
 import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
-import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,12 +48,12 @@ public class CustomKeywordTimelineTab extends ATimelineFragment {
 //
 //    }
 
-    @Override
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
-                                                     ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> updaters_) {
-        return new PullToRefreshView<Collection<ParcelableUser>>(getActivity(), currentUser_, this, adapter_, this, this,
-                listener_,updaters_, TwitterUtil.getInstance().getGlobalImageLoader(getActivity()), R.layout.empty_custom_timline_layout);
-    }
+//    @Override
+//    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
+//                                                     ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> updaters_) {
+//        return new PullToRefreshView<Collection<ParcelableUser>>(getActivity(), currentUser_, this, adapter_, this, this,
+//                listener_,updaters_, TwitterUtil.getInstance().getGlobalImageLoader(getActivity()), R.layout.empty_custom_timline_layout);
+//    }
 
     private Collection<ParcelableUser> getUsersWithKeywordGroup(int remainingSearchLimit_){
         return _keywordFriendDao.getEntries(null,null,

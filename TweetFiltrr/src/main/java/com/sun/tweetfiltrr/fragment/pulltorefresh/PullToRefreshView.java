@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
@@ -25,8 +24,8 @@ import com.sun.tweetfiltrr.utils.TwitterUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshLayout;
@@ -48,8 +47,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     private SimpleCursorAdapter _cursorAdapter;
     private AbsListView.OnScrollListener _onscOnScrollListener;
     private ParcelableUser _currentUser;
-    private ThreadPoolExecutor _threadExecutor;
-    private int _timelineCount = 50;
+    private ExecutorService _threadExecutor;
     private OnNewTweetRefreshListener<T> _pullToRefreshLis;
     private int _headerLayout;
     private Collection<IDatabaseUpdater> _updaters;
@@ -59,45 +57,21 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
     public interface OnNewTweetRefreshListener<T> {
         public void OnRefreshComplete(T twitterParcelable);
-
         public Collection<Callable<T>> getUsersRetriever(boolean shouldRunOnce_, boolean shouldLookForOldTweets);
-
     }
 
-    public PullToRefreshView(Activity activity_, ParcelableUser currentUser_,
-                             AdapterView.OnItemClickListener onItemClick_,
-                             SimpleCursorAdapter cursorAdapter_,
-                             OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_,
-                             int headerLayout_, ZoomListView.OnItemFocused itemDisabledLis_,
-                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_, int emptyLayout_) {
-        this(activity_, currentUser_, onItemClick_, cursorAdapter_, pullToRefreshLis_,
-                loadMoreLis_, itemDisabledLis_, dbUpdaters_, scrollListener_, emptyLayout_);
-        _headerLayout = headerLayout_;
-
-    }
-
-    public PullToRefreshView(Activity activity_, ParcelableUser currentUser_,
-                             AdapterView.OnItemClickListener onItemClick_,
-                             SimpleCursorAdapter cursorAdapter_,
-                             OnNewTweetRefreshListener pullToRefreshLis_,
-                             LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_, ZoomListView.OnItemFocused itemDisabledLis_,
-                             Collection<IDatabaseUpdater> dbUpdaters_, AbsListView.OnScrollListener scrollListener_,
-                             int emptyLayout_) {
-        _activity = activity_;
-        _currentUser = currentUser_;
-        _onItemClick = onItemClick_;
-        _cursorAdapter = cursorAdapter_;
-        _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
-        _pullToRefreshLis = pullToRefreshLis_;
-        _onscOnScrollListener = new LoadMoreOnScrollListener<T>(_threadExecutor,
-                _pullToRefreshLis, loadMoreLis_, 5, scrollListener_);
-        _updaters = dbUpdaters_;
-//        _updaters  = new ArrayList<IDatabaseUpdater>();
-//        _updaters.add(new TimelineDatabaseUpdater(_timelineDao));
-        _itemDisabledLis = itemDisabledLis_;
-        _emptyLayout = emptyLayout_;
-        Log.v(TAG, "Current user passed in constructor is: " + currentUser_.toString());
+    private PullToRefreshView (Builder<T> builder_){
+        _activity = builder_._activity;
+        _currentUser = builder_._currentUser;
+        _onItemClick = builder_._onItemClick;
+        _cursorAdapter = builder_._cursorAdapter;
+        _threadExecutor = builder_._threadExecutor;
+        _pullToRefreshLis = builder_._pullToRefreshLis;
+        _onscOnScrollListener =   builder_._loadMoreScrollLis;
+        _updaters = builder_._updaters;
+        _itemDisabledLis = builder_._itemFocusListener;
+        _emptyLayout = builder_._emptyLayout;
+        _headerLayout = builder_._headerLayout;
     }
 
     /**
@@ -167,17 +141,20 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 
 
     public void startRefresh() {
-        Log.v(TAG, "We are looking for friends tweets because pull to refresh was done");
-        Log.v(TAG, "is friend : " + _currentUser.isFriend());
-        final Collection<Future<T>> futures = new ArrayList<Future<T>>();
-        final Collection<Callable<T>> callables = _pullToRefreshLis.getUsersRetriever(true, false);
-        for (Callable<T> callabe : callables) {
-            futures.add(_threadExecutor.submit(callabe));
+        if(_pullToRefreshLis != null){
+            Log.v(TAG, "We are looking for friends tweets because pull to refresh was done");
+            Log.v(TAG, "is friend : " + _currentUser.isFriend());
+            final Collection<Future<T>> futures = new ArrayList<Future<T>>();
+            final Collection<Callable<T>> callables = _pullToRefreshLis.getUsersRetriever(true, false);
+            for (Callable<T> callabe : callables) {
+                futures.add(_threadExecutor.submit(callabe));
+            }
+            AsyncUserDBUpdateTask<Integer> _updaterTask;
+            _updaterTask = new AsyncUserDBUpdateTask<Integer>(3, TimeUnit.MINUTES, _updaters, this);
+            _updaterTask.execute(futures.toArray(new Future[futures.size()]));
+        }else{
+            Log.v(TAG, "no listner set, so not refreshing");
         }
-        AsyncUserDBUpdateTask<Integer> _updaterTask;
-        _updaterTask = new AsyncUserDBUpdateTask<Integer>(3, TimeUnit.MINUTES, _updaters, this);
-        _updaterTask.execute(futures.toArray(new Future[futures.size()]));
-
     }
 
 
@@ -199,15 +176,9 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
 //        if (totalCount <= 0) {
 //            _emptyView.setVisibility(View.VISIBLE);
 //        }
-        _pullToRefreshLis.OnRefreshComplete(postExecute_);
-    }
-
-    protected ListView getPullToRefreshListView() {
-        return _pullToRefreshListView;
-    }
-
-    public int getRowCount() {
-        return _timelineCount;
+        if(_pullToRefreshLis != null){
+            _pullToRefreshLis.OnRefreshComplete(postExecute_);
+        }
     }
 
     @Override
@@ -219,6 +190,92 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     public void setRefreshAnimationFinish() {
         _pullToRefreshView.setRefreshComplete();
 
+    }
+
+    public static class Builder<T>{
+        private Activity _activity;
+        private AdapterView.OnItemClickListener _onItemClick;
+        private SimpleCursorAdapter _cursorAdapter;
+        private AbsListView.OnScrollListener _onScrollListener;
+        private ParcelableUser _currentUser;
+        private ExecutorService _threadExecutor;
+        private OnNewTweetRefreshListener<T> _pullToRefreshLis;
+        private int _headerLayout;
+        private Collection<IDatabaseUpdater> _updaters;
+        private ZoomListView.OnItemFocused _itemFocusListener;
+        private int _emptyLayout;
+        private LoadMoreOnScrollListener.LoadMoreListener<T> _loadMoreLis;
+        private LoadMoreOnScrollListener<T> _loadMoreScrollLis;
+
+        public Builder(Activity activity_, ParcelableUser parcelableUser_){
+            _activity = activity_;
+            _currentUser = parcelableUser_;
+        }
+
+        public Builder<T> setOnItemClick(AdapterView.OnItemClickListener onItemClick_){
+            _onItemClick = onItemClick_;
+            return this;
+        }
+
+        public Builder<T> setCursorAadapter(SimpleCursorAdapter cursorAdapter_){
+            _cursorAdapter = cursorAdapter_;
+            return this;
+        }
+
+        public Builder<T> setOnRefreshListener(OnNewTweetRefreshListener pullToRefreshLis_){
+            _pullToRefreshLis = pullToRefreshLis_;
+            return this;
+        }
+
+        public Builder<T> setLoadMoreListener(LoadMoreOnScrollListener.LoadMoreListener<T> loadMoreLis_){
+            _loadMoreLis = loadMoreLis_;
+            return this;
+        }
+
+        public Builder<T> setHeaderLayout(int headerLayout_){
+            _headerLayout = headerLayout_;
+            return this;
+        }
+
+        public Builder<T> setOnItemFocusedListener(ZoomListView.OnItemFocused itemDisabledLis_){
+            _itemFocusListener = itemDisabledLis_;
+            return this;
+        }
+
+        public Builder<T> setDBUpdaters(Collection<IDatabaseUpdater> dbUpdaters_){
+            _updaters = dbUpdaters_;
+            return this;
+        }
+
+        public Builder<T> setOnScrollListener(AbsListView.OnScrollListener scrollListener_){
+            _onScrollListener = scrollListener_;
+            return this;
+        }
+
+        public Builder<T> setEmptyLayout(int emptyLayout_){
+            _emptyLayout = emptyLayout_;
+            return this;
+        }
+
+        public Builder<T> setThreadPoolExecutor(ExecutorService executorService_){
+            _threadExecutor = executorService_;
+            return this;
+        }
+
+        public PullToRefreshView<T> build(){
+            initBuilder();
+            return new PullToRefreshView<T>(this);
+        }
+
+        private void initBuilder() {
+            if( _pullToRefreshLis != null && _loadMoreLis != null && _onScrollListener != null){
+                _loadMoreScrollLis =  new LoadMoreOnScrollListener<T>(_threadExecutor,
+                        _pullToRefreshLis, _loadMoreLis, 5, _onScrollListener);
+            }
+            if(_threadExecutor == null){
+                _threadExecutor = TwitterUtil.getInstance().getGlobalExecutor();
+            }
+        }
     }
 
 

@@ -4,23 +4,17 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.customviews.views.ZoomListView;
-import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
 import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.providers.TweetFiltrrProvider;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
-import com.sun.tweetfiltrr.fragment.pulltorefresh.PullToRefreshView;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,12 +45,21 @@ public class UserDetailsTimelineTab extends ATimelineFragment {
         return rootView;
     }
 
-    @Override
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
-                                                     ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> updaters_) {
-        return new PullToRefreshView(getActivity(), currentUser_, this, adapter_, this, this, R.layout.user_details_fragment,
-                listener_,updaters_, TwitterUtil.getInstance().getGlobalImageLoader(getActivity()), 0);
-    }
+//    @Override
+//    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
+//                                                     ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> updaters_) {
+//        return  new PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), currentUser_)
+//                .setCursorAadapter(adapter_)
+//                .setOnItemFocusedListener(listener_)
+//                .setDBUpdaters(updaters_)
+//                .setOnScrollListener(TwitterUtil.getInstance().getGlobalImageLoader(getActivity()))
+//                .setHeaderLayout( R.layout.user_details_fragment)
+//                .setEmptyLayout(0)
+//                .setOnRefreshListener(this)
+//                .setLoadMoreListener(this)
+//                .setOnItemClick(this)
+//                .build();
+//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {

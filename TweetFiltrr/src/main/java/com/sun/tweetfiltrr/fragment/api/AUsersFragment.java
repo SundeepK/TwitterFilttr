@@ -38,6 +38,7 @@ import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -65,8 +66,10 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private ParcelableUser _currentUser;
     private boolean _isCursorReady;
+
     @Inject FriendDao _friendDao;
     @Inject UrlImageLoader _sicImageLoader;
+    @Inject ExecutorService _threadPool;
 
 
     protected abstract int getLoaderID();
@@ -208,9 +211,18 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_,
                                                      ParcelableUser currentUser_,
-                                                     ZoomListView.OnItemFocused listener,Collection<IDatabaseUpdater> updaters_ ){
-        return new PullToRefreshView<Collection<ParcelableUser>>
-                (getActivity(), currentUser_, this, adapter_ ,this, this, listener, updaters_, _sicImageLoader, R.layout.generic_empty_custom_timeline_layout);
+                                                     ZoomListView.OnItemFocused listener_,Collection<IDatabaseUpdater> updaters_ ){
+        return  new PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), _currentUser)
+                .setCursorAadapter(adapter_)
+                .setOnItemFocusedListener(listener_)
+                .setDBUpdaters(updaters_)
+                .setOnScrollListener(_sicImageLoader)
+                .setHeaderLayout(0)
+                .setEmptyLayout(R.layout.generic_empty_custom_timeline_layout)
+                .setOnRefreshListener(this)
+                .setLoadMoreListener(this)
+                .setOnItemClick(this)
+                .setThreadPoolExecutor(_threadPool).build();
     }
 
 

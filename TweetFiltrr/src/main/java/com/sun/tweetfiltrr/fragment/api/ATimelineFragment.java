@@ -46,6 +46,7 @@ import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -76,6 +77,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     @Inject FriendDao _friendDao;
     @Inject TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
+    @Inject ExecutorService _threadPool;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -165,8 +167,19 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
     protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> userDaoUpdaters_){
-        return new PullToRefreshView<Collection<ParcelableUser>>(getActivity(), currentUser_, this, adapter_ ,this, this,listener_,
-                userDaoUpdaters_, _sicImageLoader , 0);
+        PullToRefreshView<Collection<ParcelableUser>> pullToRefreshView = new
+        PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), _currentUser)
+                .setCursorAadapter(adapter_)
+                .setOnItemFocusedListener(listener_)
+                .setDBUpdaters(userDaoUpdaters_)
+                .setOnScrollListener(_sicImageLoader)
+                .setHeaderLayout(0)
+                .setEmptyLayout(0)
+                .setOnRefreshListener(this)
+                .setLoadMoreListener(this)
+                .setOnItemClick(this)
+                .setThreadPoolExecutor(_threadPool).build();
+        return pullToRefreshView;
     }
 
     @Override

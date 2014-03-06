@@ -86,13 +86,6 @@ public class UserProfileFragment extends SherlockFragment {
 //        _location = (TextView) rootView.findViewById(R.id.user_location_textview);
 
         initUserDetailTextView(_currentUser);
-
-//        List<UserTwitterDetails> userTwitterDetails = getUserTwitterDetails();
-//        _tweetsListView = (ListView) rootView.findViewById(R.id.list);
-//        UserHomeTweetArrayAdapter adapter = new UserHomeTweetArrayAdapter(getActivity(), R.layout.user_home_button_list_row, userTwitterDetails);
-//        _tweetsListView.setAdapter(adapter);
-//        _tweetsListView.setOnItemClickListener(getOnClickForTwitterHome());
-
         ImageLoaderUtils.attemptLoadImage(profileImage, _sicImageLoader, _currentUser.getProfileImageUrl(), 1, null );
         ImageLoaderUtils.attemptLoadImage(backgroundImage, _sicImageLoader, _currentUser.getProfileBackgroundImageUrl(), 2, null );
 
