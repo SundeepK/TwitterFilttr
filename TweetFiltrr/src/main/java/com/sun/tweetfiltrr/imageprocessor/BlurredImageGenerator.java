@@ -9,6 +9,8 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 
+import javax.inject.Inject;
+
 /**
  * Created by Sundeep on 21/12/13.
  */
@@ -17,6 +19,7 @@ public class BlurredImageGenerator implements IImageProcessor {
     private static final String TAG = BlurredImageGenerator.class.getName();
     private final float _radius = 10;
 
+    @Inject
     public BlurredImageGenerator(){
     }
 
