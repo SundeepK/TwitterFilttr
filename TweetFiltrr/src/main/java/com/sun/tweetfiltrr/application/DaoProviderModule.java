@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.application;
 
 import android.content.ContentResolver;
 
-import com.sun.tweetfiltrr.activity.activities.TweetConversation;
+import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.activity.activities.TwitterFilttrLoggedInUserHome;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendToParcelable;
 import com.sun.tweetfiltrr.cursorToParcelable.KeywordFriendToParcelable;
@@ -17,7 +17,6 @@ import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.AutoSignInFragmentI;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
-import com.sun.tweetfiltrr.activity.activities.EditKeywordGroupTab;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
@@ -57,7 +56,7 @@ import dagger.Provides;
                 AutoSignInFragmentI.class,
                 OAuthSignInFragment.class,
                 ASignInFragment.class,
-                TweetConversation.class
+//                TweetConversation.class
         },
         complete = false
 )
@@ -94,5 +93,8 @@ public class DaoProviderModule {
         return new  KeywordFriendToParcelable(provideFriendToParcelable(), provideKeywordToParcelable());
     }
 
+//    @Provides @Named("blurred") public IImageProcessor provideBlurredImageProcessor() {
+//        return new BlurredImageGenerator();
+//    }
 
 }

@@ -2,8 +2,9 @@ package com.sun.tweetfiltrr.application;
 
 import com.sun.tweetfiltrr.activity.activities.TweetConversation;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
+import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 
-import javax.inject.Singleton;
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,22 +14,17 @@ import dagger.Provides;
  */
 @Module(
         addsTo = ApplicationProvider.class,
+       complete=false,
         injects = {
                 TweetConversation.class
-        },
-        complete=false
+        }
 )
 public class ImageProcessorModule {
 
     private static final String TAG = ImageProcessorModule.class.getName();
 
-    public ImageProcessorModule() {
+       @Provides @Named("blurred") public IImageProcessor provideBlurredImageProcessor() {
+            return new BlurredImageGenerator();
     }
-
-
-    @Provides @Singleton  BlurredImageGenerator provideBlurredImageProcessor() {
-        return new BlurredImageGenerator();
-    }
-
 
 }

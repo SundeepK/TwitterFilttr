@@ -27,6 +27,7 @@ import com.sun.tweetfiltrr.application.ImageProcessorModule;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.database.dao.TimelineDao;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
+import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.merge.MergeAdapter;
 import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
@@ -48,6 +49,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import dagger.ObjectGraph;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
@@ -64,10 +66,12 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
     private float alpha;
     private View _headerView;
 
+
     @Inject TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
     @Inject ExecutorService _threadExecutor;
-    @Inject  BlurredImageGenerator _blurredImageProcessor;
+    @Inject @Named("blurred") IImageProcessor _blurredImageProcessor;
+  //  @Inject IImageProcessor _blurredImageProcessor;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,7 @@ public class TweetConversation extends SherlockFragmentActivity implements Image
 		setContentView(R.layout.tweet_conversation_layout);
 
         ObjectGraph appObjectGraph = ((TweetFiltrrApplication) getApplication()).getObjectGraph();
+//        appObjectGraph.inject(this);
         ObjectGraph objectGraph = appObjectGraph.plus(new ImageProcessorModule());
         objectGraph.inject(this);
 
