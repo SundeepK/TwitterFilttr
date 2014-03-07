@@ -10,19 +10,16 @@
               android:orientation="vertical" >
 
 
-
-
     <ListView
             android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/user_location_textview"
           />
 
-    <EditText
-            android:id="@+id/tweet_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-             />
+    <!--<EditText-->
+            <!--android:id="@+id/tweet_text"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+             <!--/>-->
 
 </LinearLayout>

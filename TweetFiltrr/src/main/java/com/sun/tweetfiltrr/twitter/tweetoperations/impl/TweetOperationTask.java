@@ -14,8 +14,8 @@ import com.sun.tweetfiltrr.twitter.tweetoperations.api.ISubmittable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +23,7 @@ import twitter4j.TwitterException;
 
 /**
  * Created by Sundeep on 01/01/14.
+ *
  */
 public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICall<ParcelableTweet>, Void, Collection<TweetOperationTask.TwitterResult>>
         implements ISubmittable<ITwitterAPICall> ,  ITwitterAPICallStatus {
@@ -59,22 +60,16 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
         if(!_exceptions.isEmpty()){
             Log.v(TAG, "exceptions are not empty so calling fail listener");
             _isFailed = true;
-
             Set<Map.Entry<ITwitterAPICall, TwitterException>> failedTasks = _exceptions.entrySet();
-            Iterator<Map.Entry<ITwitterAPICall, TwitterException>> iterator = failedTasks.iterator();
-
-            while(iterator.hasNext()){
-                Map.Entry<ITwitterAPICall, TwitterException> entry = iterator.next();
+            for (Map.Entry<ITwitterAPICall, TwitterException> entry : failedTasks) {
                 _listener.onTwitterApiCallFail(_user, entry.getValue(), entry.getKey());
             }
-
         }else{
             Log.v(TAG, "Updating database");
             for(TwitterResult result : status){
                 _listener.onTwitterApiCallSuccess(_user, result._apiCallType);
             }
         }
-
         super.onPostExecute(status);
     }
 
@@ -102,17 +97,13 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
 
     private void addArryToCollection(Collection<ITwitterAPICall<ParcelableTweet>> operations_, ITwitterAPICall<ParcelableTweet>[] arrayOperation_){
         if(arrayOperation_ != null){
-            for(ITwitterAPICall<ParcelableTweet> operation : arrayOperation_){
-                operations_.add(operation);
-            }
+            Collections.addAll(operations_, arrayOperation_);
         }
-
     }
 
 
-    public boolean submitNewTask(ITwitterAPICall submittable_) {
+    public boolean submitNewTask(ITwitterAPICall<ParcelableTweet> submittable_) {
         boolean isSubmitSuccessful = false;
-
         synchronized (this) {
             if (getStatus() == Status.PENDING) {
                 _operations.add(submittable_);
@@ -165,8 +156,8 @@ public class TweetOperationTask extends AsyncSmoothProgressBarTask<ITwitterAPICa
 
     public class TwitterResult{
         private ParcelableTweet _user;
-        private ITwitterAPICall _apiCallType;
-        public TwitterResult(ParcelableTweet user_, ITwitterAPICall apiCallType_){
+        private ITwitterAPICall<ParcelableTweet> _apiCallType;
+        public TwitterResult(ParcelableTweet user_, ITwitterAPICall<ParcelableTweet> apiCallType_){
             _user = user_;
             _apiCallType = apiCallType_;
         }

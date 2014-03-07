@@ -102,7 +102,7 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
                     BulkFriendRetriever r = new BulkFriendRetriever(user, _dbUpdaters,EditKeywordGroupActivity.this );
                     EditKeywordGroupActivity.this._threadPool.submit(r);
                 }else{
-                    Toast.makeText(EditKeywordGroupActivity.this, "Already loading friends", 1).show();
+                    Toast.makeText(EditKeywordGroupActivity.this, "Already loading friends", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -115,7 +115,7 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
                 Collection<ParcelableUser> users = _groupAdapter.getChangedGroupIdsForUsers(_group.getGroupId());
                 _friendDao.insertOrUpdate(users ,
                         new String[]{FriendTable.FriendColumn.FRIEND_ID.s(), FriendTable.FriendColumn.COLUMN_GROUP_ID.s()});
-                Toast.makeText(EditKeywordGroupActivity.this, "Updated " + users.size() + " friends ", 2).show();
+                Toast.makeText(EditKeywordGroupActivity.this, "Updated " + users.size() + " friends ", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -168,13 +168,10 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
 			//String[] projection = KeywordGroupDao.FULLY_QUALIFIED_PROJECTIONS;
         String[] pro = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, KeywordGroupDao.FULLY_QUALIFIED_PROJECTIONS);
         Log.v(TAG, "on loader create user is: " + _currentUser.toString());
-        CursorLoader cursorLoader = new CursorLoader(this,
+        return new CursorLoader(this,
                 TweetFiltrrProvider.CONTENT_URI_FRIENDS_LEFT_GROUP, pro,
                 FriendTable.FriendColumn.IS_FRIEND.a() + " = ? ",
                 new String[]{Integer.toString(1)}, FriendTable.FriendColumn.FRIEND_NAME.a() + " ASC " );
-        return cursorLoader;
-
-
 	}
 
 	@Override
@@ -199,7 +196,7 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
             public void run() {
 
                 smoothProgressBarWrapper.setRefreshAnimationFinish();
-                Toast.makeText(EditKeywordGroupActivity.this, "Found " + newFriendCount + " new friends", 2).show();
+                Toast.makeText(EditKeywordGroupActivity.this, "Found " + newFriendCount + " new friends", Toast.LENGTH_SHORT).show();
             }
         });
         //switch users to this

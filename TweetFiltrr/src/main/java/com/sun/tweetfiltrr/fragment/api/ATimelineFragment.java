@@ -192,8 +192,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         _dataAdapter.notifyDataSetChanged();
     }
 
-
-
     @Override
     public void onLoadFinished(Loader<Cursor> arg, Cursor cursor) {
         Log.v(TAG, "loadfinished" + cursor.getCount());
@@ -239,7 +237,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     @Override
     public void OnRefreshComplete(Collection<ParcelableUser> twitterParcelable) {
         int totalNewTweets =0 ;
-
         for(ParcelableUser user : twitterParcelable){
             if(_currentUser.getUserId() == user.getUserId()){
                 _currentUser = user;
@@ -259,8 +256,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         if(this.getActivity() != null){
             restartCursor();
         }
-
-
     }
 
     protected int getTimeLineCount(){

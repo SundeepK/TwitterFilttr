@@ -56,8 +56,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
                     c.getColumnIndex(FriendTable.FriendColumn.FRIEND_NAME.a()),
                     "ABCDEFGHIJKLMNOPQRTSUVWXYZ");
         }
-        Cursor cur = super.swapCursor(c);
-        return cur;
+        return super.swapCursor(c);
     }
 
     @Override
@@ -79,7 +78,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 
                 CheckBox checkBox = (CheckBox) v;
                 boolean status = checkBox.isChecked();
-                _isChecked.put(user, new Boolean(status));
+                _isChecked.put(user, status);
                 //checkBox.setChecked(status);
 
                 Log.v(TAG, "user to update is " + user.getScreenName());
@@ -144,8 +143,7 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
 
 	@Override
 	public View newView(Context context, Cursor  cursor, ViewGroup parent) {
-		final View view=_inflater.inflate(R.layout.edit_keyword_group_list_item,parent,false);
-        return view;
+		return _inflater.inflate(R.layout.edit_keyword_group_list_item,parent,false);
 	}
 
     @Override

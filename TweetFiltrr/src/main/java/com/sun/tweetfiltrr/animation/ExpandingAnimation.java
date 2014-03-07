@@ -31,7 +31,7 @@ public class ExpandingAnimation extends Animation{
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
-        int height = 0;
+        int height;
         Log.v(TAG,  "interpolatedTime: " + interpolatedTime);
 
         if( (interpolatedTime < 1)){

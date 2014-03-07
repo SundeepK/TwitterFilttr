@@ -15,6 +15,7 @@ import twitter4j.auth.RequestToken;
 
 /**
  * Created by Sundeep on 20/02/14.
+ *
  */
 public class TwitterAccessTokenRetriever  implements ITwitterAccessTokenRetriever{
     private static final String TAG = TwitterAccessTokenRetriever.class.getName();
@@ -31,8 +32,6 @@ public class TwitterAccessTokenRetriever  implements ITwitterAccessTokenRetrieve
                 final AccessToken token = twitter_.getOAuthAccessToken(requestToken_, verifier_);
                 final ParcelableUser parcelableUser = new ParcelableUser(twitter_.showUser(token
                         .getUserId()));
-                Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
-                users.add(parcelableUser);
                 final UserBundle user =
                         new UserBundle(parcelableUser, token);
                 userBundles.add(user);

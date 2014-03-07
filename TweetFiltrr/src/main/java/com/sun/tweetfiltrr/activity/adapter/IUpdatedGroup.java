@@ -3,10 +3,10 @@ package com.sun.tweetfiltrr.activity.adapter;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by Sundeep on 09/02/14.
+ *
  */
 public interface IUpdatedGroup {
 

@@ -13,11 +13,11 @@ import javax.inject.Inject;
 
 /**
  * Created by Sundeep on 21/12/13.
+ *
  */
 public class BlurredImageGenerator implements IImageProcessor {
 
     private static final String TAG = BlurredImageGenerator.class.getName();
-    private final float _radius = 10;
 
     @Inject
     public BlurredImageGenerator(){
@@ -37,6 +37,7 @@ public class BlurredImageGenerator implements IImageProcessor {
                     Allocation.USAGE_SCRIPT);
             final Allocation output = Allocation.createTyped(rs, input.getType());
             final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+            float _radius = 10;
             script.setRadius(_radius);
             script.setInput(input);
             script.forEach(output);

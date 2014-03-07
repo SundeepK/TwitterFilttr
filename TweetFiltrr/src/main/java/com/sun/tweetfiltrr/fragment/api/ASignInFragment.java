@@ -35,9 +35,6 @@ import javax.inject.Inject;
 
 import twitter4j.auth.AccessToken;
 
-/**
- * Created by Sundeep.Kahlon on 20/02/14.
- */
 public abstract class ASignInFragment extends SherlockFragment implements ImageTaskListener, ITwitterAuthCallback {
 
     private static final String TAG = ASignInFragment.class.getName();
@@ -103,7 +100,6 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
         CircleCroppedDrawable d = new CircleCroppedDrawable(bitmap_);
         imageView_.setImageBitmap(null);
         imageView_.setImageDrawable(d);
-        imageView_.setBackground(d);
     }
 
     private Animation getZoomAnimation(float fromX_, float toX_, float fromY_, float toY_){

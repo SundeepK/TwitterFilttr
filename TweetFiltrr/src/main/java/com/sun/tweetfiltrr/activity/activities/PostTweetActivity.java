@@ -66,7 +66,6 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
                 dateTime.setText(tweet.getTweetDate());
                 tweetText.setText(tweet.getTweetText());
                 String photoUrl = tweet.getPhotoUrl();
-
                 if(shouldQuote){
                     tweetEditTxt.setText("RT @" + _user.getScreenName()+": " + tweet.getTweetText());
                 }else{
@@ -129,11 +128,11 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
 
     @Override
     public void onTwitterApiCallSuccess(ParcelableUser user_, ITwitterAPICall apiCallType_) {
-        Toast.makeText(this, "Tweet posted", 2).show();
+        Toast.makeText(this, "Tweet posted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall apiCallType_) {
-        Toast.makeText(this, "Tweet failed", 2).show();
+        Toast.makeText(this, "Tweet failed", Toast.LENGTH_SHORT).show();
     }
 }

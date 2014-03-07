@@ -33,7 +33,7 @@ public  class FavouriteTweet implements ITwitterAPICall<ParcelableTweet> {
         Log.v(TAG, "fav before " + tweetToProcess.toString());
 
         try {
-            twitter4j.Status status = null;
+            twitter4j.Status status;
             if(!tweetToProcess.isFavourite()){
                 status = twitter.createFavorite(tweetToProcess.getTweetID());
                 tweetToProcess.setIsFavourite(true);

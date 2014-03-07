@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 /**
  * Created by Sundeep on 10/01/14.
+ *
  */
 public class ATwitterActivity extends SherlockFragmentActivity implements ImageTaskListener {
 
@@ -49,7 +50,7 @@ public class ATwitterActivity extends SherlockFragmentActivity implements ImageT
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i = null;
+        Intent i;
         switch (item.getItemId()) {
             case android.R.id.home:
                 Log.v(TAG, "Home buttom clicked");
@@ -76,6 +77,7 @@ public class ATwitterActivity extends SherlockFragmentActivity implements ImageT
     }
 
 
+
     protected ActionBar loadActionBar(){
         ActionBar actionBar =  getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -83,17 +85,15 @@ public class ATwitterActivity extends SherlockFragmentActivity implements ImageT
         actionBar.setDisplayShowTitleEnabled(false);
         LayoutInflater inflator = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.action_bar_title, null);
-        TextView title = (TextView) v.findViewById(R.id.action_bar_title);
-        title.setText("@" + _currentUser.getScreenName());
-
-        _profile = (ImageView) v.findViewById(R.id.actionbar_icon_imageview);
-
-        actionBar.setCustomView(v);
-        actionBar.setDisplayUseLogoEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
-
-        ImageLoaderUtils.attemptLoadImage(_profile, _imageLoader, _currentUser.getProfileImageUrl(), 1, this);
-
+        if(v != null){
+            TextView title = (TextView) v.findViewById(R.id.action_bar_title);
+            title.setText("@" + _currentUser.getScreenName());
+            _profile = (ImageView) v.findViewById(R.id.actionbar_icon_imageview);
+            actionBar.setCustomView(v);
+            actionBar.setDisplayUseLogoEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
+            ImageLoaderUtils.attemptLoadImage(_profile, _imageLoader, _currentUser.getProfileImageUrl(), 1, this);
+        }
         return actionBar;
     }
 
@@ -108,7 +108,6 @@ public class ATwitterActivity extends SherlockFragmentActivity implements ImageT
         CircleCroppedDrawable d = new CircleCroppedDrawable(bitmap);
         _profile.setImageBitmap(null);
         _profile.setImageDrawable(d);
-        _profile.setBackground(d);
     }
 
     @Override

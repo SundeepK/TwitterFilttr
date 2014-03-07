@@ -107,7 +107,7 @@ public abstract class AUserRetriever implements ITwitterAPICall<Collection<Parce
     private long[] getFriendsIdsToQuery(ICachedUser user_, Twitter twitter_) {
         long[] friendIds = user_.getUserIds();
         int lastArrayIndex = user_.getLastArrayIndex();
-        int friendCount = 0;
+        int friendCount;
         //minus 1 from the lastOffsetPos becuase were dealing with arrays here
         int lastOffsetPos = lastArrayIndex < 1 ? 0 : lastArrayIndex -1;
         //we can just return here rather than copy array since twitter can handle only 100 id's

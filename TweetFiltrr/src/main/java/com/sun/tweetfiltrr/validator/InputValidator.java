@@ -58,7 +58,7 @@ public class InputValidator {
     }
 
     public boolean isEditTextValid(EditText editTextToValidate_, Editable editableText_,  int wordCount, int maxLenght_) {
-        boolean isValid = false;
+        boolean isValid;
         String inputString = editableText_.toString().toLowerCase(Locale.US);
         if(compareWordCount(inputString, wordCount)){
             editTextToValidate_.setError("Must use less than " + wordCount + " keywords");

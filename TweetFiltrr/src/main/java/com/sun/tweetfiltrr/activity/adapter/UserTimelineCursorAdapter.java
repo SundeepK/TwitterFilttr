@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,7 +40,7 @@ public class UserTimelineCursorAdapter extends ResourceCursorAdapter implements 
     private UrlImageLoader  _imageLoader;
 	private int _layout;
     private FriendTimeLineToParcelable _friendTimeLineToParcelable;
-    private SparseArray<Boolean> _enabledItems;
+    private SparseBooleanArray _enabledItems;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
     public UserTimelineCursorAdapter(Context context, int layout, Cursor c,
                                      FriendTimeLineToParcelable friendTimeLineToParcelable_, UrlImageLoader imageLoader_,
@@ -50,7 +50,7 @@ public class UserTimelineCursorAdapter extends ResourceCursorAdapter implements 
         _layout = layout;
         _friendTimeLineToParcelable = friendTimeLineToParcelable_;
         _imageLoader = imageLoader_;
-        _enabledItems = new SparseArray<Boolean>();
+        _enabledItems = new SparseBooleanArray();
         _onTweetOperationLis = onTweetOperationLis_;
 	}
 

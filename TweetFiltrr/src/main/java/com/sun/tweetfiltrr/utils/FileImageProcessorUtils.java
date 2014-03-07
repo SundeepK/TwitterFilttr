@@ -24,7 +24,7 @@ public class FileImageProcessorUtils {
     public static Bitmap loadImage(String filePath_, Bitmap bitmap, IImageProcessor imageProcessor_,
                                Bitmap.CompressFormat format_, int quality_, Context context_) {
         File blurredImage = new File(filePath_);
-        Bitmap bmp = null;
+        Bitmap bmp;
         if(!blurredImage.exists()){
             bmp =  processImage(blurredImage,bitmap, imageProcessor_, format_, quality_, context_);
         }else{

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -56,6 +57,7 @@ public class UserProfileHomeActivity extends ATwitterActivity implements
     private LinkedList<FragmentInfo> _fragmentTags = new LinkedList<FragmentInfo>();
     @Inject UrlImageLoader _imageloader;
 
+    @SuppressWarnings("deprecation")
     @Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -88,7 +90,11 @@ public class UserProfileHomeActivity extends ATwitterActivity implements
         _userBundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
 
         Log.v(TAG, "current user is " + _currentUser.getScreenName());
-        menu.setBackground(new ColorDrawable(Color.BLACK));
+        if(Build.VERSION.SDK_INT  < 16 ){
+            menu.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        }else{
+            menu.setBackground(new ColorDrawable(Color.BLACK));
+        }
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
         menu.setMenu(R.layout.sliding_menu_fragment);
@@ -129,8 +135,7 @@ public class UserProfileHomeActivity extends ATwitterActivity implements
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        Intent i = null;
+        Intent i;
         switch (position) {
             case 0:
                 i = new Intent(UserProfileHomeActivity.this, UserProfileHomeActivity.class);
@@ -232,7 +237,7 @@ public class UserProfileHomeActivity extends ATwitterActivity implements
     }
 
     private FragmentInfo getFragmentToCommit(){
-        FragmentInfo fragment = null;
+        FragmentInfo fragment;
         switch (_currentFragmentState){
             case TWEETS:
                 fragment = getFragmentInfo(UserDetailsTimelineTab.class, _userBundle);

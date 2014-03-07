@@ -58,15 +58,11 @@ public class MultipleSelectorArrayAdapter<T> extends AItemSelector<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public View getView(int position_, View convertView_, ViewGroup parent_) {
-		TextView listItemText = null;
-		CheckBox checkBox = null;
-
+		TextView listItemText;
+		CheckBox checkBox;
 		if (convertView_ == null) {
-
 				convertView_ = _inflator.inflate(_layout, parent_, false);
-
 			try {
-
 				listItemText = (TextView) convertView_.findViewById(_textView);
 				checkBox = (CheckBox) convertView_.findViewById(_checkBox);
 				_viewHolder = new ViewHolder();
@@ -90,10 +86,7 @@ public class MultipleSelectorArrayAdapter<T> extends AItemSelector<T> {
 		performPostTextViewLoad(_onTextLoadCallback, _viewHolder._textView,
 				item);
 		_viewHolder._checkBox.setChecked(_listItemStatus.get(position_, false));
-
-
 		return convertView_;
-
 	}
 
 	private void performPostTextViewLoad(OnTextViewLoad<T> callback_,

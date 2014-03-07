@@ -20,8 +20,6 @@ public class UserConversationDisplayer extends MultipleItemSelector<ParcelableUs
         _users = new ArrayList<ParcelableUser>();
     }
 
-
-
     @Override
     protected Dialog createNewDialog(Context context_, String title_) {
         return null;
@@ -38,7 +36,6 @@ public class UserConversationDisplayer extends MultipleItemSelector<ParcelableUs
             builder.append("@");
             builder.append(user.getScreenName());
             builder.append(" ");
-
         }
 
         addToAdapter(_users);

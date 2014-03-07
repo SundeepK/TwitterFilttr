@@ -6,6 +6,7 @@ import android.util.Log;
 import com.sun.tweetfiltrr.database.tables.DBColumnName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,19 +16,14 @@ public class DBUtils {
 	private static final String TAG = DBUtils.class.getName();
 
 	public static String[] getFullyQualifiedProjections(DBColumnName[] dbColumn_) {
-
 		List<String> projections = new ArrayList<String>();
-		for (int colNum = 0; colNum < dbColumn_.length  ; colNum++) {
-			if (!dbColumn_[colNum].s().equals(dbColumn_[colNum].tableName())) {
-				projections.add(dbColumn_[colNum].p());
-				Log.v(TAG, "Col name " + dbColumn_[colNum].p());
-			}
-	}
-
-		String[] stringColumns = projections.toArray(new String[]{});
-
-		
-		return stringColumns;
+        for (DBColumnName aDbColumn_ : dbColumn_) {
+            if (!aDbColumn_.s().equals(aDbColumn_.tableName())) {
+                projections.add(aDbColumn_.p());
+                Log.v(TAG, "Col name " + aDbColumn_.p());
+            }
+        }
+		return projections.toArray(new String[projections.size()]);
 	}
 
 
@@ -49,32 +45,31 @@ public class DBUtils {
 	public static Map<String, String> getAliasProjectionMap(DBColumnName[] dbColumn_) {
 
 		Map<String, String> projections = new HashMap<String, String>();
-		boolean isEqual = false;
-		for (int colNum = 0; colNum < dbColumn_.length ; colNum++) {
-				isEqual  = TextUtils.equals(dbColumn_[colNum].s(), dbColumn_[colNum].tableName());
-			if (!isEqual) {		
-				String prefix = dbColumn_[colNum].p();
-				projections.put(prefix,  prefix + " AS " + dbColumn_[colNum].a());
-			}
-		}
+		boolean isEqual;
+        for (DBColumnName aDbColumn_ : dbColumn_) {
+            isEqual = TextUtils.equals(aDbColumn_.s(), aDbColumn_.tableName());
+            if (!isEqual) {
+                String prefix = aDbColumn_.p();
+                projections.put(prefix, prefix + " AS " + aDbColumn_.a());
+            }
+        }
 
 		return projections;
 	}
 	
 	public static String[] concatColumns(String[] ...columnNames) {
 		int size = 0;
-		for(int i = 0; i < columnNames.length ; i++){
-			size+=columnNames[i].length;
-		}
+        for (String[] columnName1 : columnNames) {
+            size += columnName1.length;
+        }
 		Log.v(TAG, "Size : " + size);
 		String[] concatedCols= new String[size];
 
 		size = 0;
-		for(int i = 0; i < columnNames.length; i++){
-			Log.v(TAG, "contents : " + columnNames[i].toString());
-			   System.arraycopy(columnNames[i], 0, concatedCols, size, columnNames[i].length);
-			   size+=columnNames[i].length;
-		}
+        for (String[] columnName : columnNames) {
+            System.arraycopy(columnName, 0, concatedCols, size, columnName.length);
+            size += columnName.length;
+        }
 		return concatedCols;
 	}
 	
@@ -87,15 +82,11 @@ public class DBUtils {
 		List<DBColumnName> excludeCols = copyAsList(colsToRemoveFrom_);
 		List<DBColumnName> cols = copyAsList(colsToExclude_);
 		excludeCols.removeAll(cols);
-		return excludeCols.toArray(new DBColumnName[]{});
+		return excludeCols.toArray(new DBColumnName[excludeCols.size()]);
 	}
 	
 	private static List<DBColumnName> copyAsList(DBColumnName[] arr_){
-		List<DBColumnName> cols = new ArrayList<DBColumnName>();
-		for(DBColumnName col : arr_){
-			cols.add(col);
-		}
-		return cols;
+		return Arrays.asList(arr_);
 	}
 			
 }

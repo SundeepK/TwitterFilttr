@@ -34,14 +34,11 @@ public class ConversationAdapter extends AItemSelector<ParcelableUser> {
 
     @Override
     public View getView(int position_, View convertView_, ViewGroup parent_) {
-        TextView userName = null;
-        TextView tweetTextView = null;
+        TextView userName;
+        TextView tweetTextView;
         if (convertView_ == null) {
-
             convertView_ = _inflater.inflate(_layout, parent_, false);
-
             try {
-
                 userName = (TextView) convertView_.findViewById(R.id.timeline_friend_name);
                 tweetTextView = (TextView) convertView_.findViewById(R.id.timeline_entry);
                 _viewHolder = new ViewHolder();
@@ -49,7 +46,6 @@ public class ConversationAdapter extends AItemSelector<ParcelableUser> {
                 _viewHolder._textEntry = tweetTextView;
                 _viewHolder._textEntry.setId(position_);
                 convertView_.setTag(_viewHolder);
-
             } catch (ClassCastException e) {
                 throw new IllegalStateException(
                         "ConversationAdapter requires two resource IDs to be TextView and CheckBox",
@@ -58,24 +54,17 @@ public class ConversationAdapter extends AItemSelector<ParcelableUser> {
         } else {
             _viewHolder = (ViewHolder) convertView_.getTag();
         }
-
         ParcelableUser user = getItem(position_);
         _viewHolder._userName.setText(user.getUserName());
-
-        for (ParcelableTweet tweet : user.getUserTimeLine()) {
-            _viewHolder._textEntry.setText(tweet.getTweetText());
-            break;
+        Collection<ParcelableTweet> tweets = user.getUserTimeLine();
+        if(!tweets.isEmpty()){
+            _viewHolder._textEntry.setText(tweets.iterator().next().getTweetText());
         }
-
-
         return convertView_;
     }
-
 
     private static class ViewHolder {
         private TextView _userName;
         private TextView _textEntry;
     }
-
-
 }

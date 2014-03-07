@@ -31,7 +31,7 @@ public abstract class AItemSelector<T> extends ArrayAdapter<T> implements
 	}
 
 	public void remove(T object_) {
-		remove(object_);
+		super.remove(object_);
 		notifyDataSetChanged();
 	}
 

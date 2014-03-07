@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.activity.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.ResourceCursorAdapter;
-import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +21,14 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter implements ZoomL
     private static final String TAG = FriendsCursorAdapter.class.getName();
 	private final LayoutInflater _inflater;
     private  UrlImageLoader _imageLoadermine;
-    private SparseArray<Boolean> _enabledItems;
+    private SparseBooleanArray _enabledItems;
 
 	public FriendsCursorAdapter(Context context, int layout, Cursor c,
 			 UrlImageLoader imageLoader_) {
 		super(context, layout, c, 0);
         _inflater = LayoutInflater.from(context);
         _imageLoadermine = imageLoader_;
-        _enabledItems = new SparseArray<Boolean>();
+        _enabledItems = new SparseBooleanArray();
 	}
 
 
