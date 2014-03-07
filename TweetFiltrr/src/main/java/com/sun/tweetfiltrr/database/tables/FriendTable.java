@@ -2,7 +2,6 @@ package com.sun.tweetfiltrr.database.tables;
 
 
 import com.sun.tweetfiltrr.database.utils.DBUtils;
-import com.sun.tweetfiltrr.utils.TwitterConstants;
 
 public class FriendTable {
 
@@ -80,7 +79,7 @@ public class FriendTable {
 
         @Override
         public String s() {
-            return _col.toString();
+            return _col;
         }
 
         @Override
@@ -99,8 +98,6 @@ public class FriendTable {
         }
 
     }
-
-    public static final int DATABASE_VERSION = TwitterConstants.DB_VERSION;
 
     // Database creation sql statement
     public static final String CREATE_DATABASE = "create table "

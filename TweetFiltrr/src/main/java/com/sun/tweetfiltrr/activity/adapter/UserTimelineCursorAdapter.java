@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Handler;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -22,17 +22,17 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.cursorToParcelable.FriendTimeLineToParcelable;
+import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
-import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements ZoomListView.OnItemFocused {
+public class UserTimelineCursorAdapter extends ResourceCursorAdapter implements ZoomListView.OnItemFocused {
 
 
     private static final String TAG = UserTimelineCursorAdapter.class.getName();
@@ -43,10 +43,9 @@ public class UserTimelineCursorAdapter extends SimpleCursorAdapter implements Zo
     private SparseArray<Boolean> _enabledItems;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
     public UserTimelineCursorAdapter(Context context, int layout, Cursor c,
-                                     String[] from, int[] to, int flags,
                                      FriendTimeLineToParcelable friendTimeLineToParcelable_, UrlImageLoader imageLoader_,
                                      SingleTweetAdapter.OnTweetOperation onTweetOperationLis_ ) {
-		super(context, layout, c, from, to, flags);
+		super(context, layout, c, 0);
         _inflater = LayoutInflater.from(context);
         _layout = layout;
         _friendTimeLineToParcelable = friendTimeLineToParcelable_;

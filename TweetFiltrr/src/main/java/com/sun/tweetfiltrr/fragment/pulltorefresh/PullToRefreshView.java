@@ -3,7 +3,7 @@ package com.sun.tweetfiltrr.fragment.pulltorefresh;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +44,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     private ZoomListView _pullToRefreshListView;
     private Activity _activity;
     private AdapterView.OnItemClickListener _onItemClick;
-    private SimpleCursorAdapter _cursorAdapter;
+    private CursorAdapter _cursorAdapter;
     private AbsListView.OnScrollListener _onscOnScrollListener;
     private ParcelableUser _currentUser;
     private ExecutorService _threadExecutor;
@@ -195,7 +195,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
     public static class Builder<T>{
         private Activity _activity;
         private AdapterView.OnItemClickListener _onItemClick;
-        private SimpleCursorAdapter _cursorAdapter;
+        private CursorAdapter _cursorAdapter;
         private AbsListView.OnScrollListener _onScrollListener;
         private ParcelableUser _currentUser;
         private ExecutorService _threadExecutor;
@@ -217,7 +217,7 @@ public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListene
             return this;
         }
 
-        public Builder<T> setCursorAadapter(SimpleCursorAdapter cursorAdapter_){
+        public Builder<T> setCursorAadapter(CursorAdapter cursorAdapter_){
             _cursorAdapter = cursorAdapter_;
             return this;
         }

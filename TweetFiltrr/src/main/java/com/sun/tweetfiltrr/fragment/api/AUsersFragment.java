@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +56,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
 
     private int _currentFriendLimit = 50;
     private static final String TAG = AUsersFragment.class.getName();
-    private SimpleCursorAdapter _dataAdapter;
+    private CursorAdapter _dataAdapter;
     private long _currentLoggedInUserId;
     private ITwitterAPICall<Collection<ParcelableUser>>  _userRetriever;
     private PullToRefreshView _pullToRefreshHandler;
@@ -98,7 +98,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
                 Log.d(TAG, "Not visible anymore");
             }else{
                 Log.d(TAG, "Visible now!");
-                if(_tabHasBeenSelected == false){
+                if(!_tabHasBeenSelected){
                     _tabHasBeenSelected = true;
                     if(_currentUser != null){
                         if((_currentUser.getCurrentFriendCount() <= 0)){
@@ -185,34 +185,17 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     protected abstract Collection<IDatabaseUpdater> getDBUpdaters();
 
 
-    protected void initAdapter() {
-
-        String[] columns = new String[]{
-                "_id",
-                "friendTable_friendName",
-                "friendTable_profileImageUrl"
-        };
-
-        // the XML defined views which the data will be bound to
-        int[] to = new int[]{
-                R.id.friend_desc,
-                R.id.friend_name,
-                R.id.list_image
-        };
-
+    private void initAdapter() {
         FriendsCursorAdapter friendsCursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.listview_for_twitter,
-                null, columns, to, 0, _sicImageLoader);
-
+                null, _sicImageLoader);
         _dataAdapter = friendsCursorAdapter;
-        ZoomListView.OnItemFocused listener = friendsCursorAdapter;
-        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser, listener, _updaters);
-
+        _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser, friendsCursorAdapter, _updaters);
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_,
+    protected PullToRefreshView getPullToRefreshView(CursorAdapter adapter_,
                                                      ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_,Collection<IDatabaseUpdater> updaters_ ){
-        return  new PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), _currentUser)
+        return  new PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), currentUser_)
                 .setCursorAadapter(adapter_)
                 .setOnItemFocusedListener(listener_)
                 .setDBUpdaters(updaters_)
@@ -227,6 +210,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onLoad(Collection<Future<Collection<ParcelableUser>>>  futureTask_) {
         Log.v(TAG, "On load startyed with future size:" + futureTask_.size());
         AsyncUserDBUpdateTask<Integer> updatetask =
@@ -248,7 +232,6 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
 
     @Override
     public boolean shouldLoadMoreOnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
         if(_isCursorReady){
             if (_currentFriendLimit < _currentUser.getCurrentFriendCount()) {
                 Log.v(TAG, "_currentFriendLimit: " + _currentFriendLimit + " current friend acount " +  _currentUser.getCurrentFriendCount());
@@ -272,33 +255,32 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
             Log.v(TAG, "_tabHasBeenSelected is false");
             return false;
         }
-
-
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Get the cursor, positioned to the corresponding row in the result set
         Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-        int rowId =
-                cursor.getInt(cursor.getColumnIndexOrThrow(FriendColumn._ID.s()));
-        Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
-        ParcelableUser newFriend = null;
-        //we should only retrieve 1 friend since rowId is unique, so we iterate once
-        for (ParcelableUser friend : friends) {
-            newFriend = friend;
-            newFriend.setRowId(rowId);
-            Log.v(TAG, "User after rowID query" + friend.toString());
-            break;
+        if(cursor != null){
+            int rowId =
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FriendColumn._ID.s()));
+            Collection<ParcelableUser> friends = _friendDao.getEntry(rowId);
+            //we should only retrieve 1 friend since rowId is unique
+            if(!friends.isEmpty()){
+                ParcelableUser newFriend = friends.iterator().next();
+                newFriend.setRowId(rowId);
+                //start new activity for the clicked user
+                Intent i = new Intent(getActivity(), UserProfileHomeActivity.class);
+                i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
+                _userQueue.add(newFriend);
+                i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);
+                getActivity().startActivity(i);
+                getActivity().finish();
+            }
+        }else{
+            Toast.makeText(getActivity(), "Error occured while loading use profile", Toast.LENGTH_SHORT).show();
         }
-        //start new activity for the clicked user
-        Intent i = new Intent(getActivity(), UserProfileHomeActivity.class);
-        i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);
-        _userQueue.add(newFriend);
-        i.putExtra(TwitterConstants.PARCELABLE_USER_QUEUE, _userQueue);
-        getActivity().startActivity(i);
-        getActivity().finish();
-    }
+   }
 
     @Override
     public void OnRefreshComplete(Collection<ParcelableUser> twitterParcelable) {
@@ -330,7 +312,7 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
     @Override
     public void onTwitterApiCallFail(ParcelableUser failedTweet_, TwitterException exception_, ITwitterAPICall apiCallType_) {
         //add generic error
-        Toast.makeText(getActivity(), "Problem connecting to twitter", 2).show();
+        Toast.makeText(getActivity(), "Problem connecting to twitter", Toast.LENGTH_SHORT).show();
     }
 }
 

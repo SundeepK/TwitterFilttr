@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,14 +63,13 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         ITwitterAPICallStatus {
 
     private static final String TAG = ATimelineFragment.class.getName();
-    private SimpleCursorAdapter _dataAdapter;
+    private CursorAdapter _dataAdapter;
     private int _currentLimitCount = 50;
     private PullToRefreshView _pullToRefreshHandler;
     private boolean _isFinishedLoading = false;
     private ParcelableUser _currentUser ;
     private Collection<IDatabaseUpdater> _userDaoUpdaters;
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
-    private ArrayList<ParcelableUser> _userQueue; // not a queue but going to use it like one
     private boolean _isCursorReady;
 
     @Inject TweetRetrieverWrapper _tweetRetriver;
@@ -102,20 +101,15 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     }
 
     protected void initControl() {
-      //  _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
-
         ((TweetFiltrrApplication) getActivity().getApplication()).getObjectGraph().inject(this);
-
-        _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
-
+        ArrayList<ParcelableUser> _userQueue = UserRetrieverUtils.getUserQueue(getActivity());
         if(_userQueue.isEmpty()){
             Log.v(TAG, "user queue is empty");
             _currentUser = UserRetrieverUtils.getCurrentFocusedUser(getActivity());
         }else{
-            _currentUser = _userQueue.get(_userQueue.size()-1);
+            _currentUser = _userQueue.get(_userQueue.size() - 1);
             Log.v(TAG, "user queue contains user" + _currentUser.getScreenName());
         }
-
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
         _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
         String[] cols = new String[]{FriendColumn.FRIEND_ID.s(),
@@ -137,38 +131,19 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
 
     protected void initAdapter() {
-
-            String[] columns = new String[]{
-                    "_id",
-                    TimelineColumn.TIMELINE_TEXT.a(),
-                    TimelineColumn.IN_REPLY_SCREENNAME.a(),
-                    TimelineColumn.IN_REPLY_TWEETID.a(),
-                    TimelineColumn.IN_REPLY_USERID.a()
-            };
-
-            // the XML defined views which the data will be bound to
-            int[] to = new int[]{
-                    R.id.timeline_friend_name,
-                    R.id.timeline_entry,
-
-            };
-
             FriendTimeLineToParcelable friendTimeLineToParcelable = new FriendTimeLineToParcelable(new FriendToParcelable(),
                     new TimelineToParcelable());
-
-            UserTimelineCursorAdapter timelineCursorAdapter = new UserTimelineCursorAdapter(getActivity(), R.layout.user_timeline_list_view_row,
-                    null, columns, to, 0, friendTimeLineToParcelable, _sicImageLoader, this);
+            UserTimelineCursorAdapter timelineCursorAdapter = new UserTimelineCursorAdapter(getActivity(),
+                    R.layout.user_timeline_list_view_row, null, friendTimeLineToParcelable, _sicImageLoader, this);
             _dataAdapter = timelineCursorAdapter;
-            ZoomListView.OnItemFocused listener = timelineCursorAdapter;
-            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,listener, _userDaoUpdaters);
+            _pullToRefreshHandler = getPullToRefreshView(_dataAdapter, _currentUser,timelineCursorAdapter, _userDaoUpdaters);
             _onTweetOperationLis = new TweetOperationController(_pullToRefreshHandler, _timelineDao, this);
-
     }
 
-    protected PullToRefreshView getPullToRefreshView(SimpleCursorAdapter adapter_, ParcelableUser currentUser_,
+    protected PullToRefreshView getPullToRefreshView(CursorAdapter adapter_, ParcelableUser currentUser_,
                                                      ZoomListView.OnItemFocused listener_, Collection<IDatabaseUpdater> userDaoUpdaters_){
-        PullToRefreshView<Collection<ParcelableUser>> pullToRefreshView = new
-        PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), _currentUser)
+        return new
+        PullToRefreshView.Builder<Collection<ParcelableUser>>(getActivity(), currentUser_)
                 .setCursorAadapter(adapter_)
                 .setOnItemFocusedListener(listener_)
                 .setDBUpdaters(userDaoUpdaters_)
@@ -179,7 +154,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                 .setLoadMoreListener(this)
                 .setOnItemClick(this)
                 .setThreadPoolExecutor(_threadPool).build();
-        return pullToRefreshView;
     }
 
     @Override
@@ -206,6 +180,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onLoad(Collection<Future<Collection<ParcelableUser>>> futureTask_) {
         AsyncUserDBUpdateTask<Integer> _userDBUpdater =  new AsyncUserDBUpdateTask<Integer>(3 , TimeUnit.MINUTES ,
                 _userDaoUpdaters,  _pullToRefreshHandler);
@@ -321,15 +296,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         tweetConvo.putExtra(TwitterConstants.PARCELABLE_FRIEND_WITH_TIMELINE, user_);
         tweetConvo.putExtra(TwitterConstants.IS_QUOTE_REPLY, true);
         getActivity().startActivity(tweetConvo);
-    }
-
-    public void onTaskSuccessfulComplete(ParcelableTweet tweet_) {
-        String message  = "Tweet successful";
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    public void onTaskFail(ParcelableTweet failedTweet_, TwitterException exception_, ITwitterAPICall.TwitterAPICallType tweetType_) {
-        String message ;
     }
 
     @Override
