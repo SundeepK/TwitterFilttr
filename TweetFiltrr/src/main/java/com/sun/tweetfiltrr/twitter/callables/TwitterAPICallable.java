@@ -9,9 +9,9 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-public class TimeLineRetrieverCallable implements Callable<Collection<ParcelableUser>> {
+public class TwitterAPICallable implements Callable<Collection<ParcelableUser>> {
 
-    private static final String TAG = TimeLineRetrieverCallable.class.getName();
+    private static final String TAG = TwitterAPICallable.class.getName();
     private ITwitterAPICall<Collection<ParcelableUser>> _userRetriever;
     private ParcelableUser _currentUser;
     private ITwitterAPICallStatus _failListener;
@@ -24,8 +24,8 @@ public class TimeLineRetrieverCallable implements Callable<Collection<Parcelable
      *
      * @param currentUser_
      */
-    public TimeLineRetrieverCallable(ParcelableUser currentUser_,
-                                     ITwitterAPICall<Collection<ParcelableUser>> userRetriever_, ITwitterAPICallStatus failListener_) {
+    public TwitterAPICallable(ParcelableUser currentUser_,
+                              ITwitterAPICall<Collection<ParcelableUser>> userRetriever_, ITwitterAPICallStatus failListener_) {
         _currentUser = currentUser_;
         _userRetriever = userRetriever_;
         _failListener = failListener_;

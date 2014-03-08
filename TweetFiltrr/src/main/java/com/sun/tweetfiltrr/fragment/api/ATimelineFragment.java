@@ -39,7 +39,7 @@ import com.sun.tweetfiltrr.scrolllisteners.LoadMoreOnScrollListener;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverFactory;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
@@ -72,7 +72,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
     private SingleTweetAdapter.OnTweetOperation _onTweetOperationLis;
     private boolean _isCursorReady;
 
-    @Inject TweetRetrieverWrapper _tweetRetriver;
+    @Inject TweetRetrieverFactory _tweetRetriver;
     @Inject FriendDao _friendDao;
     @Inject TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
@@ -96,7 +96,7 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
         return rootView;
     }
 
-    public TweetRetrieverWrapper getTweetRetriver() {
+    public TweetRetrieverFactory getTweetRetriver() {
         return _tweetRetriver;
     }
 

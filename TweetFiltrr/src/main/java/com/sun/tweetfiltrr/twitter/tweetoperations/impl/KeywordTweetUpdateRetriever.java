@@ -18,7 +18,7 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IKeywordUpdateRetriever;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverFactory;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +45,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
     private static final String TAG = KeywordTweetUpdateRetriever.class.getName();
     private static final String SEARCH_RESOURCE_KEY = "/users/search";
-    private TweetRetrieverWrapper _tweetRetriever;
+    private TweetRetrieverFactory _tweetRetriever;
     private ExecutorService _taskExecutor;
     private IDBUpdater<ParcelableUser> _dbUserUpdater;
     private IDBUpdater<ParcelableTweet> _dbTimelineUpdater;
@@ -65,7 +65,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
         }
 
         ThreadLocal<SimpleDateFormat> simpleDateFormatThreadLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
-        _tweetRetriever = new TweetRetrieverWrapper(_taskExecutor, simpleDateFormatThreadLocal);
+        _tweetRetriever = new TweetRetrieverFactory(_taskExecutor, simpleDateFormatThreadLocal);
 
     }
 

@@ -18,7 +18,7 @@ import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserProfileFragment;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverWrapper;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverFactory;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterPageParameter;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterQueryParameter;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
@@ -43,7 +43,7 @@ import dagger.Provides;
                 MentionsTab.class,
                 TimelineTab.class,
                 UserTimelineTab.class,
-                TweetRetrieverWrapper.class,
+                TweetRetrieverFactory.class,
                 UserDetailsTimelineTab.class,
                 AUsersFragment.class,
                 UserProfileFragment.class,
@@ -79,9 +79,9 @@ public class ApplicationProvider {
         return TwitterUtil.getInstance().getGlobalImageLoader(_context);
     }
 
-//    @Provides @Singleton TweetRetrieverWrapper provideTweetRetriever(){
+//    @Provides @Singleton TweetRetrieverFactory provideTweetRetriever(){
 //        Log.v(TAG, "im creating wrapper");
-//        return new TweetRetrieverWrapper(provideExecutorService());
+//        return new TweetRetrieverFactory(provideExecutorService());
 //    }
 
 }

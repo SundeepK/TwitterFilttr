@@ -3,10 +3,8 @@ package com.sun.tweetfiltrr.concurrent;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
-import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
+import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskExecute;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
-import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.ArrayList;
@@ -23,11 +21,10 @@ import java.util.concurrent.TimeoutException;
  public  class AsyncUserDBUpdateTask<V> extends AsyncTask<Future<Collection<ParcelableUser>>, V, Collection<ParcelableUser>> {
 
         private final static String TAG = AsyncUserDBUpdateTask.class.getName();
-        private IDBUpdater<ParcelableTweet> _databaseUpdater;
-        private Collection<IDatabaseUpdater> _userUpdaters;
-        private OnAsyncTaskPostExecute _postExecuteLis;
-          private final long _timeout;
-         private final TimeUnit _timeUnit;
+        private final Collection<IDatabaseUpdater> _userUpdaters;
+        private final OnAsyncTaskExecute _postExecuteLis;
+        private final long _timeout;
+        private final TimeUnit _timeUnit;
         /**
          *
          * {@link android.os.AsyncTask} which wraps around a {@link AsyncFutureTaskWrapper} and waits for the computation to complete.
@@ -38,7 +35,7 @@ import java.util.concurrent.TimeoutException;
          */
         public AsyncUserDBUpdateTask(long timeout_, TimeUnit timeUnit_,
                                      Collection<IDatabaseUpdater> daosToUpdate_,
-                                     OnAsyncTaskPostExecute postExecuteLis_) {
+                                     OnAsyncTaskExecute postExecuteLis_) {
             _timeout = timeout_;
             _timeUnit = timeUnit_;
             _userUpdaters = daosToUpdate_;
@@ -79,13 +76,13 @@ import java.util.concurrent.TimeoutException;
 
 
             if(!futureResults.isEmpty() && futureResults.size() > 0){
-                for(IDatabaseUpdater updater : _userUpdaters){
-                    updater.updateUsersToDB(futureResults);
+                if(_userUpdaters!=null){
+                    for(IDatabaseUpdater updater : _userUpdaters){
+                        updater.updateUsersToDB(futureResults);
+                    }
                 }
             }
-
             return futureResults;
-
         }
 
         @Override

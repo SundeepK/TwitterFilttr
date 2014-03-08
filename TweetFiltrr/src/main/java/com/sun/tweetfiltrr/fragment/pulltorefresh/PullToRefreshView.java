@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.concurrent.AsyncUserDBUpdateTask;
-import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskPostExecute;
+import com.sun.tweetfiltrr.concurrent.api.OnAsyncTaskExecute;
 import com.sun.tweetfiltrr.customviews.views.ZoomListView;
 import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.fragment.api.IFragmentCallback;
@@ -37,7 +37,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  * Created by Sundeep on 12/01/14.
  */
 public class PullToRefreshView<T> implements IFragmentCallback, OnRefreshListener,
-        OnAsyncTaskPostExecute<T>, IProgress {
+        OnAsyncTaskExecute<T>, IProgress {
 
     private static final String TAG = PullToRefreshView.class.getName();
     private PullToRefreshLayout _pullToRefreshView;

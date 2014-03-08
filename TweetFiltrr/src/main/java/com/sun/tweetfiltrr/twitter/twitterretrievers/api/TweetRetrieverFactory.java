@@ -6,7 +6,8 @@ import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.callables.MentionsRetrieverCallable;
-import com.sun.tweetfiltrr.twitter.callables.TimeLineRetrieverCallable;
+import com.sun.tweetfiltrr.twitter.callables.TwitterAPICallable;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.KeywordTweetRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.MentionsRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.TimeLineRetriever;
@@ -27,23 +28,24 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class TweetRetrieverWrapper {
+public class TweetRetrieverFactory {
 
-	private static final String TAG = TweetRetrieverWrapper.class.getName();
+	private static final String TAG = TweetRetrieverFactory.class.getName();
 	private ExecutorService _executor;
     @Inject MentionsTweetProcessor _mentionsTweetProcessor;
     @Inject KeywordTweetProcessor _keywordTweetProcessor;
     @Inject PlainTweetProcessor _plainTweetProcessor;
     @Inject TwitterPageParameter _pageBasedTwitterParam;
     @Inject TwitterQueryParameter _queryBasedTwitterParam;
+    @Inject ConversationRetriever _conversationRetriever;
 
     @Inject
-	public TweetRetrieverWrapper(ExecutorService executor_){
+	public TweetRetrieverFactory(ExecutorService executor_){
         Log.v(TAG,"im creating wrapper");
 		_executor = executor_;
 	}
 
-    public TweetRetrieverWrapper(ExecutorService executor_, ThreadLocal<SimpleDateFormat> daterFormat_){
+    public TweetRetrieverFactory(ExecutorService executor_, ThreadLocal<SimpleDateFormat> daterFormat_){
         _executor = executor_;
     }
 
@@ -89,7 +91,7 @@ public class TweetRetrieverWrapper {
 
         for (ParcelableUser user : friendsWithKeywords_) {
             Callable<Collection<ParcelableUser>> r =
-                    new TimeLineRetrieverCallable(user, retriever, onFailLis_);
+                    new TwitterAPICallable(user, retriever, onFailLis_);
             Log.v(TAG, "creating callable for tweet keyword search for user " + user.toString());
             callables.add(r);
 
@@ -104,9 +106,12 @@ public class TweetRetrieverWrapper {
 
         ITwitterAPICall<Collection<ParcelableUser>> retriever = new TimeLineRetriever(_plainTweetProcessor, _pageBasedTwitterParam,
                     shouldRunOnce_, shouldLookForOldTweets);
-            return new TimeLineRetrieverCallable(user_,retriever, onFailLis_);
+            return new TwitterAPICallable(user_,retriever, onFailLis_);
     }
 
+    public Callable<Collection<ParcelableUser>> getTweetConvoRetriever(ParcelableUser user_, ITwitterAPICallStatus onFailLis_){
+        return new TwitterAPICallable(user_,_conversationRetriever, onFailLis_);
+    }
 
     /**
      * Fires an asynchronous thread to retrieve tweets in a background thread, and returns the last {@link ParcelableUser}

@@ -12,14 +12,12 @@ import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
-public class ConversationAdapter extends ArrayAdapter<ParcelableUser> implements ConversationRetriever.OnConvoLoadListener {
+public class ConversationAdapter extends ArrayAdapter<ParcelableUser>  {
 
     private static final int TYPE_MAX_COUNT = 2;
     private static final int RIGHT_MSG = 1;
@@ -36,12 +34,6 @@ public class ConversationAdapter extends ArrayAdapter<ParcelableUser> implements
         _currentUser = user_;
     }
 
-
-    @Override
-    public void onLoadFinish(LinkedList<ParcelableUser> conversation_) {
-        clear();
-        addAll(conversation_);
-    }
 
     @Override
     public int getViewTypeCount() {

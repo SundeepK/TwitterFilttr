@@ -4,6 +4,7 @@ import com.sun.tweetfiltrr.parcelable.parcelable.api.ICachedUser;
 
 /**
  * Created by Sundeep.Kahlon on 12/02/14.
+ *
  */
 public interface ITwitterAPICall<T> {
 
@@ -12,7 +13,8 @@ public interface ITwitterAPICall<T> {
         POST_TWEET,
         GET_TIMELINE,
         GET_FRIENDS,
-        POST_FAVOURITE;
+        POST_FAVOURITE,
+        GET_CONVO
     }
 
     public ITwitterAPICall.TwitterAPICallType getTweetOperationType();
