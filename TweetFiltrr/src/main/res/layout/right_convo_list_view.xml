@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- Layout for individual news entries in a list -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#99000000"
-        >
+    android:background="#000"
+    >
 
 
-    <TextView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/timeline_friend_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,9 +16,10 @@
         android:padding="5dp"
         android:textColor="#F0F0F0"
         android:textSize="16sp"
+        custom:typeface="robotoThin"
         android:textStyle="bold" />
-    
-        <TextView
+
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/timeline_date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,24 +27,25 @@
         android:layout_alignParentTop="true"
         android:padding="5dp"
         android:textColor="#F0F0F0"
+        custom:typeface="robotoThin"
         android:textSize="12sp"
         />
 
 
     <ImageView
         android:id="@+id/user_profile_imageview"
-        android:layout_height="40dp"
-        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_width="50dp"
         android:layout_below="@+id/timeline_friend_name"
         android:layout_alignParentRight="true"
         />
 
-    <TextView
+    <com.sun.tweetfiltrr.customviews.views.TypeFaceView
         android:id="@+id/timeline_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bubblerightconvo"
-        android:paddingRight="5dp"
+        android:paddingRight="15dp"
         android:paddingBottom="15dp"
         android:paddingTop="15dp"
         android:paddingLeft="15dp"
@@ -52,6 +53,7 @@
         android:layout_marginRight="3dp"
         android:layout_marginTop="15dp"
         android:textSize="16sp"
+        custom:typeface="robotoLight"
         android:layout_toLeftOf="@+id/user_profile_imageview"
         android:layout_below="@+id/timeline_friend_name"
        />

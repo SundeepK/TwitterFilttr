@@ -85,7 +85,7 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         friends.add(_currentUser);
 
         final ArrayAdapter<ParcelableUser> _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row, friends, _sicImageLoader, onTweetOperationListener);
-        ConversationAdapter _convoAdapter = new ConversationAdapter(this, R.layout.left_convo_list_view, _convoUsers, _sicImageLoader);
+        ConversationAdapter _convoAdapter = new ConversationAdapter(this, _convoUsers, _sicImageLoader, _currentUser);
         _conversationDisplayer = new UserConversationDisplayer("Select Friends", this,
                 R.layout.conversation_listview
                 , _convoAdapter);
