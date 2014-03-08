@@ -1,41 +1,46 @@
 package com.sun.tweetfiltrr.activity.activities;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
-import android.widget.AbsListView;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.sun.imageloader.core.ImageSettings;
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.imageloader.core.api.FailedTaskReason;
 import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.activity.adapter.mergeadapters.ConversationAdapter;
 import com.sun.tweetfiltrr.activity.adapter.mergeadapters.SingleTweetAdapter;
 import com.sun.tweetfiltrr.application.TweetConvoModule;
 import com.sun.tweetfiltrr.application.TweetFiltrrApplication;
 import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
+import com.sun.tweetfiltrr.fragment.fragments.ConversationFragment;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
 import com.sun.tweetfiltrr.merge.MergeAdapter;
-import com.sun.tweetfiltrr.multipleselector.impl.UserConversationDisplayer;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
-import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.utils.FileImageProcessorUtils;
+import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,17 +51,11 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class TweetConversationActivity extends SherlockFragmentActivity implements ImageTaskListener {
 	private static final String TAG = TweetConversationActivity.class.getName();
-    private static final int TOP_HEIGHT = 700;
     private static final String BLURRED_IMAGE_PREFIX = "blurred_";
     private ParcelableUser _currentUser;
-    private ImageView _blurredBackground;
-    private Handler _currentHandler = new Handler();
-    private UserConversationDisplayer _conversationDisplayer;
-    private float alpha;
-
+    private SlidingMenu _convoFragment;
     @Inject TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
-    @Inject ExecutorService _threadExecutor;
     @Inject @Named("blurred") IImageProcessor _blurredImageProcessor;
 
     @Override
@@ -69,85 +68,80 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         objectGraph.inject(this);
 
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
+        //load sliding fragment for convo
+        _convoFragment = new SlidingMenu(this);
+        final Fragment convoFragment = new ConversationFragment();
+        final Bundle userBundle = new Bundle();
 
+        userBundle.putParcelable(TwitterConstants.FRIENDS_BUNDLE, _currentUser);
+        convoFragment.setArguments(userBundle);
+        Log.v(TAG, "current user is " + _currentUser.getScreenName());
+        if(Build.VERSION.SDK_INT  < 16 ){
+            _convoFragment.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        }else{
+            _convoFragment.setBackground(new ColorDrawable(Color.BLACK));
+        }
+        _convoFragment.setFadeDegree(0.35f);
+        _convoFragment.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
+        _convoFragment.setMenu(R.layout.sliding_menu_fragment);
+        _convoFragment.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        _convoFragment.setMode(SlidingMenu.RIGHT);
+        _convoFragment.setBehindOffset(100);
+        _convoFragment.setFadeEnabled(true);
+        //set tweet convo fragment
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.menu_frame, convoFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
         final SmoothProgressBar progressBar = (SmoothProgressBar) findViewById(R.id.progress_bar);
         final SmoothProgressBarWrapper smoothProgressBarWrapper = new SmoothProgressBarWrapper(progressBar);
         final SingleTweetAdapter.OnTweetOperation onTweetOperationListener
                 = new TweetOperationController(smoothProgressBarWrapper, _timelineDao);
 
-       // _blurredBackground = (ImageView) findViewById(R.id.blurred_user_background_image);
-      //  final ImageView backgroundProfileImage = (ImageView) findViewById(R.id.user_background_image);
-//        final View headerView = new View(this);
-//        headerView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, TOP_HEIGHT));
         final ListView listview = (ListView) findViewById(android.R.id.list);
-        List<ParcelableUser> _convoUsers = new ArrayList<ParcelableUser>();
         List<ParcelableUser> friends = new ArrayList<ParcelableUser>();
         friends.add(_currentUser);
 
-        final ArrayAdapter<ParcelableUser> _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row, friends, _sicImageLoader, onTweetOperationListener);
-        ConversationAdapter _convoAdapter = new ConversationAdapter(this, _convoUsers, _sicImageLoader, _currentUser);
-        _conversationDisplayer = new UserConversationDisplayer("Select Friends", this,
-                R.layout.conversation_listview
-                , _convoAdapter);
+        final ArrayAdapter<ParcelableUser> _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row,
+                friends, _sicImageLoader, onTweetOperationListener);
         final MergeAdapter mergeAdapter = new MergeAdapter();
-
-        mergeAdapter.addAdapter(_singleTweetAdapter);
-        mergeAdapter.addAdapter(_convoAdapter);
-
-        Collection<ParcelableTweet> tweet = _currentUser.getUserTimeLine();
-        final ImageView headerView = new ImageView(this);
-        headerView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, TOP_HEIGHT));
-
-        if(!tweet.isEmpty()){
-            ParcelableTweet tweetToLoad = tweet.iterator().next();
-      //      ImageLoaderUtils.attemptLoadImage(headerView, _sicImageLoader,tweetToLoad.getPhotoUrl() , 1, null);
-        }
-
-        listview.addHeaderView(headerView);
-        listview.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+        //load media image
+        final ImageView mediaPhoto =  (ImageView) findViewById(R.id.media_photo_imageview);
+        final Collection<ParcelableTweet> tweets = _currentUser.getUserTimeLine();
+        if(!tweets.isEmpty()){
+            final ParcelableTweet tweet = tweets.iterator().next();
+            final String photoUrl = tweet.getPhotoUrl();
+            if(!TextUtils.isEmpty(photoUrl)){
+                mediaPhoto.setVisibility(View.VISIBLE);
+                ImageLoaderUtils.attemptLoadImage(mediaPhoto,_sicImageLoader,photoUrl,1,null);
             }
+        }
+        mergeAdapter.addAdapter(_singleTweetAdapter);
+        listview.setAdapter(mergeAdapter);
+        Button showConvo = (Button) findViewById(R.id.show_convo_But);
+        showConvo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                alpha = (float) -headerView.getTop() / (float) TOP_HEIGHT;
-                if (alpha > 1) {
-                    alpha = 1;
-                }
-                alpha *= 4;
-                Log.v(TAG, "alpha value is: " + alpha);
-//                _blurredBackground.setAlpha(alpha);
-//                _blurredBackground.setTop(headerView.getTop() / 2);
-//                backgroundProfileImage.setTop(headerView.getTop() / 2);
+            public void onClick(View v) {
+                _convoFragment.showMenu();
             }
         });
-
-      //  ImageLoaderUtils.attemptLoadImage(backgroundProfileImage, _sicImageLoader,
-   //             _currentUser.getProfileBackgroundImageUrl(), 2, this);
-        listview.setAdapter(mergeAdapter);
-        loadConversation();
         overridePendingTransition(R.anim.display_anim_bot_to_top, 0);
     }
 
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.display_anim_top_bot_top, R.anim.display_anim_top_bot_top );
-    }
-
-
-    private void loadConversation(){
-        ParcelableTweet tweet = _currentUser.getUserTimeLine().iterator().next();
-        if(tweet.getInReplyToUserId() > 0){
-        ConversationRetriever convoRetriever = new ConversationRetriever(_currentUser, _timelineDao, _conversationDisplayer, _currentHandler);
-        _threadExecutor.execute(convoRetriever);
+        if(_convoFragment.isActivated()){
+            _convoFragment.toggle();
+        }else{
+            super.onBackPressed();
+            finish();
+            overridePendingTransition(R.anim.display_anim_top_bot_top, R.anim.display_anim_top_bot_top );
         }
     }
 
     @Override
     public void preImageLoad(ImageSettings imageSettings) {
-
     }
 
     @Override
@@ -157,12 +151,10 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         final Bitmap blurredBitmap = FileImageProcessorUtils.loadImage(imageFilePath,bitmap,_blurredImageProcessor,
                 Bitmap.CompressFormat.JPEG, 80, this);
         Log.v(TAG, "Image file path is " + imageFilePath);
-       _blurredBackground.setImageBitmap(blurredBitmap);
     }
 
     @Override
     public void onImageLoadFail(FailedTaskReason failedTaskReason, ImageSettings imageSettings) {
-
     }
 
     private void updateView(int screenWidth, ImageView imageview, Bitmap blurred) {

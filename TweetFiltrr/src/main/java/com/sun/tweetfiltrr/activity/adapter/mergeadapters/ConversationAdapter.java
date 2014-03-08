@@ -4,20 +4,22 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sun.imageloader.core.UrlImageLoader;
 import com.sun.tweetfiltrr.R;
-import com.sun.tweetfiltrr.multipleselector.impl.AItemSelector;
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
-public class ConversationAdapter extends AItemSelector<ParcelableUser> {
+public class ConversationAdapter extends ArrayAdapter<ParcelableUser> implements ConversationRetriever.OnConvoLoadListener {
 
     private static final int TYPE_MAX_COUNT = 2;
     private static final int RIGHT_MSG = 1;
@@ -34,9 +36,11 @@ public class ConversationAdapter extends AItemSelector<ParcelableUser> {
         _currentUser = user_;
     }
 
+
     @Override
-    public Collection<ParcelableUser> getAllSelectedItems() {
-        return null;
+    public void onLoadFinish(LinkedList<ParcelableUser> conversation_) {
+        clear();
+        addAll(conversation_);
     }
 
     @Override

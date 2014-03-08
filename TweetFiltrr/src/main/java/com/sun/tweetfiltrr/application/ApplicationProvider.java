@@ -11,6 +11,7 @@ import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
 import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
+import com.sun.tweetfiltrr.fragment.fragments.ConversationFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.MentionsTab;
 import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
@@ -52,7 +53,8 @@ import dagger.Provides;
                 EditKeywordGroupActivity.class,
                 ASignInFragment.class,
                 ATwitterActivity.class,
-                UserProfileHomeActivity.class
+                UserProfileHomeActivity.class,
+                ConversationFragment.class
         },
         complete = false
 )

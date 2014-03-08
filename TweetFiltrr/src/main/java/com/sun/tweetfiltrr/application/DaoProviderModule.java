@@ -16,6 +16,7 @@ import com.sun.tweetfiltrr.fragment.api.ASignInFragment;
 import com.sun.tweetfiltrr.fragment.api.ATimelineFragment;
 import com.sun.tweetfiltrr.fragment.api.AUsersFragment;
 import com.sun.tweetfiltrr.fragment.fragments.AutoSignInFragmentI;
+import com.sun.tweetfiltrr.fragment.fragments.ConversationFragment;
 import com.sun.tweetfiltrr.fragment.fragments.CustomKeywordTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.FollowersTab;
 import com.sun.tweetfiltrr.fragment.fragments.FriendsTab;
@@ -57,7 +58,8 @@ import dagger.Provides;
                 AutoSignInFragmentI.class,
                 OAuthSignInFragment.class,
                 ASignInFragment.class,
-                KeywordTweetUpdateRetriever.class
+                KeywordTweetUpdateRetriever.class,
+                ConversationFragment.class
 //                TweetConversationActivity.class
         },
         complete = false

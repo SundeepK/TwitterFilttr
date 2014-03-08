@@ -39,8 +39,7 @@ public abstract class ASignInFragment extends SherlockFragment implements ImageT
 
     private static final String TAG = ASignInFragment.class.getName();
     private ImageView _profile;
-    @Inject
-    UrlImageLoader _sicImageLoader;
+    @Inject UrlImageLoader _sicImageLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
