@@ -31,37 +31,29 @@
         />
 
 
+    <ImageView
+        android:id="@+id/user_profile_imageview"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:layout_below="@+id/timeline_friend_name"
+
+        />
+
     <TextView
         android:id="@+id/timeline_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/timeline_friend_name"
-        android:layout_below="@id/timeline_friend_name"
-        android:padding="5dp"
+        android:background="@drawable/bubbleright"
+        android:paddingRight="5dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:paddingLeft="15dp"
         android:textColor="#F0F0F0"
-        android:textSize="16sp" />
-
-    <!--android:background="#cc000000"-->
-
-    <!--<Button-->
-        <!--android:id="@+id/show_conversation"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignLeft="@id/timeline_entry"-->
-        <!--android:layout_below="@id/timeline_entry"-->
-        <!--android:layout_marginLeft="5dp"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:minHeight="25dp"-->
-        <!--android:minWidth="25dp"-->
-        <!--android:padding="5dp"-->
-        <!--android:textSize="12sp"-->
-        <!--android:gravity="right|center_vertical"-->
-        <!--android:text="  View conversation"-->
-        <!--android:drawableLeft="@drawable/speech_bubble"-->
-        <!--android:background="@drawable/standardbutton"-->
-        <!--android:textStyle="bold"-->
-        <!--android:visibility="gone"-->
-            <!--/>-->
-
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="15dp"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/user_profile_imageview"
+        android:layout_below="@+id/timeline_friend_name"
+       />
 
 </RelativeLayout>

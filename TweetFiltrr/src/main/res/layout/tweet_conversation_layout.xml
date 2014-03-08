@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00000000"
+                android:background="#000"
         >
 
     <!--android:background="#00000000"-->
@@ -32,17 +32,17 @@
 
 
 
-    <ImageView
-            android:id="@+id/user_background_image"
-            android:layout_width="match_parent"
-            android:layout_height="800dp"
-            android:scaleType="centerCrop"/>
+    <!--<ImageView-->
+            <!--android:id="@+id/user_background_image"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="800dp"-->
+            <!--android:scaleType="centerCrop"/>-->
 
-    <ImageView
-            android:id="@+id/blurred_user_background_image"
-            android:layout_width="match_parent"
-            android:layout_height="800dp"
-            android:scaleType="centerCrop"/>
+    <!--<ImageView-->
+            <!--android:id="@+id/blurred_user_background_image"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="800dp"-->
+            <!--android:scaleType="centerCrop"/>-->
 
 
     <!--<fragment  android:name="com.tweetfilttr.fragment.TweetButtons"-->

@@ -29,7 +29,6 @@ import com.sun.tweetfiltrr.smoothprogressbarwrapper.SmoothProgressBarWrapper;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.TweetOperationController;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.utils.FileImageProcessorUtils;
-import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
 import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 
@@ -76,8 +75,8 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         final SingleTweetAdapter.OnTweetOperation onTweetOperationListener
                 = new TweetOperationController(smoothProgressBarWrapper, _timelineDao);
 
-        _blurredBackground = (ImageView) findViewById(R.id.blurred_user_background_image);
-        final ImageView backgroundProfileImage = (ImageView) findViewById(R.id.user_background_image);
+       // _blurredBackground = (ImageView) findViewById(R.id.blurred_user_background_image);
+      //  final ImageView backgroundProfileImage = (ImageView) findViewById(R.id.user_background_image);
 //        final View headerView = new View(this);
 //        headerView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, TOP_HEIGHT));
         final ListView listview = (ListView) findViewById(android.R.id.list);
@@ -86,7 +85,7 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         friends.add(_currentUser);
 
         final ArrayAdapter<ParcelableUser> _singleTweetAdapter = new SingleTweetAdapter(this, R.layout.single_tweet_list_row, friends, _sicImageLoader, onTweetOperationListener);
-        ConversationAdapter _convoAdapter = new ConversationAdapter(this, R.layout.timeline_list_view, _convoUsers);
+        ConversationAdapter _convoAdapter = new ConversationAdapter(this, R.layout.left_convo_list_view, _convoUsers, _sicImageLoader);
         _conversationDisplayer = new UserConversationDisplayer("Select Friends", this,
                 R.layout.conversation_listview
                 , _convoAdapter);
@@ -101,7 +100,7 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
 
         if(!tweet.isEmpty()){
             ParcelableTweet tweetToLoad = tweet.iterator().next();
-            ImageLoaderUtils.attemptLoadImage(headerView, _sicImageLoader,tweetToLoad.getPhotoUrl() , 1, null);
+      //      ImageLoaderUtils.attemptLoadImage(headerView, _sicImageLoader,tweetToLoad.getPhotoUrl() , 1, null);
         }
 
         listview.addHeaderView(headerView);
@@ -117,14 +116,14 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
                 }
                 alpha *= 4;
                 Log.v(TAG, "alpha value is: " + alpha);
-                _blurredBackground.setAlpha(alpha);
-                _blurredBackground.setTop(headerView.getTop() / 2);
-                backgroundProfileImage.setTop(headerView.getTop() / 2);
+//                _blurredBackground.setAlpha(alpha);
+//                _blurredBackground.setTop(headerView.getTop() / 2);
+//                backgroundProfileImage.setTop(headerView.getTop() / 2);
             }
         });
 
-        ImageLoaderUtils.attemptLoadImage(backgroundProfileImage, _sicImageLoader,
-                _currentUser.getProfileBackgroundImageUrl(), 2, this);
+      //  ImageLoaderUtils.attemptLoadImage(backgroundProfileImage, _sicImageLoader,
+   //             _currentUser.getProfileBackgroundImageUrl(), 2, this);
         listview.setAdapter(mergeAdapter);
         loadConversation();
         overridePendingTransition(R.anim.display_anim_bot_to_top, 0);

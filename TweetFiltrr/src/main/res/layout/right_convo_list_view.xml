@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Layout for individual news entries in a list -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#99000000"
+        >
+
+
+    <TextView
+        android:id="@+id/timeline_friend_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="5dp"
+        android:textColor="#F0F0F0"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+    
+        <TextView
+        android:id="@+id/timeline_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="5dp"
+        android:textColor="#F0F0F0"
+        android:textSize="12sp"
+        />
+
+
+    <ImageView
+        android:id="@+id/user_profile_imageview"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:layout_below="@+id/timeline_friend_name"
+        android:layout_alignParentRight="true"
+        />
+
+    <TextView
+        android:id="@+id/timeline_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bubblerightconvo"
+        android:paddingRight="5dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:paddingLeft="15dp"
+        android:textColor="#F0F0F0"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="15dp"
+        android:textSize="16sp"
+        android:layout_toLeftOf="@+id/user_profile_imageview"
+        android:layout_below="@+id/timeline_friend_name"
+       />
+
+</RelativeLayout>
