@@ -27,6 +27,7 @@ import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
 import com.sun.tweetfiltrr.twitter.tweetoperations.impl.KeywordTweetUpdateRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.AccessTokenRetrieverFromPref;
+import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetrieverFromDB;
 
 import javax.inject.Singleton;
 
@@ -59,7 +60,8 @@ import dagger.Provides;
                 OAuthSignInFragment.class,
                 ASignInFragment.class,
                 KeywordTweetUpdateRetriever.class,
-                ConversationFragment.class
+                ConversationFragment.class,
+                ConversationRetrieverFromDB.class
 //                TweetConversationActivity.class
         },
         complete = false

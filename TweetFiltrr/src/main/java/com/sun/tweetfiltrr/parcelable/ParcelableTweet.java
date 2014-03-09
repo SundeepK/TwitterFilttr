@@ -88,6 +88,31 @@ public class ParcelableTweet implements IParcelableTwitter {
 
     }
 
+    public ParcelableTweet(Status tweet, String dateCreated_, long friendID_, boolean isSwapped_) {
+
+        _tweetText = tweet.getText();
+        _tweetDate = dateCreated_;
+        _tweetID = tweet.getId();
+        _friendID = friendID_;
+        _inReplyToScreenName = tweet.getInReplyToScreenName();
+        //TODO check if this is an actual bug with twitter4j
+        if(isSwapped_){
+            _inReplyToUserId = tweet.getInReplyToStatusId() ;
+            _inReplyToTweetId =  tweet.getInReplyToUserId();
+        }else{
+            _inReplyToUserId = tweet.getInReplyToUserId();
+            _inReplyToTweetId = tweet.getInReplyToStatusId();
+        }
+
+        _isFavourite = tweet.isFavorited();
+        _isRetweeted = tweet.isRetweetedByMe();
+        Log.v(TAG, "is reteeted by me is :"  + _isRetweeted);
+        _photoUrl =getPhotoUrl(tweet.getMediaEntities());
+        _isKeyWordSearedTweet = false;
+        _isMention = false;
+
+    }
+
     private String getPhotoUrl(MediaEntity[] mediaEntries_)
     {
         //for now we'll just take the first entry

@@ -50,13 +50,13 @@ public class ConversationRetriever implements ITwitterAPICall<Collection<Parcela
         return convo;
     }
 
-    private ParcelableUser getReplyTweet(long tweetReplyId_, Twitter twitter_, SimpleDateFormat dateFormat_) throws TwitterException {
+    private ParcelableUser getReplyTweet(long tweetReplyId_, Twitter twitter_, SimpleDateFormat dateFormat_, boolean isSwapped) throws TwitterException {
         final Status replyTweet = twitter_.showStatus(tweetReplyId_);
         final User user = replyTweet.getUser();
         final ParcelableUser parcelableUser = new ParcelableUser(user);
         final ParcelableTweet parcelableTimeline = new ParcelableTweet(
                 replyTweet, dateFormat_.format(replyTweet
-                .getCreatedAt()), user.getId());
+                .getCreatedAt()), user.getId(), isSwapped);
         parcelableUser.addTimeLineEntry(parcelableTimeline);
         return parcelableUser;
     }
@@ -80,12 +80,12 @@ public class ConversationRetriever implements ITwitterAPICall<Collection<Parcela
                 //but we need to try both the reply tweetID and userID, since twitter4j mixes up it's getters
                 //for these values TODO
                 try {
-                    parcelableUser =  getReplyTweet(tweet.getInReplyToTweetId(), twitter_, dateFormat_);
+                    parcelableUser =  getReplyTweet(tweet.getInReplyToTweetId(), twitter_, dateFormat_, false);
                 } catch (TwitterException e) {
                     Log.v(TAG, "Cant retrieve reply tweet, so retrying with user ID");
 
                     try {
-                        parcelableUser =  getReplyTweet(tweet.getInReplyToUserId(), twitter_, dateFormat_);
+                        parcelableUser =  getReplyTweet(tweet.getInReplyToUserId(), twitter_, dateFormat_, true);
                     } catch (TwitterException e1) {
                         Log.v(TAG, "Cant retrieve reply tweet using User ID either");
                         e1.printStackTrace();
