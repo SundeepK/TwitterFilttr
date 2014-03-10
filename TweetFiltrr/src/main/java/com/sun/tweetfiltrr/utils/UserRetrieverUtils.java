@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.utils;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
@@ -49,6 +50,11 @@ public class UserRetrieverUtils {
     }
 
     public static ParcelableUser getUserFromBundle(Activity context_){
+        //TODO check if need to get rid of the below
+        Bundle bundle =  context_.getIntent().getExtras();
+        if(bundle != null){
+            bundle.setClassLoader(context_.getClassLoader());
+        }
         return context_.getIntent().getParcelableExtra(TwitterConstants.FRIENDS_BUNDLE);
     }
 

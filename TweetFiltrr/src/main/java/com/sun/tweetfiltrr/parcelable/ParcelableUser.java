@@ -1,6 +1,7 @@
 package com.sun.tweetfiltrr.parcelable;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.parcelable.api.IParcelableTwitter;
@@ -49,6 +50,8 @@ public class ParcelableUser implements IParcelableTwitter {
     private long _lastFollowerPageNumber;
     private ParcelableKeywordGroup _keywordGroup;
 
+
+    public ParcelableUser(){}
 
     public ParcelableUser(long userId_, String name_, String screenName_) {
 		_userId = userId_;
@@ -215,7 +218,7 @@ public class ParcelableUser implements IParcelableTwitter {
 
 
 
-	public static final Creator<ParcelableUser> CREATOR = new Creator<ParcelableUser>() {
+	public static final Parcelable.Creator<ParcelableUser> CREATOR = new Parcelable.Creator<ParcelableUser>() {
 		@Override
 		public ParcelableUser createFromParcel(Parcel in) {
 			return new ParcelableUser(in);

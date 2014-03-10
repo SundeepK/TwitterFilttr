@@ -60,7 +60,7 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 		setContentView(R.layout.tweet_conversation_layout);
 
         final ObjectGraph appObjectGraph = ((TweetFiltrrApplication) getApplication()).getObjectGraph();
@@ -68,6 +68,8 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         objectGraph.inject(this);
 
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
+//        _currentUser =  getIntent().getExtras().getParcelable(TwitterConstants.FRIENDS_BUNDLE);
+
         //load sliding fragment for convo
         _convoFragment = new SlidingMenu(this);
         final Fragment convoFragment = new ConversationFragment();
