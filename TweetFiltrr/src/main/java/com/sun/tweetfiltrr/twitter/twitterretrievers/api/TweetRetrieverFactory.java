@@ -81,9 +81,8 @@ public class TweetRetrieverFactory {
 //		return futures;
 //	}
 
-    public Collection<Callable<Collection<ParcelableUser>>>
-    getCallableRetrieverList(Collection<ParcelableUser> friendsWithKeywords_, boolean shouldRunOnce_,
-                             boolean shouldLookForOldTweets_, ITwitterAPICallStatus onFailLis_){
+    public Collection<Callable<Collection<ParcelableUser>>> getKeywordRetriever(Collection<ParcelableUser> friendsWithKeywords_, boolean shouldRunOnce_,
+                        boolean shouldLookForOldTweets_, ITwitterAPICallStatus onFailLis_){
         Collection<Callable<Collection<ParcelableUser>>> callables
                 = new ArrayList<Callable<Collection<ParcelableUser>>>();
         ITwitterAPICall<Collection<ParcelableUser>> retriever = new KeywordTweetRetriever(_keywordTweetProcessor, _queryBasedTwitterParam,
@@ -169,8 +168,5 @@ public class TweetRetrieverFactory {
 //        return futures;
 //    }
 
-	private Future<Collection<ParcelableUser>> fireAsyncTask(Callable<Collection<ParcelableUser>> callableToExecute_){
-        return _executor.submit(callableToExecute_);
-	}
 
 }

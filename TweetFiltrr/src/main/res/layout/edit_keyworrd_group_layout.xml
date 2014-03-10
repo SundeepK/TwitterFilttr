@@ -28,7 +28,7 @@
     <Button
         android:id="@+id/load_friends_but"
         android:layout_height="wrap_content"
-        android:background="#525252"
+        android:background="@drawable/generic_button"
         android:layout_margin="10dp"
         android:textColor="#fff"
         android:layout_width="match_parent" />
@@ -36,7 +36,7 @@
     <Button
         android:id="@+id/save_group_but"
         android:layout_height="wrap_content"
-        android:background="#525252"
+        android:background="@drawable/generic_button"
         android:layout_margin="10dp"
         android:text="Save"
         android:textColor="#fff"

@@ -49,11 +49,12 @@ import dagger.ObjectGraph;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 
-public class TweetConversationActivity extends SherlockFragmentActivity implements ImageTaskListener {
+public class TweetConversationActivity extends SherlockFragmentActivity implements ImageTaskListener, SlidingMenu.OnClosedListener {
 	private static final String TAG = TweetConversationActivity.class.getName();
     private static final String BLURRED_IMAGE_PREFIX = "blurred_";
     private ParcelableUser _currentUser;
     private SlidingMenu _convoFragment;
+    private boolean _isSlidingMenuOpen;
     @Inject TimelineDao _timelineDao;
     @Inject UrlImageLoader _sicImageLoader;
     @Inject @Named("blurred") IImageProcessor _blurredImageProcessor;
@@ -90,6 +91,7 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         _convoFragment.setMode(SlidingMenu.RIGHT);
         _convoFragment.setBehindOffset(100);
         _convoFragment.setFadeEnabled(true);
+        _convoFragment.setOnClosedListener(this);
         //set tweet convo fragment
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.menu_frame, convoFragment);
@@ -124,7 +126,8 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
         showConvo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _convoFragment.showMenu();
+                TweetConversationActivity.this._convoFragment.showMenu();
+                TweetConversationActivity.this._isSlidingMenuOpen = true;
             }
         });
         overridePendingTransition(R.anim.display_anim_bot_to_top, 0);
@@ -133,8 +136,9 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
 
     @Override
     public void onBackPressed() {
-        if(_convoFragment.isActivated()){
+        if(_isSlidingMenuOpen){
             _convoFragment.toggle();
+            _isSlidingMenuOpen = false;
         }else{
             super.onBackPressed();
             finish();
@@ -166,5 +170,10 @@ public class TweetConversationActivity extends SherlockFragmentActivity implemen
                 * ((float) screenWidth) / (float) blurred.getWidth())));
         imageview.setImageBitmap(bmpBlurred);
 
+    }
+
+    @Override
+    public void onClosed() {
+        _isSlidingMenuOpen = false;
     }
 }

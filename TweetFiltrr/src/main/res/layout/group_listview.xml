@@ -34,6 +34,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="@drawable/generic_button"
         android:textColor="#9E9E9E"
         android:padding="5dp"
         android:text="Save group"

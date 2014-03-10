@@ -4,21 +4,21 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.util.Log;
 
-import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.database.dao.impl.FriendDao;
 import com.sun.tweetfiltrr.database.dao.impl.FriendKeywordDao;
-import com.sun.tweetfiltrr.database.dao.api.IDBDao;
 import com.sun.tweetfiltrr.database.dao.impl.TimelineDao;
-import com.sun.tweetfiltrr.database.dbupdater.api.IDBUpdater;
-import com.sun.tweetfiltrr.database.dbupdater.impl.SimpleDBUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
+import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
 import com.sun.tweetfiltrr.database.tables.TimelineTable;
-import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
+import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.IKeywordUpdateRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverFactory;
+import com.sun.tweetfiltrr.utils.DateUtils;
 import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import java.text.SimpleDateFormat;
@@ -47,8 +47,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
     private static final String SEARCH_RESOURCE_KEY = "/users/search";
     private TweetRetrieverFactory _tweetRetriever;
     private ExecutorService _taskExecutor;
-    private IDBUpdater<ParcelableUser> _dbUserUpdater;
-    private IDBUpdater<ParcelableTweet> _dbTimelineUpdater;
+    private Collection<IDatabaseUpdater> _userDaoUpdaters;
 
     @Inject FriendDao _friendDao;
     @Inject TimelineDao _timelineDao;
@@ -56,9 +55,15 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
     public KeywordTweetUpdateRetriever(ExecutorService taskExecutor_, ContentResolver resolver_) {
         _taskExecutor = taskExecutor_;
-        _dbTimelineUpdater = new SimpleDBUpdater<ParcelableTweet>();
-        _dbUserUpdater = new SimpleDBUpdater<ParcelableUser>();
-
+        _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
+        _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
+        String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
+                FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.COLUMN_MAXID.s(), FriendTable.FriendColumn.COLUMN_SINCEID.s(),
+                FriendTable.FriendColumn.MAXID_FOR_MENTIONS.s(), FriendTable.FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendTable.FriendColumn.FOLLOWER_COUNT.s()
+                , FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),
+                FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s(),
+                FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s()};
+        _userDaoUpdaters.add(new DatabaseUpdater(_friendDao,cols ));
         for(String s :DBUtils.getprojections(TimelineTable.TimelineColumn.values()) ){
             Log.v(TAG, "DB columns for timeline: " +s );
 
@@ -117,26 +122,22 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
     }
 
     private void flushDBEntries(List<Future<Collection<ParcelableUser>>> updatedFutures_) throws ExecutionException, InterruptedException {
-        Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
-        Collection<ParcelableTweet> timeLines = new ArrayList<ParcelableTweet>();
-        Collection<IDBDao<ParcelableUser>> userDao = new ArrayList<IDBDao<ParcelableUser>>();
-        Collection<IDBDao<ParcelableTweet>> timelineDao = new ArrayList<IDBDao<ParcelableTweet>>();
-        timelineDao.add(_timelineDao);
-        userDao.add(_friendDao);
+        final SimpleDateFormat dateFormat = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal().get();
+        final Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
         for(Future<Collection<ParcelableUser>> futureUser : updatedFutures_){
             Collection<ParcelableUser> user = futureUser.get();
             if(user != null){
                 users.addAll(user);
             }
         }
-
+        final String lastUpdateTime = dateFormat.format(DateUtils.getCurrentDate());
         for(ParcelableUser user : users){
-            timeLines.addAll(user.getUserTimeLine());
+            user.setLastUpadateDate(lastUpdateTime);
         }
 
-        //Update DB
-        _dbTimelineUpdater.flushToDB(timelineDao, timeLines);
-        _dbUserUpdater.flushToDB(userDao, users);
+        for(IDatabaseUpdater updater : _userDaoUpdaters){
+            updater.updateUsersToDB(users);
+        }
     }
 
 
@@ -165,7 +166,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
 
     private Collection<Callable<Collection<ParcelableUser>>> lookForNewKeywordTweets(Collection<ParcelableUser> friends_){
-        return  _tweetRetriever.getCallableRetrieverList(friends_, false, false, this);
+        return  _tweetRetriever.getKeywordRetriever(friends_, false, false, this);
     }
 
 

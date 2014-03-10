@@ -166,7 +166,6 @@ public class UserProfileHomeActivity extends ATwitterActivity implements
         CircleCroppedDrawable d = new CircleCroppedDrawable(bitmap_);
         imageView_.setImageBitmap(null);
         imageView_.setImageDrawable(d);
-        imageView_.setBackground(d);
     }
 
 
