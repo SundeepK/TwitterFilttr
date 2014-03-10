@@ -8,7 +8,9 @@ import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,9 +49,19 @@ public class ConversationRetrieverFromDB {
     }
 
     public Collection<ParcelableUser> getConversationFromDB(ParcelableTweet tweetsToLookUp_){
-        Collection<ParcelableUser> users = new LinkedList<ParcelableUser>();
+        List<ParcelableUser> users = new LinkedList<ParcelableUser>();
         if(hasConversationInDB(tweetsToLookUp_)){
             getConvo(users, tweetsToLookUp_);
+        }
+        Collections.reverse(users);
+
+        //add the original tweet as well
+        Collection<ParcelableUser> lastUser = getUserFromDB(tweetsToLookUp_.getFriendID());
+        if(!users.isEmpty()){
+            ParcelableUser user = lastUser.iterator().next();
+            //if no more tweets, then add the original one
+            user.getUserTimeLine().add(tweetsToLookUp_);
+            users.add(user);
         }
         return users;
     }
