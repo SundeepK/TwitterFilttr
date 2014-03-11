@@ -50,13 +50,25 @@ public class ConversationRetriever implements ITwitterAPICall<Collection<Parcela
         return convo;
     }
 
-    private ParcelableUser getReplyTweet(long tweetReplyId_, Twitter twitter_, SimpleDateFormat dateFormat_, boolean isSwapped) throws TwitterException {
+    private ParcelableUser getReplyTweet(long tweetReplyId_, ParcelableTweet tweet, Twitter twitter_, SimpleDateFormat dateFormat_, boolean isSwapped) throws TwitterException {
         final Status replyTweet = twitter_.showStatus(tweetReplyId_);
         final User user = replyTweet.getUser();
         final ParcelableUser parcelableUser = new ParcelableUser(user);
         final ParcelableTweet parcelableTimeline = new ParcelableTweet(
                 replyTweet, dateFormat_.format(replyTweet
                 .getCreatedAt()), user.getId(), isSwapped);
+        if(tweet.isFavourite()){
+            parcelableTimeline.setIsFavourite(true);
+        }
+        if(tweet.isMention()){
+            parcelableTimeline.setIsMention(true);
+        }
+        if(tweet.isRetweeted()){
+            parcelableTimeline.setIsRetweeted(true);
+        }
+        if(tweet.isKeyWordSearchedTweet()){
+            parcelableTimeline.setIsKeyWordSearedTweet(true);
+        }
         parcelableUser.addTimeLineEntry(parcelableTimeline);
         return parcelableUser;
     }
@@ -80,12 +92,12 @@ public class ConversationRetriever implements ITwitterAPICall<Collection<Parcela
                 //but we need to try both the reply tweetID and userID, since twitter4j mixes up it's getters
                 //for these values TODO
                 try {
-                    parcelableUser =  getReplyTweet(tweet.getInReplyToTweetId(), twitter_, dateFormat_, false);
+                    parcelableUser =  getReplyTweet(tweet.getInReplyToTweetId(), tweet, twitter_, dateFormat_, false);
                 } catch (TwitterException e) {
                     Log.v(TAG, "Cant retrieve reply tweet, so retrying with user ID");
 
                     try {
-                        parcelableUser =  getReplyTweet(tweet.getInReplyToUserId(), twitter_, dateFormat_, true);
+                        parcelableUser =  getReplyTweet(tweet.getInReplyToUserId(), tweet, twitter_, dateFormat_, true);
                     } catch (TwitterException e1) {
                         Log.v(TAG, "Cant retrieve reply tweet using User ID either");
                         e1.printStackTrace();
@@ -97,84 +109,5 @@ public class ConversationRetriever implements ITwitterAPICall<Collection<Parcela
             }
         }
     }
-
-//	public ConversationRetriever(
-//			ParcelableTweet tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
-//	
-//		_tweetFirsInConvo = tweetFirsInConvo_;
-//		_timelineDao = timelineDao_;
-//		Calendar calender = Calendar.getInstance();
-//		calender.add(Calendar.DATE, -1);
-//		_today = calender.getTime();
-//		_dateFormat = new SimpleDateFormat(
-//				TwitterConstants.SIMPLE_DATE_FORMATE);
-//		_onFinishLis = onFinishLis_;
-//	}
-	
-//	protected ConversationRetriever(Handler timelineHandler_, int flag_,
-//			ParcelableTweet tweetFirsInConvo_, TimelineDao timelineDao_, OnConversationLoadFinish onFinishLis_ ) {
-//		super(timelineHandler_, flag_);
-//		_tweetFirsInConvo = tweetFirsInConvo_;
-//		_timelineDao = timelineDao_;
-//		Calendar calender = Calendar.getInstance();
-//		calender.add(Calendar.DATE, -1);
-//		_today = calender.getTime();
-//		_dateFormat = new SimpleDateFormat(
-//				TwitterConstants.SIMPLE_DATE_FORMATE);
-//		_onFinishLis = onFinishLis_;
-//	}
-
-//	@Override
-//	public void run() {
-//		Twitter twitter = TwitterUtil.getInstance().getTwitter();
-//
-//		//final LinkedList <ParcelableUser> convo = getSimilarTweets(twitter, _friend);
-//
-//		_currentHandler.post(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				_onFinishLis.onLoadFinish(convo);
-//			}
-//		});
-//
-//
-//	}
-	
-
-	
-//	private LinkedList <ParcelableUser> getSimilarTweets(Twitter twitter_, ParcelableUser tweetFirsInConvo_){
-//		LinkedList<ParcelableUser>  users =  null;
-//		try {
-//
-//			for(ParcelableTweet tweet : tweetFirsInConvo_.getUserTimeLine()){
-//				RelatedResults results =twitter_.getRelatedResults(tweet.getTweetID());
-//				ResponseList<Status> convos =	results.getTweetsWithReply();
-//				users = processTimeline(convos.iterator());
-//				break;
-//			}
-//		} catch (TwitterException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		return users;
-//	}
-
-
-//	private void  getConversationFromDB(ParcelableTweet tweetFirsInConvo_,
-//			Collection<ParcelableTweet> conversation_, TimelineDao timelineDao_){
-//		Collection<ParcelableTweet> convo =_timelineDao.getEntries(TimelineColumn.TWEET_ID.s() + "=?",
-//				new String[]{tweetFirsInConvo_.getInReplyToTweetId() + ""}, null);
-//		conversation_.addAll(convo);
-//		if(!convo.isEmpty() && convo.size() > 0){
-//			for(ParcelableTweet friend : convo){
-//				if(friend.getInReplyToTweetId() != 0){
-//					getConversationFromDB(friend, conversation_, timelineDao_);
-//				}
-//			}
-//		}
-//
-//	}
 
 }

@@ -67,8 +67,7 @@ public class ConversationFragment extends SherlockFragment implements ITwitterAP
         _dbUpdaters = new ArrayList<IDatabaseUpdater>();
         String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
                 FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.COLUMN_MAXID.s(), FriendTable.FriendColumn.COLUMN_SINCEID.s(),
-                FriendTable.FriendColumn.MAXID_FOR_MENTIONS.s(), FriendTable.FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendTable.FriendColumn.FOLLOWER_COUNT.s()
-                , FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),
+                FriendTable.FriendColumn.FOLLOWER_COUNT.s() , FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),
                 FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s()};
         _dbUpdaters.add(new DatabaseUpdater(_friendDao,cols ));
         _dbUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));

@@ -110,7 +110,7 @@ public class PostTweetActivity extends SherlockFragmentActivity implements ITwit
 
                 // make an empty tweet with only text since we only care about the text
                 // the tweet updated in the DB will be the one returned from twitter after the post is complete so this is safe
-                ParcelableTweet tweet = new ParcelableTweet(editText_.getText().toString(), "",0l,0l,"",0l,0l,"",false,false, false);
+                ParcelableTweet tweet = new ParcelableTweet(editText_.getText().toString(), "",0l,0l,"",0l,0l,"",false,false, false, false);
                 _user.addTimeLineEntry(tweet);
                 ITwitterAPICall<ParcelableTweet> postTweet = new PostTweet();
                 TweetOperationTask task = new TweetOperationTask(timelineDao_,_user, lis_ );

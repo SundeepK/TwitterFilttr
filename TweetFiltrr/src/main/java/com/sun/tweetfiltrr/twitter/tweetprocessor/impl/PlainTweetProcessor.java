@@ -41,6 +41,7 @@ public class PlainTweetProcessor extends ATweetProcessor {
         super(dateFormat_);
     }
 
+
     @Override
     public void cacheLastIDs(ParcelableUser user_) {
         final List<ParcelableTweet> timeLine = user_.getUserTimeLine();
@@ -52,6 +53,8 @@ public class PlainTweetProcessor extends ATweetProcessor {
             user_.setMaxId( timelineFirst.getTweetID());
         }
         //update the total tweets recieved
+        //TODO make sure that we update the exact tweetcount for ovveriding classes or seperate them into the different cols
+        //e.g. mention should have their own colmns for total tweet count, keywords as well
         user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
         Log.v(TAG, "Setting new tweet total to  " + user_.getTotalTweetCount()+ " for user " + user_.getScreenName());
     }

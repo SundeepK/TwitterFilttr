@@ -4,8 +4,10 @@ package com.sun.tweetfiltrr.twitter.tweetprocessor.impl;
 import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
+import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,6 +46,20 @@ public class KeywordTweetProcessor extends DateBasedTweetProcessor {
         Log.v(TAG, "setting keyword tweet to true");
         tweetToProcess_.setIsKeyWordSearedTweet(true);
     }
+
+    @Override
+    public void cacheLastIDs(ParcelableUser user_) {
+        final List<ParcelableTweet> timeLine = user_.getUserTimeLine();
+        if (!timeLine.isEmpty()) {
+            ParcelableTweet timelineFirst = timeLine.get(timeLine.size() - 1);
+            ParcelableTweet timelineLast = timeLine.get(0);
+            Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
+            user_.setKeywordMaxID(timelineLast.getTweetID());
+            user_.setKeywordSinceID( timelineFirst.getTweetID());
+        }
+        user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
+    }
+
 
 
 

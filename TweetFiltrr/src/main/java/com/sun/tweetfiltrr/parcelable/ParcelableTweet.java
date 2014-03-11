@@ -134,7 +134,7 @@ public class ParcelableTweet implements IParcelableTwitter {
 	public ParcelableTweet(String tweetText_, String tweetDate_,
                            long tweetID_, long friendID_, String inReplyToScreenName_,
                            long inReplyToUserId_, long inReplyToTweetId_, String photoUrl_,
-                           boolean isFavourite_, boolean isRetweeted_, boolean isMention_) {
+                           boolean isFavourite_, boolean isRetweeted_, boolean isMention_, boolean isKeywordSearched_) {
 		_tweetText = tweetText_;
 		_tweetDate = tweetDate_;
 		_tweetID = tweetID_;
@@ -146,7 +146,7 @@ public class ParcelableTweet implements IParcelableTwitter {
         _isFavourite =isFavourite_;
         _isRetweeted = isRetweeted_;
         _isMention = isMention_;
-		
+		_isKeyWordSearedTweet =isKeywordSearched_;
 	}
 
 	@Override

@@ -67,6 +67,8 @@ public class FriendTable {
         COLUMN_GROUP_ID("groupID"),
         SINCEID_FOR_MENTIONS("sinceIDForMentions"),
         MAXID_FOR_MENTIONS("maxIDForMentions"),
+        SINCEID_FOR_KEYWORDS("sinceIDForKeywords"),
+        MAXID_FOR_KEYWORDS("maxIDForKeywords"),
         TOTAL_NEW_TWEETS("totalNewTweets");
 
 
@@ -125,6 +127,8 @@ public class FriendTable {
             + FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s() + " integer , "
             + FriendColumn.MAXID_FOR_MENTIONS.s() + " integer , "
             + FriendColumn.SINCEID_FOR_MENTIONS.s() + " integer , "
+            + FriendColumn.MAXID_FOR_KEYWORDS.s() + " integer , "
+            + FriendColumn.SINCEID_FOR_KEYWORDS.s() + " integer , "
             + FriendColumn.FOLLOWER_COUNT.s() + " integer , "
             + FriendColumn.LAST_FOLLOWER_PAGE_NO.s() + " integer , "
             + FriendColumn.COLUMN_LAST_FOLLOWER_INDEX.s() + " integer , "

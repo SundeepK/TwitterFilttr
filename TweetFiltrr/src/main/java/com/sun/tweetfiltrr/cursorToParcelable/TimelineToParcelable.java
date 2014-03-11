@@ -1,8 +1,6 @@
 package com.sun.tweetfiltrr.cursorToParcelable;
 
 import android.database.Cursor;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.sun.tweetfiltrr.parcelable.ParcelableTweet;
 
@@ -13,11 +11,10 @@ import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
 
 @Singleton
 public class TimelineToParcelable implements CursorToParcelable<ParcelableTweet>{
-
     private static final String TAG = TimelineToParcelable.class.getName();
 
     @Inject
-    public TimelineToParcelable(){};
+    public TimelineToParcelable(){}
 
     @Override
 	public ParcelableTweet getParcelable(Cursor cursorTimeline_) {
@@ -40,19 +37,12 @@ public class TimelineToParcelable implements CursorToParcelable<ParcelableTweet>
         boolean isFav = cursorTimeline_.getInt(cursorTimeline_
                 .getColumnIndexOrThrow(TimelineColumn.IS_FAVOURITE.a())) == 1;
         boolean isRetweeted = cursorTimeline_.getInt(cursorTimeline_
-                .getColumnIndexOrThrow(TimelineColumn.IS_RETWEETED.a())) == 1 ? true : false ;
+                .getColumnIndexOrThrow(TimelineColumn.IS_RETWEETED.a())) == 1;
         boolean isMention = cursorTimeline_.getInt(cursorTimeline_
-                .getColumnIndexOrThrow(TimelineColumn.IS_MENTION.a())) == 1 ? true : false ;
-
-        if(!TextUtils.isEmpty(photoUrl)){
-            Log.v(TAG, "Url for image " + photoUrl);
-        }
-
-
-
+                .getColumnIndexOrThrow(TimelineColumn.IS_MENTION.a())) == 1;
+        boolean isKeywordSearch = cursorTimeline_.getInt(cursorTimeline_
+                .getColumnIndexOrThrow(TimelineColumn.IS_KEYWORD_SEARCH_TWEET.a())) == 1;
         return new ParcelableTweet(tweetText, tweetDate, tweetID, friendID,
-				inReplyToScreenName,inReplyToTweetId,inReplyToUserId, photoUrl, isFav, isRetweeted , isMention);
+				inReplyToScreenName,inReplyToTweetId,inReplyToUserId, photoUrl, isFav, isRetweeted , isMention, isKeywordSearch);
 	}
-
-
 }

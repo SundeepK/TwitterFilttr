@@ -48,6 +48,8 @@ public class ParcelableUser implements IParcelableTwitter {
     private int _lastFollowerIndex;
     private int _currentFollowerCount;
     private long _lastFollowerPageNumber;
+    private long _keywordMaxID;
+    private long _keywordSinceID;
     private ParcelableKeywordGroup _keywordGroup;
 
 
@@ -135,6 +137,8 @@ public class ParcelableUser implements IParcelableTwitter {
         _lastFollowerIndex =   user_.getLastFollowerIndex();
         _currentFollowerCount = user_.getCurrentFollowerCount();
         _lastFollowerPageNumber = user_.getLastFollowerPageNumber();
+        _keywordMaxID = user_.getKeywordMaxID();
+        _keywordSinceID = user_.getKeywordSinceID();
     }
 
     @Override
@@ -170,6 +174,8 @@ public class ParcelableUser implements IParcelableTwitter {
         outParcel_.writeInt(_lastFollowerIndex);
         outParcel_.writeInt(_currentFollowerCount);
         outParcel_.writeLong(_lastFollowerPageNumber);
+        outParcel_.writeLong(_keywordMaxID);
+        outParcel_.writeLong(_keywordSinceID);
         outParcel_.writeParcelable(_keywordGroup, flags);
         outParcel_.writeTypedList(_timeline);
 
@@ -178,7 +184,7 @@ public class ParcelableUser implements IParcelableTwitter {
 	}
 
 	public ParcelableUser(Parcel parcelIn_) {
-		_timeline =new ArrayList<ParcelableTweet>();
+        _timeline =new ArrayList<ParcelableTweet>();
 		_userId = parcelIn_.readLong();
 		_createdAt = parcelIn_.readLong();
 		_isProtected = parcelIn_.readInt() == 1 ? true : false;
@@ -210,6 +216,8 @@ public class ParcelableUser implements IParcelableTwitter {
         _lastFollowerIndex  = parcelIn_.readInt();
         _currentFollowerCount = parcelIn_.readInt();
         _lastFollowerPageNumber = parcelIn_.readLong();
+        _keywordMaxID = parcelIn_.readLong();
+        _keywordSinceID = parcelIn_.readLong();
         _keywordGroup = parcelIn_.readParcelable(ParcelableKeywordGroup.class.getClassLoader());
         parcelIn_.readTypedList(_timeline, ParcelableTweet.CREATOR);
         Log.v(TAG, "in reading parcelableuser now, curretnly timeline size is:" +  _timeline.size());
@@ -462,7 +470,6 @@ public class ParcelableUser implements IParcelableTwitter {
         this._totalTweetCount = _totalTweetCount;
     }
 
-
     public long getLastFollowerPageNumber() {
         return _lastFollowerPageNumber;
     }
@@ -501,6 +508,22 @@ public class ParcelableUser implements IParcelableTwitter {
 
     public void setKeywordGroup(ParcelableKeywordGroup _keywordGroup) {
         this._keywordGroup = _keywordGroup;
+    }
+
+    public long getKeywordMaxID() {
+        return _keywordMaxID;
+    }
+
+    public void setKeywordMaxID(long _keywordMaxID) {
+        this._keywordMaxID = _keywordMaxID;
+    }
+
+    public long getKeywordSinceID() {
+        return _keywordSinceID;
+    }
+
+    public void setKeywordSinceID(long _keywordSinceID) {
+        this._keywordSinceID = _keywordSinceID;
     }
 
     /**

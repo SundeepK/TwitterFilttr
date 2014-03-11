@@ -62,6 +62,12 @@ public class FriendDao extends ADBDao<ParcelableUser> {
                 contentValue.put(FriendColumn.COLUMN_MAXID.s(), friend_.getMaxId());
             } else if (TextUtils.equals(column, FriendColumn.COLUMN_SINCEID.s())) {
                 contentValue.put(FriendColumn.COLUMN_SINCEID.s(), friend_.getSinceId());
+                //Keywords
+            } else if (TextUtils.equals(column, FriendColumn.MAXID_FOR_KEYWORDS.s())) {
+                contentValue.put(FriendColumn.MAXID_FOR_KEYWORDS.s(), friend_.getKeywordMaxID());
+            } else if (TextUtils.equals(column, FriendColumn.SINCEID_FOR_KEYWORDS.s())) {
+                contentValue.put(FriendColumn.SINCEID_FOR_KEYWORDS.s(), friend_.getKeywordSinceID());
+
             } else if (TextUtils.equals(column, FriendColumn.COLUMN_LAST_DATETIME_SYNC.s())) {
                 contentValue.put(FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(), friend_.getLastUpadateDate());
             } else if (TextUtils.equals(column, FriendColumn.COLUMN_GROUP_ID.s())) {

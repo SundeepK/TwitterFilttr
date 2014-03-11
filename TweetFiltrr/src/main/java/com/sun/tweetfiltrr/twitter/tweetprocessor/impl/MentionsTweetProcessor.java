@@ -56,7 +56,7 @@ public class MentionsTweetProcessor extends PlainTweetProcessor {
             user_.setSinceIdForMentions(timelineLast.getTweetID());
             user_.setMaxIdForMentions( timelineFirst.getTweetID());
         }
-        user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
+       user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
 
     }
 }

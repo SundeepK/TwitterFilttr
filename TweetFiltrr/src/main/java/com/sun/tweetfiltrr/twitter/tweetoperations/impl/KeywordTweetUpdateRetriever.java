@@ -58,8 +58,8 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
         _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
         String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
-                FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.COLUMN_MAXID.s(), FriendTable.FriendColumn.COLUMN_SINCEID.s(),
-                FriendTable.FriendColumn.MAXID_FOR_MENTIONS.s(), FriendTable.FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendTable.FriendColumn.FOLLOWER_COUNT.s()
+                FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.COLUMN_MAXID.s(), FriendTable.FriendColumn.SINCEID_FOR_KEYWORDS.s(),
+                FriendTable.FriendColumn.MAXID_FOR_KEYWORDS.s(), FriendTable.FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendTable.FriendColumn.FOLLOWER_COUNT.s()
                 , FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),
                 FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s(),
                 FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s()};
@@ -116,7 +116,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
     private Collection<ParcelableUser> getUsersWithKeywordGroup(int remainingSearchLimit_){
         return _keywordFriendDao.getEntries(null,null,
-                        FriendTable.FriendColumn.COLUMN_MAXID.p() + " DESC, " +
+                        FriendTable.FriendColumn.MAXID_FOR_KEYWORDS.p() + " DESC, " +
                                 FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.p() + " ASC " +
                                 " LIMIT " + remainingSearchLimit_ );
     }

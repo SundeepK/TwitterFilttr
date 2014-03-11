@@ -7,22 +7,22 @@ import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
 import com.sun.tweetfiltrr.twitter.callables.MentionsRetrieverCallable;
 import com.sun.tweetfiltrr.twitter.callables.TwitterAPICallable;
+import com.sun.tweetfiltrr.twitter.callables.TwitterKeywordRetriever;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.KeywordTweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.MentionsTweetProcessor;
+import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.PlainTweetProcessor;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.ConversationRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.KeywordTweetRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.MentionsRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.impl.TimeLineRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterPageParameter;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterQueryParameter;
-import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.KeywordTweetProcessor;
-import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.MentionsTweetProcessor;
-import com.sun.tweetfiltrr.twitter.tweetprocessor.impl.PlainTweetProcessor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -90,7 +90,7 @@ public class TweetRetrieverFactory {
 
         for (ParcelableUser user : friendsWithKeywords_) {
             Callable<Collection<ParcelableUser>> r =
-                    new TwitterAPICallable(user, retriever, onFailLis_);
+                    new TwitterKeywordRetriever(user, retriever, onFailLis_);
             Log.v(TAG, "creating callable for tweet keyword search for user " + user.toString());
             callables.add(r);
 
