@@ -20,8 +20,6 @@ public class TwitterBootReceiver extends BroadcastReceiver {
 	      AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	      PendingIntent pendingIntent =
 	               PendingIntent.getBroadcast(context, 0, new Intent(context, TwitterUpdateReceiver.class), 0);
-
-	      // use inexact repeating which is easier on battery (system can phase events and not wake at exact times)
 	      alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, TwitterConstants.ALARM_TRIGGER_AT_TIME,
 	    		  TwitterConstants.ALARM_INTERVAL, pendingIntent);
 		

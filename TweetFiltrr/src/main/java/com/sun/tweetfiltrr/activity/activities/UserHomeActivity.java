@@ -1,8 +1,12 @@
 package com.sun.tweetfiltrr.activity.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -11,6 +15,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.adapter.TwitterUserHomeTabsAdapter;
 import com.sun.tweetfiltrr.activity.api.ATwitterActivity;
+import com.sun.tweetfiltrr.alarm.TwitterUpdateReceiver;
 import com.sun.tweetfiltrr.fragment.fragments.SettingsScreen;
 import com.sun.tweetfiltrr.fragment.fragments.SlidingMenuFragment;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
@@ -20,20 +25,17 @@ import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
 public class UserHomeActivity extends ATwitterActivity implements
         ListView.OnItemClickListener {
 
-	private ViewPager _asyncBackgroundViewPager;
-	private TwitterUserHomeTabsAdapter _tabsAdapter;
-	private static final String TAG = UserHomeActivity.class.getName();
+    private static final String TAG = UserHomeActivity.class.getName();
     private ParcelableUser _currentUser;
 
 	@Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
         setContentView(R.layout.user_home_viewpager);
-
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
-
-        _asyncBackgroundViewPager = (ViewPager) findViewById(R.id.user_view_pager);
-        _tabsAdapter = new TwitterUserHomeTabsAdapter(getSupportFragmentManager(), _currentUser );
+        final ViewPager _asyncBackgroundViewPager = (ViewPager) findViewById(R.id.user_view_pager);
+        final TwitterUserHomeTabsAdapter _tabsAdapter =
+                new TwitterUserHomeTabsAdapter(getSupportFragmentManager(), _currentUser);
 		_asyncBackgroundViewPager.setAdapter(_tabsAdapter);
 
         final SlidingMenu menu = new SlidingMenu(this);
@@ -88,6 +90,18 @@ public class UserHomeActivity extends ATwitterActivity implements
             default:
                 break;
         }
+    }
+
+
+    private void scheduleAlarmReceiver() {
+        Log.v(TAG, "Setting up alarm receiver");
+        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(this, 0, new Intent(this, TwitterUpdateReceiver.class),
+                        PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis(), 1000 * 60 * 15, pendingIntent);
+//		      setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, TwitterConstants.ALARM_TRIGGER_AT_TIME,
+//		    		  TwitterConstants.ALARM_INTERVAL, pendingIntent);
     }
 
 }

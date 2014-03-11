@@ -7,7 +7,7 @@ import android.content.Context;
  */
 public interface IKeywordUpdateRetriever {
 
-    public void searchForKeywordTweetUpdates(Context context_);
+    public int searchForKeywordTweetUpdates(Context context_);
 
 
     }

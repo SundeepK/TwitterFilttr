@@ -1,5 +1,8 @@
 package com.sun.tweetfiltrr.fragment.fragments;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +28,7 @@ import com.sun.imageloader.core.api.ImageTaskListener;
 import com.sun.tweetfiltrr.R;
 import com.sun.tweetfiltrr.activity.activities.KeywordGroupActivity;
 import com.sun.tweetfiltrr.activity.activities.UserProfileHomeActivity;
+import com.sun.tweetfiltrr.alarm.TwitterUpdateReceiver;
 import com.sun.tweetfiltrr.fragment.api.ATwitterFragment;
 import com.sun.tweetfiltrr.imageprocessor.BlurredImageGenerator;
 import com.sun.tweetfiltrr.imageprocessor.IImageProcessor;
@@ -63,7 +67,7 @@ public class SlidingMenuFragment extends ATwitterFragment implements
         TextView userNameView = (TextView) rootView.findViewById(R.id.user_name);
         TextView userDesc = (TextView) rootView.findViewById(R.id.user_details);
 
-        String[] names = new String[]{"Profile", "Filter", "Settings"};
+        String[] names = new String[]{"Profile", "Filter", "Alarm"};
         ListAdapter navAdapter = new ArrayAdapter<String>(getActivity(), R.layout.sliding_menu_list_row, names);
         ListView _slidingMenuListView = (ListView) rootView.findViewById(R.id.sliding_menu_listview);
         _slidingMenuListView.setAdapter(navAdapter);
@@ -131,12 +135,25 @@ public class SlidingMenuFragment extends ATwitterFragment implements
                 startActivity(i);
                 break;
             case 2:
-                i = new Intent(getActivity(), SettingsScreen.class);
-                startActivity(i);
+                scheduleAlarmReceiver();
+//                i = new Intent(getActivity(), SettingsScreen.class);
+//                startActivity(i);
                 break;
             default:
                 break;
         }
+    }
+
+
+    private void scheduleAlarmReceiver() {
+        Log.v(TAG, "Setting up alarm receiver");
+        AlarmManager alarmMgr = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getActivity(), 0, new Intent(getActivity(), TwitterUpdateReceiver.class),
+                        PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis(), 1000 * 60 * 15, pendingIntent);
+//		      setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, TwitterConstants.ALARM_TRIGGER_AT_TIME,
+//		    		  TwitterConstants.ALARM_INTERVAL, pendingIntent);
     }
 
     @Override

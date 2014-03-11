@@ -18,6 +18,7 @@ import com.sun.tweetfiltrr.fragment.fragments.TimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserDetailsTimelineTab;
 import com.sun.tweetfiltrr.fragment.fragments.UserProfileFragment;
 import com.sun.tweetfiltrr.fragment.fragments.UserTimelineTab;
+import com.sun.tweetfiltrr.twitter.tweetoperations.impl.KeywordTweetUpdateRetriever;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.api.TweetRetrieverFactory;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterPageParameter;
 import com.sun.tweetfiltrr.twitter.twitterretrievers.twitterparameter.TwitterQueryParameter;
@@ -33,6 +34,7 @@ import dagger.Provides;
 
 /**
  * Created by Sundeep on 11/02/14.
+ *
  */
 @Module(
         injects = {
@@ -54,7 +56,8 @@ import dagger.Provides;
                 ASignInFragment.class,
                 ATwitterActivity.class,
                 UserProfileHomeActivity.class,
-                ConversationFragment.class
+                ConversationFragment.class,
+                KeywordTweetUpdateRetriever.class
         },
         complete = false
 )
@@ -79,9 +82,5 @@ public class ApplicationProvider {
         return TwitterUtil.getInstance().getGlobalImageLoader(_context);
     }
 
-//    @Provides @Singleton TweetRetrieverFactory provideTweetRetriever(){
-//        Log.v(TAG, "im creating wrapper");
-//        return new TweetRetrieverFactory(provideExecutorService());
-//    }
 
 }

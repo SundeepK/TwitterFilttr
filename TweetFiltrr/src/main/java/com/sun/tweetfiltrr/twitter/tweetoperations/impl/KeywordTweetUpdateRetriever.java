@@ -1,6 +1,5 @@
 package com.sun.tweetfiltrr.twitter.tweetoperations.impl;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.util.Log;
 
@@ -34,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import dagger.ObjectGraph;
 import twitter4j.RateLimitStatus;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -45,21 +45,25 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
     private static final String TAG = KeywordTweetUpdateRetriever.class.getName();
     private static final String SEARCH_RESOURCE_KEY = "/users/search";
-    private TweetRetrieverFactory _tweetRetriever;
+
+
     private ExecutorService _taskExecutor;
     private Collection<IDatabaseUpdater> _userDaoUpdaters;
-
+    private static final int MAX_WAIT_TIME = 5;//in mins
     @Inject FriendDao _friendDao;
     @Inject TimelineDao _timelineDao;
     @Inject FriendKeywordDao _keywordFriendDao;
+    @Inject TweetRetrieverFactory _tweetRetriever;
 
-    public KeywordTweetUpdateRetriever(ExecutorService taskExecutor_, ContentResolver resolver_) {
+    public KeywordTweetUpdateRetriever(ExecutorService taskExecutor_, ObjectGraph objectGraph_) {
         _taskExecutor = taskExecutor_;
+        objectGraph_.inject(this);
+
         _userDaoUpdaters = new ArrayList<IDatabaseUpdater>();
         _userDaoUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
         String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
-                FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.COLUMN_MAXID.s(), FriendTable.FriendColumn.SINCEID_FOR_KEYWORDS.s(),
-                FriendTable.FriendColumn.MAXID_FOR_KEYWORDS.s(), FriendTable.FriendColumn.SINCEID_FOR_MENTIONS.s(), FriendTable.FriendColumn.FOLLOWER_COUNT.s()
+                FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.SINCEID_FOR_KEYWORDS.s(),
+                FriendTable.FriendColumn.MAXID_FOR_KEYWORDS.s(),  FriendTable.FriendColumn.FOLLOWER_COUNT.s()
                 , FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),
                 FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s(),
                 FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s()};
@@ -69,49 +73,38 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
         }
 
-        ThreadLocal<SimpleDateFormat> simpleDateFormatThreadLocal = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal();
-        _tweetRetriever = new TweetRetrieverFactory(_taskExecutor, simpleDateFormatThreadLocal);
-
     }
 
 
-    public void searchForKeywordTweetUpdates(Context context_) {
-
+    public int searchForKeywordTweetUpdates(Context context_) {
+        int totalNewTweetsFound = 0;
         if (TwitterUtil.hasInternetConnection(context_)) {
-
             Log.v(TAG,
                     "Attempting to update user's friends and timelines associated with freinds");
-
             Twitter twitter = TwitterUtil.getInstance().getTwitter();
             int remainingSearchLimit = getSearchRateLimitCount(twitter);
-
             Collection<ParcelableUser> friendsWithKeywords = getUsersWithKeywordGroup(remainingSearchLimit);
-
             for(ParcelableUser user : friendsWithKeywords){
                 Log.v(TAG, "User for keyword srearch is: " + user.toString() );
             }
-
             Collection<Callable<Collection<ParcelableUser>>> tasks = lookForNewKeywordTweets(friendsWithKeywords);
-            executeTasks(tasks);
-
+            totalNewTweetsFound =  executeTasks(tasks);
             Log.v(TAG, "DONE running tasks for search");
         } else {
             Log.v(TAG,
-                    "No internet access or user not logged in, so will not update twitter data");
+                    "No internet access or user not logged in, so will not update keyword tweets");
         }
-
+        return totalNewTweetsFound;
     }
 
-
-    private void executeTasks(Collection<Callable<Collection<ParcelableUser>>> tasks_){
+    private int executeTasks(Collection<Callable<Collection<ParcelableUser>>> tasks_){
+        List<Future<Collection<ParcelableUser>>> updatedUserFutures = new ArrayList<Future<Collection<ParcelableUser>>>();
         try {
-            List<Future<Collection<ParcelableUser>>> updatedUserFutures =  _taskExecutor.invokeAll(tasks_, 3, TimeUnit.MINUTES);
-            flushDBEntries(updatedUserFutures);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            updatedUserFutures.addAll(_taskExecutor.invokeAll(tasks_, MAX_WAIT_TIME, TimeUnit.MINUTES));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return waitForTweets(updatedUserFutures);
     }
 
     private Collection<ParcelableUser> getUsersWithKeywordGroup(int remainingSearchLimit_){
@@ -121,11 +114,19 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
                                 " LIMIT " + remainingSearchLimit_ );
     }
 
-    private void flushDBEntries(List<Future<Collection<ParcelableUser>>> updatedFutures_) throws ExecutionException, InterruptedException {
+    private int waitForTweets(List<Future<Collection<ParcelableUser>>> updatedFutures_)  {
         final SimpleDateFormat dateFormat = TwitterUtil.getInstance().getSimpleDateFormatThreadLocal().get();
         final Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
+        int totalTweets = 0;
         for(Future<Collection<ParcelableUser>> futureUser : updatedFutures_){
-            Collection<ParcelableUser> user = futureUser.get();
+            Collection<ParcelableUser> user = null;
+            try {
+                user = futureUser.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
             if(user != null){
                 users.addAll(user);
             }
@@ -133,11 +134,13 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
         final String lastUpdateTime = dateFormat.format(DateUtils.getCurrentDate());
         for(ParcelableUser user : users){
             user.setLastUpadateDate(lastUpdateTime);
+            totalTweets+=user.getUserTimeLine().size();
         }
 
         for(IDatabaseUpdater updater : _userDaoUpdaters){
             updater.updateUsersToDB(users);
         }
+        return totalTweets;
     }
 
 
@@ -155,9 +158,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 //                Log.v(TAG, "Value for limi: " + limit.getValue());
 //
 //            }
-
         } catch (TwitterException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return maxRemaining;
@@ -166,7 +167,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
 
 
     private Collection<Callable<Collection<ParcelableUser>>> lookForNewKeywordTweets(Collection<ParcelableUser> friends_){
-        return  _tweetRetriever.getKeywordRetriever(friends_, false, false, this);
+        return  _tweetRetriever.getKeywordRetriever(friends_, true, false, this);
     }
 
 
