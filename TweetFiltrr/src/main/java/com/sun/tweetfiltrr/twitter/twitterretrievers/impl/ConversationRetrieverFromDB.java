@@ -28,12 +28,12 @@ public class ConversationRetrieverFromDB {
     public boolean hasConversationInDB(ParcelableTweet tweetsToLookUp_){
         final long replyTweetId = tweetsToLookUp_.getInReplyToTweetId();
         final long replyUserId = tweetsToLookUp_.getInReplyToUserId();
-        boolean hasConvoInDB = false;
+        boolean hasConvoInDB;
         if(replyTweetId < 0 ||  replyUserId < 0){
             hasConvoInDB = false;
         }else {
             Collection<ParcelableTweet> replyTweets = getTweetFromDB(replyTweetId);
-                    hasConvoInDB = !replyTweets.isEmpty();
+                    hasConvoInDB = replyTweets.size() > 1;
         }
         return hasConvoInDB;
     }

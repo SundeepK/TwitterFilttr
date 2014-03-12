@@ -40,6 +40,8 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import twitter4j.TwitterException;
 
+import static com.sun.tweetfiltrr.database.tables.TimelineTable.TimelineColumn;
+
 /**
  * Created by Sundeep on 08/03/14.
  *
@@ -69,8 +71,11 @@ public class ConversationFragment extends SherlockFragment implements ITwitterAP
                 FriendTable.FriendColumn.TWEET_COUNT.s(), FriendTable.FriendColumn.COLUMN_MAXID.s(), FriendTable.FriendColumn.COLUMN_SINCEID.s(),
                 FriendTable.FriendColumn.FOLLOWER_COUNT.s() , FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(), FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(),
                 FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s()};
+        String[] timelineCol = new String[]{TimelineColumn.FRIEND_ID.s(), TimelineColumn.TWEET_ID.s(), TimelineColumn.TIMELINE_TEXT.s(), TimelineColumn.DATETIME_INSERTED.s(),
+                TimelineColumn.IN_REPLY_SCREENNAME.s(),TimelineColumn.IN_REPLY_USERID.s(),TimelineColumn.IN_REPLY_TWEETID.s(),TimelineColumn.IS_RETWEETED.s(), TimelineColumn.PHOTO_URL.s(),
+                TimelineColumn.IS_FAVOURITE.s(),TimelineColumn.IS_MENTION.s()};
         _dbUpdaters.add(new DatabaseUpdater(_friendDao,cols ));
-        _dbUpdaters.add(new TimelineDatabaseUpdater(_timelineDao));
+        _dbUpdaters.add(new TimelineDatabaseUpdater(_timelineDao, timelineCol));
     }
 
     @Override

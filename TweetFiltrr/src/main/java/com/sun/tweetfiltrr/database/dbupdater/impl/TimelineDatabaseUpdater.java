@@ -13,9 +13,17 @@ import java.util.Collection;
  */
 public class TimelineDatabaseUpdater implements IDatabaseUpdater {
     private IDBDao<ParcelableTweet> _timeLineDao;
+    private String[] _columns;
+
+    public TimelineDatabaseUpdater(IDBDao<ParcelableTweet> timeLineDao_, String[] columns_){
+        _timeLineDao = timeLineDao_;
+        _columns = columns_;
+    }
+
     public TimelineDatabaseUpdater(IDBDao<ParcelableTweet> timeLineDao_){
         _timeLineDao = timeLineDao_;
     }
+
 
     @Override
     public void updateUsersToDB(Collection<ParcelableUser> users_) {
@@ -23,6 +31,12 @@ public class TimelineDatabaseUpdater implements IDatabaseUpdater {
         for(ParcelableUser users : users_){
             timelines.addAll(users.getUserTimeLine());
         }
-        _timeLineDao.insertOrUpdate(timelines);
+        if(_columns!=null){
+            _timeLineDao.insertOrUpdate(timelines, _columns);
+        }else{
+            _timeLineDao.insertOrUpdate(timelines);
+
+        }
     }
+
 }

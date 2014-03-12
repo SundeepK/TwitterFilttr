@@ -57,18 +57,18 @@ public class ConversationRetriever implements ITwitterAPICall<Collection<Parcela
         final ParcelableTweet parcelableTimeline = new ParcelableTweet(
                 replyTweet, dateFormat_.format(replyTweet
                 .getCreatedAt()), user.getId(), isSwapped);
-        if(tweet.isFavourite()){
-            parcelableTimeline.setIsFavourite(true);
-        }
-        if(tweet.isMention()){
-            parcelableTimeline.setIsMention(true);
-        }
-        if(tweet.isRetweeted()){
-            parcelableTimeline.setIsRetweeted(true);
-        }
-        if(tweet.isKeyWordSearchedTweet()){
-            parcelableTimeline.setIsKeyWordSearedTweet(true);
-        }
+//        if(tweet.isFavourite()){
+//            parcelableTimeline.setIsFavourite(true);
+//        }
+//        if(tweet.isMention()){
+//            parcelableTimeline.setIsMention(true);
+//        }
+//        if(tweet.isRetweeted()){
+//            parcelableTimeline.setIsRetweeted(true);
+//        }
+//        if(tweet.isKeyWordSearchedTweet()){
+//            parcelableTimeline.setIsKeyWordSearedTweet(true);
+//        }
         parcelableUser.addTimeLineEntry(parcelableTimeline);
         return parcelableUser;
     }
