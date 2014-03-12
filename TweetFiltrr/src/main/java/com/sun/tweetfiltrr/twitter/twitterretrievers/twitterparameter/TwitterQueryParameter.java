@@ -31,21 +31,19 @@ public class TwitterQueryParameter implements ITwitterParameter<Query> {
         final long sinceID = user.getKeywordSinceID();
         final String[] keywords = user.getKeywordGroup().getGroupKeywords().split("\\s");
         final String queryS = searchQuery(user, keywords);
-        Log.v(TAG, "Query string passed :" + queryS);
 
         final Query keywordSearchQuery = new Query(queryS);
         keywordSearchQuery.setCount(TOTAL_TWEETS_TO_SEARCH);
 
         if(shouldLookForOldTweets_){
             if(maxID > 1){
-                Log.v(TAG, "Setting max ID to: " + maxID);
                 keywordSearchQuery.setMaxId(maxID);
             }
         }else if(sinceID > 1){
-            Log.v(TAG, "Setting since ID to: " + sinceID);
             keywordSearchQuery.setSinceId(sinceID);
         }
 
+        Log.v(TAG, "query " + keywordSearchQuery.toString());
         return keywordSearchQuery;
     }
 

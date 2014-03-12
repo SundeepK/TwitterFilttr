@@ -112,17 +112,17 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
         final Collection<ParcelableUser> users = new ArrayList<ParcelableUser>();
         int totalTweets = 0;
         for(Future<Collection<ParcelableUser>> futureUser : updatedFutures_){
-            Collection<ParcelableUser> user = null;
             try {
-                user = futureUser.get();
+                Collection<ParcelableUser> user = futureUser.get();
+                if(user != null){
+                    users.addAll(user);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            if(user != null){
-                users.addAll(user);
-            }
+
         }
         final String lastUpdateTime = dateFormat.format(DateUtils.getCurrentDate());
         for(ParcelableUser user : users){

@@ -54,13 +54,10 @@ public class KeywordTweetProcessor extends DateBasedTweetProcessor {
             ParcelableTweet timelineFirst = timeLine.get(timeLine.size() - 1);
             ParcelableTweet timelineLast = timeLine.get(0);
             Log.v(TAG, "Setting new maxID " + timelineLast.getTweetID());
-            user_.setKeywordMaxID(timelineLast.getTweetID());
-            user_.setKeywordSinceID( timelineFirst.getTweetID());
+            user_.setKeywordMaxID( timelineFirst.getTweetID());
+            user_.setKeywordSinceID( timelineLast.getTweetID());
         }
         user_.setTotalTweetCount(user_.getTotalTweetCount()+ timeLine.size());
     }
-
-
-
 
 }
