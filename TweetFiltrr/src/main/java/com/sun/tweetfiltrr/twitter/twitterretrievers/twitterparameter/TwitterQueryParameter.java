@@ -27,8 +27,8 @@ public class TwitterQueryParameter implements ITwitterParameter<Query> {
     @Override
     public Query getTwitterParameter(final ICachedUser user_, final boolean shouldLookForOldTweets_) {
         final ParcelableUser user = user_.getUser();
-        final long maxID = user.getMaxId() <= 0  ? 1 :  user.getMaxId() ;
-        final long sinceID = user.getSinceId();
+        final long maxID = user.getKeywordMaxID() <= 0  ? 1 :  user.getKeywordMaxID() ;
+        final long sinceID = user.getKeywordSinceID();
         final String[] keywords = user.getKeywordGroup().getGroupKeywords().split("\\s");
         final String queryS = searchQuery(user, keywords);
         Log.v(TAG, "Query string passed :" + queryS);

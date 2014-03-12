@@ -14,7 +14,7 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 
 	private static final String TAG = FriendToParcelable.class.getName();
 
-    public FriendToParcelable(){};
+    public FriendToParcelable(){}
 
 	@Override
 	public ParcelableUser getParcelable(Cursor cursorFriend_) {
@@ -33,10 +33,16 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 				.getColumnIndexOrThrow(FriendColumn.BANNER_PROFILE_IMAE_URL.a()));
 		String profileImage = cursorFriend_.getString(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.PROFILE_IMAGE_URL.a()));
+
 		long sinceID = cursorFriend_.getLong(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_SINCEID.a()));
 		long maxID = cursorFriend_.getLong(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_MAXID.a()));
+        long keywordSinceID = cursorFriend_.getLong(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.SINCEID_FOR_KEYWORDS.a()));
+        long keywordMaxID = cursorFriend_.getLong(cursorFriend_
+                .getColumnIndexOrThrow(FriendColumn.MAXID_FOR_KEYWORDS.a()));
+
 		long groupId = cursorFriend_.getLong(cursorFriend_
 				.getColumnIndexOrThrow(FriendColumn.COLUMN_GROUP_ID.a()));
 
@@ -70,8 +76,10 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
         int currentFollowerCount = cursorFriend_.getInt(cursorFriend_
                 .getColumnIndexOrThrow(FriendColumn.COLUMN_CURRENT_FOLLOWER_COUNT.a()));
 		
-		Log.v(TAG, "Since ID passed for query is : " + sinceID
-				+ " with page number " + maxID + " with tweet count: " + newTweetCount);
+//		Log.v(TAG, "Since ID passed for query is : " + sinceID
+//				+ " with page number " + maxID + " with tweet count: " + newTweetCount);
+
+        Log.v(TAG, "keyword since id : " + keywordSinceID + " keyword maxid " + keywordMaxID + " name " + friendScreenName);
 
 		ParcelableUser friend = new ParcelableUser(friendID, friendName,sinceID, maxID);
 		friend.setLastUpadateDate(cursorFriend_.getString(cursorFriend_
@@ -95,6 +103,8 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
         friend.setLastFollowerPageNumber(lastFollowerPageNo);
         friend.setLastFollowerIndex(lastFollowerIndex);
         friend.setCurrentFollowerCount(currentFollowerCount);
+        friend.setKeywordSinceID(keywordSinceID);
+        friend.setKeywordMaxID(keywordMaxID);
         return friend;
 		
 	}

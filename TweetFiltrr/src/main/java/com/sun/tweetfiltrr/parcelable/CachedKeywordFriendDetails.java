@@ -14,21 +14,21 @@ public class CachedKeywordFriendDetails extends CachedFriendDetails{
 
     @Override
     public long getMaxId() {
-        return _user.getMaxIdForMentions();
+        return _user.getKeywordMaxID();
     }
 
     @Override
     public void setMaxId(long id_) {
-        _user.setMaxIdForMentions(id_);
+        _user.setKeywordMaxID(id_);
     }
 
     @Override
     public long getSinceId() {
-        return _user.getSinceIdForMentions();
+        return _user.getKeywordSinceID();
     }
 
     @Override
     public void setSinceId(long id_) {
-        _user.setSinceIdForMentions(id_);
+        _user.setKeywordSinceID(id_);
     }
 }
