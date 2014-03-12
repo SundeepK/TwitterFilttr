@@ -58,6 +58,9 @@ public class TwitterUpdateService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+        if(_keywordTweetUpdateRetriever == null){
+            initService();
+        }
         initService();
 		if (TwitterUtil.hasInternetConnection(this)) {
             int totalUpdates =  _keywordTweetUpdateRetriever.searchForKeywordTweetUpdates(this);

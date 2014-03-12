@@ -569,6 +569,10 @@ public class ParcelableUser implements IParcelableTwitter {
         builder.append(_lastTimelinePageNumber);
         builder.append(" total tweetcount ");
         builder.append(_totalTweetCount);
+        builder.append(" keywordMaxid ");
+        builder.append(_keywordMaxID);
+        builder.append(" keywordSinceid ");
+        builder.append(_keywordSinceID);
 		return builder.toString();
 	}
 

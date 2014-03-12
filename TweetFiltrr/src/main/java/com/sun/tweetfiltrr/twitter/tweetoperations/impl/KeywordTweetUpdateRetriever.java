@@ -10,8 +10,6 @@ import com.sun.tweetfiltrr.database.dbupdater.api.IDatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.DatabaseUpdater;
 import com.sun.tweetfiltrr.database.dbupdater.impl.TimelineDatabaseUpdater;
 import com.sun.tweetfiltrr.database.tables.FriendTable;
-import com.sun.tweetfiltrr.database.tables.TimelineTable;
-import com.sun.tweetfiltrr.database.utils.DBUtils;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICall;
 import com.sun.tweetfiltrr.twitter.api.ITwitterAPICallStatus;
@@ -68,11 +66,6 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
                 FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.DESCRIPTION.s(),
                 FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s()};
         _userDaoUpdaters.add(new DatabaseUpdater(_friendDao,cols ));
-        for(String s :DBUtils.getprojections(TimelineTable.TimelineColumn.values()) ){
-            Log.v(TAG, "DB columns for timeline: " +s );
-
-        }
-
     }
 
 
@@ -134,6 +127,7 @@ public class KeywordTweetUpdateRetriever implements IKeywordUpdateRetriever, ITw
         final String lastUpdateTime = dateFormat.format(DateUtils.getCurrentDate());
         for(ParcelableUser user : users){
             user.setLastUpadateDate(lastUpdateTime);
+            Log.v(TAG, "user " + user.getScreenName() + " keyword size " + user.getUserTimeLine().size());
             totalTweets+=user.getUserTimeLine().size();
         }
 
