@@ -26,7 +26,7 @@ import com.sun.tweetfiltrr.customviews.views.CircleCroppedDrawable;
 import com.sun.tweetfiltrr.parcelable.ParcelableUser;
 import com.sun.tweetfiltrr.utils.ImageLoaderUtils;
 import com.sun.tweetfiltrr.utils.TwitterConstants;
-import com.sun.tweetfiltrr.utils.UserRetrieverUtils;
+import com.sun.tweetfiltrr.utils.TwitterUtil;
 
 import javax.inject.Inject;
 
@@ -72,7 +72,7 @@ public class ATwitterActivity extends SherlockFragmentActivity implements ImageT
         super.onCreate(savedInstanceState);
         ((TweetFiltrrApplication) getApplication()).getObjectGraph().inject(this);
 
-        _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
+        _currentUser = TwitterUtil.getInstance().getCurrentUser();
         loadActionBar();
     }
 

@@ -92,7 +92,6 @@ public class FriendToParcelable implements CursorToParcelable<ParcelableUser> {
 		friend.setDescription(description);
 		friend.setLastFriendPageNumber(lastFriendPageNo);
 		friend.setFriendCount(friendCount);
-		friend.hasLoadedAllTweetsForToday(false);
 		friend.setLastTimelinePageNumber(lastTimelineNo);
 		friend.setIsFriend(isFriend);
         friend.setNewTweetCount(newTweetCount);

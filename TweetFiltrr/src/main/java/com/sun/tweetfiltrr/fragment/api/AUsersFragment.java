@@ -268,7 +268,6 @@ public abstract class AUsersFragment extends SherlockFragment implements LoaderM
             //we should only retrieve 1 friend since rowId is unique
             if(!friends.isEmpty()){
                 ParcelableUser newFriend = friends.iterator().next();
-                newFriend.setRowId(rowId);
                 //start new activity for the clicked user
                 Intent i = new Intent(getActivity(), UserProfileHomeActivity.class);
                 i.putExtra(TwitterConstants.FRIENDS_BUNDLE, newFriend);

@@ -222,7 +222,6 @@ public abstract class ATimelineFragment extends SherlockFragment implements Load
                //we should only retrieve 1 friend since rowId is unique, so we iterate once
                ParcelableUser user = friends.iterator().next();
                ParcelableTweet tweet = tweets.iterator().next();
-               user.setRowId(rowId);
                user.addTimeLineEntry(tweet);
                Log.v(TAG, "user queroed is :" + user.toString());
                Log.v(TAG, "user's timeline size is :" + user.getUserTimeLine().size());

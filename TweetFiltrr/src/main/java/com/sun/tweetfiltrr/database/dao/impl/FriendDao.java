@@ -78,8 +78,6 @@ public class FriendDao extends ADBDao<ParcelableUser> {
                 contentValue.put(FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(), friend_.getProfileBackgroundImageUrl());
             } else if (TextUtils.equals(column, FriendColumn.BANNER_PROFILE_IMAE_URL.s())) {
                 contentValue.put(FriendColumn.BANNER_PROFILE_IMAE_URL.s(), friend_.getProfileBannerImageUrl());
-            } else if (TextUtils.equals(column, FriendColumn.HAS_ALL_TWEETS_FOR_TODAY.s())) {
-                contentValue.put(FriendColumn.HAS_ALL_TWEETS_FOR_TODAY.s(), friend_.hasLoadedAllTweetsForToday());
             } else if (TextUtils.equals(column, FriendColumn.LAST_TIMELINE_PAGE_NO.s())) {
                 contentValue.put(FriendColumn.LAST_TIMELINE_PAGE_NO.s(), friend_.getLastTimelinePageNumber());
             } else if (TextUtils.equals(column, FriendColumn.IS_FRIEND.s())) {
