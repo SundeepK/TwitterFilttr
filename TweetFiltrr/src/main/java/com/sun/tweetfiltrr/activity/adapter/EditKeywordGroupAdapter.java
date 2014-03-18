@@ -2,7 +2,7 @@ package com.sun.tweetfiltrr.activity.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.ResourceCursorAdapter;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements SectionIndexer, IUpdatedGroup {
+public class EditKeywordGroupAdapter extends ResourceCursorAdapter implements SectionIndexer, IUpdatedGroup {
 
 
     private static final String TAG = EditKeywordGroupAdapter.class.getName();
@@ -38,10 +38,9 @@ public class EditKeywordGroupAdapter extends SimpleCursorAdapter implements Sect
     private AlphabetIndexer _alphabetIndexer;
     private final Map<ParcelableUser, Boolean> _isChecked;
     public EditKeywordGroupAdapter(Context context, int layout, Cursor c,
-                                   String[] from, int[] to, int flags,
                                    CursorToParcelable<ParcelableUser> keywordUserToParcelable_, UrlImageLoader imageLoader_,
                                    ParcelableKeywordGroup group_) {
-		super(context, layout, c, from, to, flags);
+        super(context, layout, c, 0);
         _inflater = LayoutInflater.from(context);
         _keywordUserToParcelable = keywordUserToParcelable_;
         _imageLoader = imageLoader_;

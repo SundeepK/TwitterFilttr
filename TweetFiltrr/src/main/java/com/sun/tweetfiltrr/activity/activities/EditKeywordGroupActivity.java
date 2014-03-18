@@ -70,14 +70,7 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
         ListView listView = (ListView) findViewById(android.R.id.list);
         _currentUser = UserRetrieverUtils.getCurrentFocusedUser(this);
 
-        String[] cols = new String[]{FriendTable.FriendColumn.FRIEND_ID.s(),
-                FriendTable.FriendColumn.FRIEND_NAME.s(), FriendTable.FriendColumn.FRIEND_SCREENNAME.s(),
-                FriendTable.FriendColumn.FOLLOWER_COUNT.s(), FriendTable.FriendColumn.FRIEND_COUNT.s(),
-                FriendTable.FriendColumn.COLUMN_LAST_FRIEND_INDEX.s(), FriendTable.FriendColumn.COLUMN_CURRENT_FRIEND_COUNT.s(),
-                FriendTable.FriendColumn.LAST_FRIEND_PAGE_NO.s(), FriendTable.FriendColumn.IS_FRIEND.s(),
-                FriendTable.FriendColumn.PROFILE_IMAGE_URL.s(), FriendTable.FriendColumn.BACKGROUND_PROFILE_IMAGE_URL.s(),
-                FriendTable.FriendColumn.BANNER_PROFILE_IMAE_URL.s(), FriendTable.FriendColumn.COLUMN_LAST_DATETIME_SYNC.s(),
-                FriendTable.FriendColumn.DESCRIPTION.s()};
+        String[] cols = FriendTable.UPDATE_FRIEND_COLUMNS;
 
         //TODO this is for testing purposes and needs to be changed to current user instead
 //        Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
@@ -121,40 +114,12 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
             }
         });
 
-        // CursorToParcelable<ParcelableUser> friendCursorToParcelable =  new FriendToParcelable();
-//        String[] columns = {
-//                KeywordGroupColumn.COLUMN_ID.s(),
-//                KeywordGroupColumn.COLUMN_GROUP_NAME.s(),
-//                KeywordGroupColumn.COLUMN_KEYWORDS.s()
-//        };
-
-//        String[] columns = {
-//                KeywordGroupColumn.COLUMN_ID.s(),
-//                KeywordGroupColumn.COLUMN_GROUP_NAME.s(),
-//                KeywordGroupColumn.COLUMN_KEYWORDS.s()
-//        };
-
-        String[] columns = new String[]{
-                "_id",
-                "friendTable_friendName",
-                "friendTable_profileImageUrl"
-        };
-
-        // the XML defined views which the data will be bound to
-        int[] to = new int[]{
-                R.id.user_name
-        };
-
-        // create an adapter from the SimpleCursorAdapter
         _groupAdapter = new EditKeywordGroupAdapter(this, R.layout.listview_for_twitter,
-                null,columns, to, 0, _cursorToParcelable, _simpleImageLoader, _group);
-
+                null, _cursorToParcelable, _simpleImageLoader, _group);
         listView.setFastScrollEnabled(true);
         listView.setScrollingCacheEnabled(true);
         listView.setAdapter(_groupAdapter);
-
         this.getSupportLoaderManager().initLoader(TUTORIAL_LIST_LOADER, null, this);
-
     }
 
 
@@ -166,7 +131,6 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
 
     @Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-			//String[] projection = KeywordGroupDao.FULLY_QUALIFIED_PROJECTIONS;
         String[] pro = DBUtils.concatColumns(FriendDao.FULLY_QUALIFIED_PROJECTIONS, KeywordGroupDao.FULLY_QUALIFIED_PROJECTIONS);
         Log.v(TAG, "on loader create user is: " + _currentUser.toString());
         return new CursorLoader(this,
