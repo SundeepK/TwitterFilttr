@@ -80,10 +80,11 @@ public class EditKeywordGroupActivity extends SherlockFragmentActivity implement
                 FriendTable.FriendColumn.DESCRIPTION.s()};
 
         //TODO this is for testing purposes and needs to be changed to current user instead
-        Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
-                + " = ? ", new String[]{Long.toString(15670515l)}, null));
-
-        final ParcelableUser user = users.iterator().next();
+//        Collection<ParcelableUser> users =   (_friendDao.getEntries(FriendTable.FriendColumn.FRIEND_ID.s()
+//                + " = ? ", new String[]{Long.toString(15670515l)}, null));
+//
+//        final ParcelableUser user = users.iterator().next();
+        final ParcelableUser user = UserRetrieverUtils.getCurrentFocusedUser(this);
         final UserFriendsDao usersToFriendDao= new UserFriendsDao(getContentResolver() , _friendToParcelable,user);
         final Collection<IDatabaseUpdater> _dbUpdaters = new ArrayList<IDatabaseUpdater>();
         _dbUpdaters.add(new DatabaseUpdater(_friendDao, cols));
