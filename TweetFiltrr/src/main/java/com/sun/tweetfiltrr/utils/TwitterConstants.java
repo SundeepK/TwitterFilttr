@@ -5,10 +5,10 @@ import android.os.SystemClock;
 
 public class TwitterConstants {
 
-    public static String TWITTER_OAUTH_KEY = "1832190823-8WO0avAvwrb7d4u0z1b7GJDrgfyS2r4EMg7A58U";
-    public static String TWITTER_OAUTH_SECRET = "QCn7Zjzj7TQxizRUQN08BDogBp6jZZQixG7HFJKzKQ";
-    public static String TWITTER_CONSUMER_KEY = "Jz9Qj5j4LOijaOHNFveLA";
-    public static String TWITTER_CONSUMER_SECRET = "G15fKrltFAamt33XqccBtX5tAFWdw6RbN0p33GqjIo";
+    public static String TWITTER_OAUTH_KEY = "";
+    public static String TWITTER_OAUTH_SECRET = "";
+    public static String TWITTER_CONSUMER_KEY = "";
+    public static String TWITTER_CONSUMER_SECRET = "";
     public static String TWITTER_CURRENT_TAB = "CURRENT_TAB";
     public static final String ON_NEW_TAB_BROADCAST = "ON_NEW_TAB_BROADCAST";
     public static String TWITTER_CALLBACK_URL = "oauth://twitterfiltrr.Twitter_oAuth";
